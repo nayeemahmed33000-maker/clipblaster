@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClipBlaster Admin — Dashboard</title>
-<meta name="description" content="ClipBlaster owner dashboard — users, Pro codes and sales at a glance.">
+<meta name="description" content="ClipBlaster owner dashboard — users and sales at a glance.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff5a3c'/%3E%3Ctext x='32' y='44' font-size='34' font-weight='900' text-anchor='middle' fill='white' font-family='Arial'%3ECB%3C/text%3E%3C/svg%3E">
 <style>
 *{box-sizing:border-box}
@@ -27,10 +27,21 @@ h2{font-size:20px;margin:0 0 12px}
 .btn:disabled{opacity:.55;cursor:wait}
 input,select{width:100%;background:#0f0f1e;border:1px solid #3a3a55;color:#fff;border-radius:10px;padding:12px;font-size:15px;margin:6px 0 12px}
 label{font-size:13px;color:#b9b9cc;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.stat{background:#0f0f1e;border:1px solid #2a2a44;border-radius:14px;padding:16px}
-.stat .n{font-size:30px;font-weight:900}
-.stat .l{font-size:13px;color:#9a9ab2}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.stat{--acc:#4da3ff;background:#0f0f1e;border:1px solid #2a2a44;border-radius:16px;padding:18px 16px;position:relative;overflow:hidden;box-shadow:0 10px 30px -14px var(--acc)}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--acc),transparent)}
+.stat .ic{font-size:26px;line-height:1}
+.stat .n{font-size:42px;font-weight:900;line-height:1.1;margin-top:6px;background:linear-gradient(90deg,var(--acc),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .l{font-size:13px;color:#9a9ab2;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+.stat .sub{font-size:12px;color:#9a9ab2;margin-top:4px}
+.stat.blue{--acc:#4da3ff}
+.stat.gold{--acc:#ffd166}
+.stat.green{--acc:#2ecc71}
+.stat.purple{--acc:#b388ff}
+.stat.hero{grid-column:span 2;--acc:#ffd166;background:linear-gradient(135deg,#2a1f00,#0f0f1e 65%);border:1px solid #ffd166;box-shadow:0 0 34px -8px #ffd166}
+.stat.hero .n{font-size:54px}
+@supports not ((background-clip:text) or (-webkit-background-clip:text)){.stat .n{background:none;color:#fff}}
+@media(max-width:640px){.stat.hero{grid-column:span 1}.stat .n{font-size:36px}.stat.hero .n{font-size:44px}}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{text-align:left;padding:9px 8px;border-bottom:1px solid #23233a;vertical-align:top}
 th{color:#9a9ab2;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
@@ -192,10 +203,15 @@ async function loadAll(){
   }
 }
 function renderStats(st){
-  $('statsGrid').innerHTML=[
-    ['Total users',st.users],['Pro users',st.proUsers],['Free users',st.freeUsers],
-    ['Signups (7 days)',st.signups7d],['Pro codes',st.codes],['Active codes',st.codesActive],['Code uses',st.codeUses],['Pending payments',st.pendingPayments||0]
-  ].map(x=>'<div class="stat"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
+  const sales=st.totalSales||0, n=st.approvedPayments||0;
+  const cards=[
+    {cls:'blue',ic:'👥',n:st.users,l:'Total users'},
+    {cls:'gold',ic:'👑',n:st.proUsers,l:'Pro users'},
+    {cls:'green',ic:'🌱',n:st.freeUsers,l:'Free users'},
+    {cls:'purple',ic:'📈',n:st.signups7d,l:'Signups (7 days)'},
+    {cls:'hero',ic:'💰',n:'৳'+Number(sales).toLocaleString('en-US'),l:'Total Sales',sub:'from '+n+' approved payment'+(n===1?'':'s')}
+  ];
+  $('statsGrid').innerHTML=cards.map(c=>'<div class="stat '+c.cls+'"><div class="ic">'+c.ic+'</div><div class="n">'+c.n+'</div><div class="l">'+c.l+'</div>'+(c.sub?'<div class="sub">'+c.sub+'</div>':'')+'</div>').join('');
 }
 let supportTickets=[]; let openTicketId=null;
 function renderSupport(tickets){
