@@ -87,6 +87,58 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 #progressBar{height:10px;background:#22223a;border-radius:999px;overflow:hidden;margin-top:10px}
 #progressFill{height:100%;width:0%;background:#ff5a3c}
 #fileVideo{width:100%;border-radius:12px;background:#000;margin-top:10px}
+/* ---- WOW redesign: hero, orbs, phone mockup, marquee, feature cards ---- */
+body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)}
+.hero{position:relative;overflow:hidden;padding:64px 0 10px}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none;animation:floatY 9s ease-in-out infinite}
+.orb1{width:340px;height:340px;background:#ff5a3c;top:-90px;left:-70px}
+.orb2{width:300px;height:300px;background:#a855f7;top:40px;right:-80px;animation-delay:-3s}
+.orb3{width:220px;height:220px;background:#f59e0b;bottom:0;left:38%;animation-delay:-6s;opacity:.35}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-24px)}}
+.heroBadge{display:inline-block;position:relative;padding:8px 16px;border-radius:999px;font-weight:800;font-size:14px;color:#fff;background:rgba(255,90,60,.14);border:1px solid rgba(255,90,60,.55);animation:pulseGlow 2.4s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 18px rgba(255,90,60,.25)}50%{box-shadow:0 0 34px rgba(255,90,60,.55)}}
+.hero h1{font-size:54px;line-height:1.05;margin:18px 0 14px;position:relative}
+.grad{background:linear-gradient(90deg,#ff5a3c,#ff9a3c,#ff2d78,#a855f7,#ff5a3c);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradShift 6s linear infinite}
+@keyframes gradShift{to{background-position:300% 0}}
+.heroCtas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.heroCta{font-size:17px;padding:15px 26px;border-radius:14px;transition:transform .2s,box-shadow .2s}
+.btn-red.heroCta{box-shadow:0 10px 30px rgba(255,90,60,.45)}
+.btn-red.heroCta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 40px rgba(255,90,60,.6)}
+.heroStats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:26px 0 8px}
+.heroStats div{background:rgba(255,255,255,.05);border:1px solid #2e2e4d;border-radius:14px;padding:12px 18px;min-width:120px}
+.heroStats b{display:block;font-size:26px;line-height:1.1}
+.heroStats span{font-size:12px;color:#a9a9c0}
+.phoneWrap{position:relative;width:280px;margin:30px auto 10px}
+.phone{width:250px;margin:0 auto;background:#000;border:3px solid #3a3a55;border-radius:34px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 0 6px #151527,0 0 50px rgba(255,90,60,.25);animation:phoneFloat 5s ease-in-out infinite}
+@keyframes phoneFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+.phoneScreen{position:relative;height:440px;background:linear-gradient(160deg,#7c2d12,#db2777 45%,#4c1d95 80%,#0b0b16);padding:14px;display:flex;flex-direction:column}
+.phoneTop{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#fff}
+.phoneHook{margin-top:64px;text-align:center;font-size:30px;font-weight:900;line-height:1.1;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6)}
+.phonePlay{margin:26px auto 0;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);color:#ff2d78;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:5px;box-shadow:0 0 0 8px rgba(255,255,255,.15)}
+.phoneBottom{margin-top:auto;text-align:left}
+.phoneUser{font-weight:800;font-size:14px}
+.phoneTitle{font-size:13px;color:#ffe9f3;margin:4px 0 10px}
+.phoneBar{height:5px;background:rgba(255,255,255,.3);border-radius:99px;overflow:hidden}
+.phoneBar i{display:block;height:100%;width:62%;background:#fff;border-radius:99px}
+.phoneSide{text-align:center;font-size:12px;color:#c9c9dc;padding:10px;background:#101022}
+.floatChip{position:absolute;background:#1e1e38;border:1px solid #3a3a55;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:floatY 4s ease-in-out infinite;white-space:nowrap;z-index:2}
+.chipA{top:36px;left:-46px}
+.chipB{top:170px;right:-56px;animation-delay:-2s}
+.chipC{bottom:64px;left:-58px;animation-delay:-1s}
+.marquee{overflow:hidden;margin:26px -18px 0;border-top:1px solid #26263a;border-bottom:1px solid #26263a;padding:10px 0;background:rgba(255,90,60,.06)}
+.marqueeTrack{display:inline-block;white-space:nowrap;font-weight:900;letter-spacing:2px;font-size:15px;color:#ffb199;animation:marquee 22s linear infinite}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.feat{background:linear-gradient(160deg,#1b1b32,#12122a);border:1px solid #2e2e4d;border-radius:16px;padding:18px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.feat:hover{transform:translateY(-4px);border-color:#ff5a3c;box-shadow:0 14px 34px rgba(255,90,60,.18)}
+.feat .fic{font-size:26px}
+.price.pro{position:relative;overflow:hidden;box-shadow:0 0 40px rgba(255,90,60,.28)}
+.price.pro::before{content:"MOST POPULAR";position:absolute;top:14px;right:-34px;transform:rotate(35deg);background:#ff5a3c;color:#fff;font-size:11px;font-weight:900;letter-spacing:1px;padding:5px 40px}
+.stepRow{display:flex;gap:14px;align-items:flex-start;margin:14px 0}
+.stepNum{flex:0 0 40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,#ff5a3c,#ff2d78);box-shadow:0 6px 18px rgba(255,45,120,.4)}
+.toolCard{border:1px solid rgba(255,90,60,.4);box-shadow:0 0 0 1px rgba(255,90,60,.15),0 18px 50px rgba(0,0,0,.4)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:700px){.hero h1{font-size:38px}.chipA{left:-8px}.chipB{right:-8px}.chipC{left:-4px}.phoneWrap{width:100%}}
 </style>
 </head>
 <body>
@@ -104,20 +156,43 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 
 <div class="wrap">
   <section class="hero">
-    <h1>Your Long Video.<br><span>5 Viral Shorts.</span> One Click.</h1>
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+    <div class="heroBadge">🔥 Turn 1 video into 5 viral Shorts</div>
+    <h1>Your Long Video.<br><span class="grad">5 Viral Shorts.</span><br>One Click. 💥</h1>
     <p>Select your own long video file. ClipBlaster finds the viral moments, auto-edits them like a pro — hook text, zoom effects, colour grade — and writes SEO titles, descriptions and hashtags for every Short.</p>
-    <div>
-      <span class="pill">🎬 1–5 Shorts per video</span>
-      <span class="pill">⏱️ 30 / 45 / 60 sec</span>
-      <span class="pill">📱 9:16 Vertical • 720×1280</span>
-      <span class="pill">🔊 Loudness normalised (Pro)</span>
-      <span class="pill">🔍 SEO title + description + hashtags</span>
+    <div class="heroCtas">
+      <button class="btn btn-red heroCta" onclick="requireAuthThenTool()">🚀 Start Making Shorts — Free</button>
+      <button class="btn btn-ghost heroCta" onclick="scrollToId('pricing')">👑 Get Pro — ৳349</button>
     </div>
-    <p style="margin-top:18px"><button class="btn btn-red" style="font-size:17px;padding:14px 22px" onclick="requireAuthThenTool()">🚀 Start Making Shorts — Free</button></p>
-    <p class="muted">Log in or create a free account — or enter a Pro activation code, or start Free with 1 Short per video. Free users see the Get Pro popup every time they start. Pro users never see it.</p>
+    <div class="heroStats">
+      <div><b>5×</b><span>Shorts per video</span></div>
+      <div><b>60s</b><span>Max clip length</span></div>
+      <div><b>720×1280</b><span>True 9:16 vertical</span></div>
+      <div><b>৳0</b><span>Free to start</span></div>
+    </div>
+    <div class="phoneWrap">
+      <div class="phone">
+        <div class="phoneScreen">
+          <div class="phoneTop"><span>● REC</span><span>9:16 • HD</span></div>
+          <div class="phoneHook">WAIT FOR<br>THE END 😱</div>
+          <div class="phonePlay">▶</div>
+          <div class="phoneBottom">
+            <div class="phoneUser">@yourchannel</div>
+            <div class="phoneTitle">How I Built My Dream House in 30 Days 🔥</div>
+            <div class="phoneBar"><i></i></div>
+          </div>
+        </div>
+        <div class="phoneSide">♥ 12.4K &nbsp; 💬 856 &nbsp; ↗ Share</div>
+      </div>
+      <div class="floatChip chipA">🎯 Hook in 3 seconds</div>
+      <div class="floatChip chipB">🔍 SEO pack included</div>
+      <div class="floatChip chipC">⚡ 1-click cut</div>
+    </div>
+    <div class="marquee"><div class="marqueeTrack">HOOK ✦ SLOW ZOOM ✦ VIRAL MOMENTS ✦ 9:16 VERTICAL ✦ SEO TITLES ✦ HASHTAGS ✦ HOOK ✦ SLOW ZOOM ✦ VIRAL MOMENTS ✦ 9:16 VERTICAL ✦ SEO TITLES ✦ HASHTAGS ✦ </div></div>
+    <p class="muted" style="margin-top:16px">Log in or create a free account — or enter a Pro activation code, or start Free with 1 Short per video.</p>
   </section>
 
-  <section class="card" id="tool">
+  <section class="card toolCard" id="tool">
     <h2>Step 1 — Your video + Shorts plan</h2>
     <p class="muted">Use your own video only. Other people's videos carry copyright / reused-content risk and will not monetize.</p>
     <label>Your own video file (MP4 / WebM)</label>
@@ -163,12 +238,12 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
   <section class="card">
     <h2>What ClipBlaster auto-edits for you</h2>
     <div class="grid3">
-      <div><h3>🎯 Hook first</h3><p class="muted">Big hook text in the first 3 seconds, written from your title — e.g. “WAIT FOR THE CLIMAX” — with a punch-in zoom. (Pro)</p></div>
-      <div><h3>✨ Effects</h3><p class="muted">Slow zoom through the clip, a mid-clip punch, fade in / out and vignette. No manual editing. (Pro)</p></div>
-      <div><h3>🎨 Colour</h3><p class="muted">Vibrant, Cinematic or Soft colour grade, applied automatically to every Short.</p></div>
-      <div><h3>📱 True 9:16</h3><p class="muted">Every download is a real 720×1280 vertical MP4, ready to upload to YouTube Shorts.</p></div>
-      <div><h3>🔊 Sound in sync</h3><p class="muted">Audio is locked to the picture from the exact cut point. Pro cuts also normalise loudness. No drift.</p></div>
-      <div><h3>🔍 SEO pack</h3><p class="muted">Every Short gets an SEO title, description and hashtags, ready to copy-paste to YouTube Shorts.</p></div>
+      <div class="feat"><div class="fic">🎯</div><h3>Hook first</h3><p class="muted">Big hook text in the first 3 seconds, written from your title — e.g. “WAIT FOR THE CLIMAX” — with a punch-in zoom. (Pro)</p></div>
+      <div class="feat"><div class="fic">✨</div><h3>Effects</h3><p class="muted">Slow zoom through the clip, a mid-clip punch, fade in / out and vignette. No manual editing. (Pro)</p></div>
+      <div class="feat"><div class="fic">🎨</div><h3>Colour</h3><p class="muted">Vibrant, Cinematic or Soft colour grade, applied automatically to every Short.</p></div>
+      <div class="feat"><div class="fic">📱</div><h3>True 9:16</h3><p class="muted">Every download is a real 720×1280 vertical MP4, ready to upload to YouTube Shorts.</p></div>
+      <div class="feat"><div class="fic">🔊</div><h3>Sound in sync</h3><p class="muted">Audio is locked to the picture from the exact cut point. Pro cuts also normalise loudness. No drift.</p></div>
+      <div class="feat"><div class="fic">🔍</div><h3>SEO pack</h3><p class="muted">Every Short gets an SEO title, description and hashtags, ready to copy-paste to YouTube Shorts.</p></div>
     </div>
   </section>
 
@@ -196,7 +271,12 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 
   <section class="card">
     <h2>How to use ClipBlaster</h2>
-    <p>1. Activate with your code, or start Free — no log-in needed.<br>2. Select your own video file.<br>3. Choose how many Shorts (1–5), the length and the colour style.<br>4. Press Auto Capture Shorts — ClipBlaster picks the hook, rising, climax and payoff moments.<br>5. Copy the SEO title, description and hashtags from each card.<br>6. Press Download on a clip to save the 9:16 Short.</p>
+    <div class="stepRow"><div class="stepNum">1</div><div><b>Activate or start Free</b><p class="muted">Enter your Pro code, or start Free — no log-in needed.</p></div></div>
+    <div class="stepRow"><div class="stepNum">2</div><div><b>Select your own video file</b><p class="muted">MP4 or WebM, straight from your device.</p></div></div>
+    <div class="stepRow"><div class="stepNum">3</div><div><b>Choose your Shorts plan</b><p class="muted">How many Shorts (1–5), the length and the colour style.</p></div></div>
+    <div class="stepRow"><div class="stepNum">4</div><div><b>Press Auto Capture Shorts</b><p class="muted">ClipBlaster picks the hook, rising, climax and payoff moments.</p></div></div>
+    <div class="stepRow"><div class="stepNum">5</div><div><b>Copy the SEO pack</b><p class="muted">SEO title, description and hashtags from each card.</p></div></div>
+    <div class="stepRow"><div class="stepNum">6</div><div><b>Download your Shorts</b><p class="muted">Press Download on a clip to save the 9:16 Short.</p></div></div>
     <p class="muted">Tip: Pro cuts re-encode with the full edit (hook text, zoom, fade), so they take a little longer than a Free cut — keep the tab open.</p>
   </section>
 </div>
@@ -759,6 +839,8 @@ function recordClip(n){
   }catch(err){ st.textContent='❌ Recording failed in this browser: '+err.message+' — use the ffmpeg command on the card instead.'; }
 }
 buildChips(); refreshAuthUI(); refreshSession();
+// Scroll reveal for cards.
+(function(){const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});document.querySelectorAll('.card').forEach(el=>{el.classList.add('reveal');io.observe(el)});})();
 </script>
 <div class="toast" id="toast"></div>
 </body>
