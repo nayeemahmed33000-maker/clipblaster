@@ -553,12 +553,20 @@ async function refreshPayForm(){
   let showForm=hasAccount;
   $('payLoginNote').classList.toggle('hidden',!!u);
   $('payMsg').textContent='';$('payMsg').className='status muted';
-  if(u&&u.plan==='pro'){ $('payMsg').textContent='✅ You are already on Pro 👑.'; $('payMsg').className='status ok'; showForm=false; }
+  // Use the live plan, not the possibly stale saved one — an approval
+  // that landed after this tab loaded must not read as a downgrade,
+  // and a downgrade must not promise Pro on refresh.
+  let plan=u&&u.plan;
+  if(hasAccount){
+    try{ const me=await apiCall('/api/auth/me',{},u.token); plan=me.user.plan; if(plan!==u.plan) setSession({...u,plan:plan,name:me.user.name,email:me.user.email,created_at:me.user.created_at}); }
+    catch(e){}
+  }
+  if(plan==='pro'){ $('payMsg').textContent='✅ You are already on Pro 👑.'; $('payMsg').className='status ok'; showForm=false; }
   else if(hasAccount){
     try{
       const d=await apiCall('/api/payments/mine',{},u.token);
       if(d.payment&&d.payment.status==='pending'){ $('payMsg').textContent='⏳ Your payment ('+d.payment.method.toUpperCase()+' • '+d.payment.trxid+') is waiting for approval. You will be Pro as soon as it is approved.'; $('payMsg').className='status'; showForm=false; }
-      else if(d.payment&&d.payment.status==='approved'){ $('payMsg').textContent='✅ Your payment was approved — refresh the page to see Pro active.'; $('payMsg').className='status ok'; showForm=false; }
+      else if(d.payment&&d.payment.status==='approved'){ $('payMsg').textContent='✅ Your payment was approved, but your account is currently on the Free plan — please contact support.'; $('payMsg').className='status ok'; showForm=false; }
     }catch(e){}
   }
   else if(u){ $('payMsg').textContent='Please log in with your account (or sign up) to submit a payment — guest sessions cannot be upgraded to Pro.'; $('payMsg').className='status'; }
