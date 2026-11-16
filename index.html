@@ -43,6 +43,8 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .tab.on{background:#ff5a3c;border-color:#ff5a3c}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1e1e38;border:1px solid #3a3a55;color:#fff;padding:13px 18px;border-radius:12px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:all .25s;z-index:999;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.profileRow{display:flex;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid #23233a;font-size:15px}
+.profileRow span{color:#9a9ab2}
 .clip{border:1px solid #2a2a44;border-radius:14px;padding:16px;margin:14px 0;background:#101022}
 .clip h3{margin:0 0 6px}
 .dl{width:100%;padding:14px;font-size:16px;margin-top:10px}
@@ -81,7 +83,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 <header>
   <div class="logo">CLIP<span>BLASTER</span><small>TURN LONG VIDEO INTO VIRAL SHORTS</small></div>
   <nav>
-    <span id="userChip" class="pill hidden" onclick="openAuth('code')" style="cursor:pointer" title="Tap to enter a Pro code"></span>
+    <span id="userChip" class="pill hidden" onclick="openAuth('profile')" style="cursor:pointer" title="Tap to view your profile"></span>
     <button class="btn btn-ghost" onclick="scrollToId('tool')">Use Tool</button>
     <button class="btn btn-ghost" onclick="scrollToId('pricing')">Pricing</button>
     <button id="loginBtn" class="btn btn-red" onclick="openAuth('login')">Log In</button>
@@ -201,6 +203,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
       <button class="tab on" id="tab-login" onclick="showAuthTab('login')">Log In</button>
       <button class="tab" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
       <button class="tab" id="tab-code" onclick="showAuthTab('code')">👑 Pro Code</button>
+      <button class="tab hidden" id="tab-profile" onclick="showAuthTab('profile')">👤 Profile</button>
     </div>
     <div id="pane-login">
       <label>Email</label>
@@ -230,8 +233,18 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
       </p>
       <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">One code works everywhere — phone, PC, any browser. Never share your Pro code with anyone.</p>
     </div>
-    <div id="pane-account" class="hidden">
-      <p class="status" style="margin-top:16px">✅ You are already on <b>Pro 👑</b> — up to 5 Shorts per video with the full professional edit.</p>
+    <div id="pane-profile" class="hidden">
+      <div style="text-align:center;margin:10px 0 6px">
+        <div style="font-size:44px;line-height:1">👤</div>
+        <div id="profileName" style="font-size:20px;font-weight:900;margin-top:4px"></div>
+        <div id="profileEmail" class="muted" style="font-size:14px"></div>
+      </div>
+      <p id="profileProNote" class="status hidden" style="margin-top:10px">✅ You are already on <b>Pro 👑</b> — up to 5 Shorts per video with the full professional edit.</p>
+      <div style="margin-top:12px">
+        <div class="profileRow"><span>Plan</span><b id="profilePlan"></b></div>
+        <div class="profileRow"><span>Shorts per video</span><b id="profileLimit"></b></div>
+        <div class="profileRow"><span>Member since</span><b id="profileSince"></b></div>
+      </div>
       <p style="margin-top:16px">
         <button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('authModal');logout()">Sign Out</button>
       </p>
@@ -305,31 +318,40 @@ function setCount(n){const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){showToast
 function setLen(n){lenSec=n;buildChips();}
 function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_session')||'null')}catch(e){return null}}
 function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stringify(u));else localStorage.removeItem('clipblaster_session');refreshAuthUI();}
+function firstName(n){return String(n||'').trim().split(/\s+/)[0]||'User';}
 function refreshAuthUI(){
   const u=currentUser();
   $('loginBtn').classList.toggle('hidden',!!u);
   $('logoutBtn').classList.toggle('hidden',!u);
   $('userChip').classList.toggle('hidden',!u);
-  if(u)$('userChip').textContent='🔑 '+(u.plan==='pro'?'👑 Pro':'Free');
+  if(u)$('userChip').textContent='👤 '+firstName(u.name)+' · '+(u.plan==='pro'?'👑 Pro':'🔑 Free');
+}
+function fillProfile(u){
+  $('profileName').textContent=u.name||'User';
+  $('profileEmail').textContent=u.email||'No email on this account';
+  $('profilePlan').textContent=u.plan==='pro'?'👑 Pro — ৳349/month':'🔑 Free — ৳0';
+  $('profileLimit').textContent=u.plan==='pro'?'Up to 5 Shorts per video':'1 Short per video';
+  $('profileSince').textContent=u.created_at?new Date(u.created_at).toLocaleDateString():'—';
+  $('profileProNote').classList.toggle('hidden',u.plan!=='pro');
 }
 function openAuth(tab){
   const u=currentUser(), loggedIn=!!u;
-  // Already logged in? Never show Log In / Sign Up again — only the
-  // Pro Code tab (Free users, to upgrade) or an "already Pro" note.
+  // Already logged in? Never show Log In / Sign Up again — show the
+  // Profile tab, plus the Pro Code tab for Free users (to upgrade).
   $('tab-login').classList.toggle('hidden',loggedIn);
   $('tab-signup').classList.toggle('hidden',loggedIn);
   $('tab-code').classList.toggle('hidden',loggedIn&&u.plan==='pro');
-  $('pane-account').classList.toggle('hidden',!(loggedIn&&u.plan==='pro'));
+  $('tab-profile').classList.toggle('hidden',!loggedIn);
   $('authFreeRow').classList.toggle('hidden',loggedIn);
   $('authSub').textContent = !u ? 'Log in, create a free account, or enter a Pro code — no email verification needed.'
     : (u.plan==='pro' ? 'Logged in as '+u.name+' — 👑 Pro.' : 'Logged in as '+u.name+' — Free. Enter a Pro code below to upgrade.');
   $('authMsg').textContent='';$('authMsg').className='status muted';
-  if(loggedIn&&u.plan==='pro'){ openModal('authModal'); return; }
-  showAuthTab(loggedIn?'code':(tab||'login'));
+  if(loggedIn){ fillProfile(u); showAuthTab(tab==='code'&&u.plan!=='pro'?'code':'profile'); openModal('authModal'); return; }
+  showAuthTab(tab||'login');
   openModal('authModal');
 }
 function showAuthTab(tab){
-  ['login','signup','code'].forEach(t=>{
+  ['login','signup','code','profile'].forEach(t=>{
     $('tab-'+t).classList.toggle('on',t===tab);
     $('pane-'+t).classList.toggle('hidden',t!==tab);
   });
@@ -343,7 +365,7 @@ async function doLogin(){
   try{
     const d=await apiCall('/api/auth/login',{email:email,password:pass});
     $('loginSubmit').disabled=false; $('loginSubmit').textContent='Log In';
-    setSession({token:d.token,name:d.user.name,plan:d.user.plan,verified:true});
+    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
     showToast('✅ Welcome back, '+d.user.name+'! '+(d.user.plan==='pro'?'👑 Pro is ON.':'Free plan is ON.'));
     scrollToId('tool');
@@ -364,7 +386,7 @@ async function doSignup(){
   try{
     const d=await apiCall('/api/auth/signup',{name:name,email:email,password:pass});
     $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
-    setSession({token:d.token,name:d.user.name,plan:d.user.plan,verified:true});
+    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
     showToast('✅ Account created — welcome, '+d.user.name+'! Free plan is ON. Upgrade to Pro anytime with a code.');
     scrollToId('tool');
@@ -422,7 +444,7 @@ async function refreshSession(){
   if(!u.token){ if(u.mode==='free') return; setSession(null); return; }
   try{
     const d=await apiCall('/api/auth/me',{},u.token);
-    setSession({token:u.token,name:d.user.name,plan:d.user.plan,verified:true,code:u.code});
+    setSession({token:u.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,code:u.code});
   }catch(e){ setSession(null); }
 }
 function fmt(t){t=Math.max(0,Math.round(t));const m=Math.floor(t/60),s=t%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
