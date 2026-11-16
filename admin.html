@@ -100,6 +100,15 @@ footer{color:#8a8aa2;font-size:13px;text-align:center;padding:20px}
     </section>
 
     <section class="card">
+      <h2>💰 Payment Requests</h2>
+      <p class="muted">Customers pay ৳349 by bKash / Nagad / Rocket and submit their TrxID. Check the TrxID in your app, then Approve — their account turns Pro instantly. Reject if the payment is not real.</p>
+      <div class="tblWrap"><table>
+        <thead><tr><th>Email</th><th>Method</th><th>TrxID</th><th>Date</th><th>Status</th><th></th></tr></thead>
+        <tbody id="paymentsBody"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="card">
       <h2>👥 Users</h2>
       <div class="tblWrap"><table>
         <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Joined</th><th></th></tr></thead>
@@ -152,8 +161,8 @@ async function signOut(){
 async function loadAll(){
   $('dashMsg').textContent='Loading…'; $('dashMsg').className='status muted';
   try{
-    const [s,u,c]=await Promise.all([api('/api/admin/stats'),api('/api/admin/users'),api('/api/admin/codes')]);
-    renderStats(s.stats); renderUsers(u.users); renderCodes(c.codes);
+    const [s,u,c,p]=await Promise.all([api('/api/admin/stats'),api('/api/admin/users'),api('/api/admin/codes'),api('/api/admin/payments')]);
+    renderStats(s.stats); renderUsers(u.users); renderCodes(c.codes); renderPayments(p.payments);
     $('dashMsg').textContent='';
   }catch(e){
     if(e.message==='unauthorized'){ localStorage.removeItem('clipblaster_admin_token'); showLogin(); $('loginMsg').textContent='Session expired — log in again.'; $('loginMsg').className='status err'; return; }
@@ -164,8 +173,22 @@ async function loadAll(){
 function renderStats(st){
   $('statsGrid').innerHTML=[
     ['Total users',st.users],['Pro users',st.proUsers],['Free users',st.freeUsers],
-    ['Signups (7 days)',st.signups7d],['Pro codes',st.codes],['Active codes',st.codesActive],['Code uses',st.codeUses]
+    ['Signups (7 days)',st.signups7d],['Pro codes',st.codes],['Active codes',st.codesActive],['Code uses',st.codeUses],['Pending payments',st.pendingPayments||0]
   ].map(x=>'<div class="stat"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
+}
+function renderPayments(payments){
+  if(!payments.length){ $('paymentsBody').innerHTML='<tr><td colspan="6" class="muted">No payment requests yet.</td></tr>'; return; }
+  $('paymentsBody').innerHTML=payments.map(p=>{
+    const st = p.status==='approved' ? '<span class="ok">Approved</span>' : (p.status==='rejected' ? '<span class="err">Rejected</span>' : '<span>⏳ Pending</span>');
+    const btns = p.status==='pending'
+      ? '<button class="btn btn-green btn-sm" onclick="decidePayment(\''+esc(p.id)+'\',true)">Approve</button> <button class="btn btn-ghost btn-sm" onclick="decidePayment(\''+esc(p.id)+'\',false)">Reject</button>'
+      : '';
+    return '<tr><td>'+esc(p.email)+'</td><td>'+esc(p.method)+'</td><td><b>'+esc(p.trxid)+'</b></td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td>'+st+'</td><td>'+btns+'</td></tr>';
+  }).join('');
+}
+async function decidePayment(id,approve){
+  try{ await api('/api/admin/payments/decide',{id:id,approve:approve}); await loadAll(); }
+  catch(e){ $('dashMsg').textContent = e.message==='no_account' ? 'That email has no ClipBlaster account yet.' : 'Could not update that payment.'; $('dashMsg').className='status err'; }
 }
 function renderUsers(users){
   if(!users.length){ $('usersBody').innerHTML='<tr><td colspan="5" class="muted">No users yet.</td></tr>'; return; }
