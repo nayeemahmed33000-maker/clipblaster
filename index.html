@@ -193,7 +193,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
     <button class="closeX" onclick="closeModal('authModal')">×</button>
     <div style="font-size:26px;font-weight:900">CLIP<span style="color:#ff5a3c">BLASTER</span></div>
     <h2>Welcome to ClipBlaster</h2>
-    <p class="muted">Log in, create a free account, or enter a Pro code — no email verification needed.</p>
+    <p class="muted" id="authSub">Log in, create a free account, or enter a Pro code — no email verification needed.</p>
     <div class="tabs">
       <button class="tab on" id="tab-login" onclick="showAuthTab('login')">Log In</button>
       <button class="tab" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
@@ -227,11 +227,19 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
       </p>
       <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">One code works everywhere — phone, PC, any browser. Never share your Pro code with anyone.</p>
     </div>
+    <div id="pane-account" class="hidden">
+      <p class="status" style="margin-top:16px">✅ You are already on <b>Pro 👑</b> — up to 5 Shorts per video with the full professional edit.</p>
+      <p style="margin-top:16px">
+        <button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('authModal');logout()">Sign Out</button>
+      </p>
+    </div>
     <p id="authMsg" class="status muted"></p>
+    <div id="authFreeRow">
     <p style="text-align:center;margin:14px 0 4px;color:#8a8aa2">— or —</p>
     <p style="margin-top:8px">
       <button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="startFree()">▶ Use Free — 1 Short per video, no code needed</button>
     </p>
+    </div>
   </div>
 </div>
 
@@ -299,7 +307,22 @@ function refreshAuthUI(){
   $('userChip').classList.toggle('hidden',!u);
   if(u)$('userChip').textContent='🔑 '+(u.plan==='pro'?'👑 Pro':'Free');
 }
-function openAuth(tab){$('authMsg').textContent='';$('authMsg').className='status muted';showAuthTab(tab||'login');openModal('authModal');}
+function openAuth(tab){
+  const u=currentUser(), loggedIn=!!u;
+  // Already logged in? Never show Log In / Sign Up again — only the
+  // Pro Code tab (Free users, to upgrade) or an "already Pro" note.
+  $('tab-login').classList.toggle('hidden',loggedIn);
+  $('tab-signup').classList.toggle('hidden',loggedIn);
+  $('tab-code').classList.toggle('hidden',loggedIn&&u.plan==='pro');
+  $('pane-account').classList.toggle('hidden',!(loggedIn&&u.plan==='pro'));
+  $('authFreeRow').classList.toggle('hidden',loggedIn);
+  $('authSub').textContent = !u ? 'Log in, create a free account, or enter a Pro code — no email verification needed.'
+    : (u.plan==='pro' ? 'Logged in as '+u.name+' — 👑 Pro.' : 'Logged in as '+u.name+' — Free. Enter a Pro code below to upgrade.');
+  $('authMsg').textContent='';$('authMsg').className='status muted';
+  if(loggedIn&&u.plan==='pro'){ openModal('authModal'); return; }
+  showAuthTab(loggedIn?'code':(tab||'login'));
+  openModal('authModal');
+}
 function showAuthTab(tab){
   ['login','signup','code'].forEach(t=>{
     $('tab-'+t).classList.toggle('on',t===tab);
