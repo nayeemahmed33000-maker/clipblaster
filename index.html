@@ -978,7 +978,12 @@ async function refreshPayForm(){
         // approval time + the plan's duration is when it ended.
         const pdays=d.payment.plan==='weekly'?7:30;
         if(d.payment.decided_at && Date.now()>d.payment.decided_at+pdays*86400000){ $('payMsg').textContent='⏰ আপনার '+(d.payment.plan==='weekly'?'সাপ্তাহিক':'প্রো')+' প্ল্যানের মেয়াদ শেষ হয়েছে — রিনিউ করতে নিচে TrxID দিন।'; $('payMsg').className='status'; }
-        else { $('payMsg').textContent='✅ আপনার পেমেন্ট অনুমোদিত হয়েছে, কিন্তু আপনার অ্যাকাউন্ট এখন ফ্রি প্ল্যানে আছে — অনুগ্রহ করে সাপোর্টে যোগাযোগ করুন।'; $('payMsg').className='status ok'; showForm=false; }
+        // Approved + Free + still within the plan period can only happen
+        // when Admin cancelled the plan: approve sets plan + expiry
+        // together in one atomic UPDATE, so no inconsistent state is
+        // left to report. Cancelled note + renew form (form stays
+        // shown) — never "contact support". The user can buy again now.
+        else { $('payMsg').textContent='ℹ️ আপনার সাবস্ক্রিপশন বাতিল করা হয়েছে — আবার কিনতে পারেন। নিচে প্ল্যান বেছে TrxID দিন।'; $('payMsg').className='status'; }
       }
     }catch(e){}
   }
