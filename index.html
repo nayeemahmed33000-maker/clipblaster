@@ -92,6 +92,8 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 .hero{position:relative;overflow:hidden;padding:64px 0 10px}
 /* Pro users land straight on the tool — no marketing hero. */
 body.is-pro .hero{display:none}
+/* Pro users don't see the pricing section either — prices come via popup. */
+body.is-pro #pricing{display:none}
 .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none;animation:floatY 9s ease-in-out infinite}
 .orb1{width:340px;height:340px;background:#ff5a3c;top:-90px;left:-70px}
 .orb2{width:300px;height:300px;background:#a855f7;top:40px;right:-80px;animation-delay:-3s}
@@ -149,7 +151,7 @@ body.is-pro .hero{display:none}
   <nav>
     <span id="userChip" class="pill hidden" onclick="openAuth('profile')" style="cursor:pointer" title="প্রোফাইল দেখতে চাপুন"></span>
     <button class="btn btn-ghost" onclick="scrollToId('tool')">টুল ব্যবহার করুন</button>
-    <button class="btn btn-ghost" onclick="scrollToId('pricing')">প্রাইসিং</button>
+    <button class="btn btn-ghost" onclick="openPricing()">প্রাইসিং</button>
     <button id="signinBtn" class="btn btn-ghost" onclick="openAuth('login')">লগ ইন</button>
     <button id="signupBtn" class="btn btn-red" onclick="openAuth('signup')">সাইন আপ</button>
     <button id="logoutBtn" class="btn btn-ghost hidden" onclick="logout()">লগ আউট</button>
@@ -401,6 +403,30 @@ body.is-pro .hero{display:none}
   </div>
 </div>
 
+<!-- Pricing popup — for Pro users (their pricing section is hidden) -->
+<div class="modal" id="pricingModal">
+  <div class="modalBox" style="max-width:720px">
+    <button class="closeX" onclick="closeModal('pricingModal')">×</button>
+    <h2>সাবস্ক্রিপশন — সহজ ও স্বচ্ছ</h2>
+    <p class="muted">আপনি ইতিমধ্যে <b>প্রো-তে 👑</b> আছেন — ৳349/মাস।</p>
+    <div class="grid3" style="grid-template-columns:1fr 1fr;margin-top:12px">
+      <div class="price">
+        <h3>ফ্রি</h3>
+        <div class="amount">৳0</div>
+        <p class="muted">চেষ্টা করে দেখুন</p>
+        <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>30 সেকেন্ডের ক্লিপ</li><li>আসল 9:16 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
+      </div>
+      <div class="price pro">
+        <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
+        <div class="amount">৳349<span style="font-size:16px"> /মাস</span></div>
+        <p class="muted">সিরিয়াস ক্রিয়েটরদের জন্য</p>
+        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস</li><li>30 / 45 / 60 সেকেন্ডের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li><li>ডাউনলোডের জন্য প্রস্তুত MP4 শর্টস</li></ul>
+      </div>
+    </div>
+    <p style="margin-top:16px"><button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('pricingModal')">বন্ধ করুন</button></p>
+  </div>
+</div>
+
 <script>
 let count=3, lenSec=30, durationSec=0, clips=[];
 const $=id=>document.getElementById(id);
@@ -421,6 +447,9 @@ async function apiCall(path,body,token){
   return d;
 }
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+// Pro users don't see the pricing section (hidden) — the menu button shows
+// the prices in a popup instead; everyone else scrolls to the section.
+function openPricing(){ const u=currentUser(); if(u&&u.plan==='pro'){ openModal('pricingModal'); return; } scrollToId('pricing'); }
 function openModal(id){$(id).classList.add('open')}
 function closeModal(id){$(id).classList.remove('open')}
 let toastTimer=null;
