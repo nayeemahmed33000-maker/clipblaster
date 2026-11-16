@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান</title>
-<meta name="description" content="ClipBlaster আপনার নিজের লং ভিডিও থেকে 1-5টি ভাইরাল ভার্টিকাল শর্টস বানায় — প্রোফেশনাল অটো-এডিট, হুক টেক্সট, জুম ও কালার গ্রেড, আর SEO টাইটেল, ডেসক্রিপশন ও হ্যাশট্যাগ সহ।">
+<meta name="description" content="ClipBlaster আপনার নিজের লং ভিডিও থেকে 1-20টি ভাইরাল ভার্টিকাল শর্টস বানায় — প্রোফেশনাল অটো-এডিট, হুক টেক্সট, জুম ও কালার গ্রেড, আর SEO টাইটেল, ডেসক্রিপশন ও হ্যাশট্যাগ সহ।">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff5a3c'/%3E%3Ctext x='32' y='44' font-size='34' font-weight='900' text-anchor='middle' fill='white' font-family='Arial'%3ECB%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
@@ -39,6 +39,12 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .chip{border:1px solid #3a3a55;background:#0f0f1e;color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:700}
 .chip.on{background:#ff5a3c;border-color:#ff5a3c}
+html,body{overflow-x:hidden}
+.row>div{min-width:0}
+.toolCard .muted{overflow-wrap:break-word;white-space:normal}
+.lenBox{display:flex;gap:8px}
+.lenBox input{flex:1;min-width:0}
+.lenBox select{flex:0 0 112px}
 .tabs{display:flex;gap:8px;margin:14px 0 4px}
 .tab{flex:1;padding:10px;border:1px solid #3a3a55;background:#0f0f1e;color:#fff;border-radius:10px;cursor:pointer;font-weight:700;font-size:15px}
 .tab.on{background:#ff5a3c;border-color:#ff5a3c}
@@ -163,17 +169,17 @@ body.is-pro #pricing{display:none}
 <div class="wrap">
   <section class="hero">
     <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
-    <div class="heroBadge">🔥 1টি লং ভিডিও থেকে 5টি ভাইরাল শর্টস</div>
-    <h1>আপনার লং ভিডিও।<br><span class="grad">5টি ভাইরাল শর্টস।</span><br>এক ক্লিকে। 💥</h1>
+    <div class="heroBadge">🔥 1টি লং ভিডিও থেকে 20টি ভাইরাল শর্টস</div>
+    <h1>আপনার লং ভিডিও।<br><span class="grad">20টি ভাইরাল শর্টস।</span><br>এক ক্লিকে। 💥</h1>
     <p>আপনার নিজের লং ভিডিও ফাইলটি বেছে নিন। ClipBlaster ভাইরাল মুহূর্তগুলো খুঁজে বের করে, প্রো-দের মতো অটো-এডিট করে — হুক টেক্সট, জুম এফেক্ট, কালার গ্রেড — আর প্রতিটি শর্টসের জন্য SEO টাইটেল, ডেসক্রিপশন ও হ্যাশট্যাগ লিখে দেয়।</p>
     <div class="heroCtas">
       <button class="btn btn-red heroCta" onclick="requireAuthThenTool()">🚀 শর্টস বানানো শুরু করুন — ফ্রি</button>
       <button class="btn btn-ghost heroCta" onclick="scrollToId('pricing')">👑 প্রো নিন — ৳349</button>
     </div>
     <div class="heroStats">
-      <div><b>5×</b><span>প্রতি ভিডিওতে শর্টস</span></div>
-      <div><b>60 সে.</b><span>সর্বোচ্চ ক্লিপের দৈর্ঘ্য</span></div>
-      <div><b>720×1280</b><span>আসল 9:16 ভার্টিকাল</span></div>
+      <div><b>20×</b><span>প্রতি ভিডিওতে শর্টস</span></div>
+      <div><b>3 মি.</b><span>সর্বোচ্চ ক্লিপের দৈর্ঘ্য</span></div>
+      <div><b>9:16 / 16:9</b><span>720×1280 বা 1280×720</span></div>
       <div><b>৳0</b><span>শুরু করতে ফ্রি</span></div>
     </div>
     <div class="phoneWrap">
@@ -205,7 +211,7 @@ body.is-pro #pricing{display:none}
       <button class="btn btn-red" style="flex:1" onclick="openAuth('signup')">✍️ সাইন আপ করুন — ফ্রি</button>
       <button class="btn btn-ghost" style="flex:1" onclick="openAuth('login')">🔑 লগ ইন</button>
     </p>
-    <p class="muted" style="margin-top:12px">ফ্রি অ্যাকাউন্টে প্রতি ভিডিওতে 1টি শর্টস। প্রো-তে (৳349/মাস) সর্বোচ্চ 5টি শর্টস + পুরো প্রো এডিট।</p>
+    <p class="muted" style="margin-top:12px">ফ্রি অ্যাকাউন্টে প্রতি ভিডিওতে 1টি শর্টস। প্রো-তে (৳349/মাস) সর্বোচ্চ 20টি শর্টস + পুরো প্রো এডিট।</p>
   </section>
 
   <section class="card toolCard hidden" id="tool">
@@ -227,12 +233,29 @@ body.is-pro #pricing{display:none}
     </div>
     <div class="row">
       <div>
-        <label>কয়টি শর্টস? (সর্বোচ্চ 5)</label>
-        <div class="chips" id="countChips"></div>
+        <label for="countInput">কয়টি শর্টস? (ফ্রি: 1টি, প্রো: সর্বোচ্চ 20টি)</label>
+        <input id="countInput" type="number" min="1" max="20" step="1" value="3" inputmode="numeric" oninput="onCountInput()" onchange="readCount(true)">
+        <p class="muted" style="margin-top:6px">সংখ্যাটি লিখুন — ফ্রি প্ল্যানে সর্বোচ্চ 1টি, প্রো-তে সর্বোচ্চ 20টি।</p>
       </div>
       <div>
-        <label>শর্টসের দৈর্ঘ্য</label>
-        <div class="chips" id="lenChips"></div>
+        <label for="lenInput">শর্টসের দৈর্ঘ্য (15 সেকেন্ড – 3 মিনিট)</label>
+        <div class="lenBox">
+          <input id="lenInput" type="number" min="15" max="180" step="any" value="30" inputmode="decimal" oninput="onLenInput()" onchange="readLen(true)">
+          <select id="lenUnit" onchange="setLenUnit(this.value)">
+            <option value="sec" selected>সেকেন্ড</option>
+            <option value="min">মিনিট</option>
+          </select>
+        </div>
+        <p class="muted" style="margin-top:6px">15 সেকেন্ড থেকে 3 মিনিট পর্যন্ত লিখুন — মিনিটে লিখলে দশমিকও চলবে (যেমন 1.5 মিনিট = 90 সেকেন্ড)।</p>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="sizeSel">ভিডিওর সাইজ</label>
+        <select id="sizeSel" onchange="setSize(this.value)">
+          <option value="9:16" selected>9:16 — খাড়া (ভার্টিকাল, 720×1280)</option>
+          <option value="16:9">16:9 — আড়াআড়ি (ল্যান্ডস্কেপ, 1280×720)</option>
+        </select>
       </div>
     </div>
     <p class="muted">প্রো ইউজাররা প্রতিটি ডাউনলোডে পাবেন হুক টেক্সট, স্লো জুম ও ক্লিপের মাঝখানে পাঞ্চ, ফেড, ভিগনেট, স্টাইল কালার ও সাউন্ড নরমালাইজেশন।</p>
@@ -246,9 +269,9 @@ body.is-pro #pricing{display:none}
 
   <section class="card hidden" id="toolStep2">
     <h2>ধাপ 2 — আপনার শর্টস ডাউনলোড করুন</h2>
-    <p class="muted">আপনার ভিডিও ফাইলটি ধাপ 1-এ ইতিমধ্যে বাছাই করা আছে। ক্লিপ কার্ডের বড় ডাউনলোড বোতামটি চাপুন — ClipBlaster ঠিক সেই ভাইরাল মুহূর্তটি কেটে আসল 720×1280 MP4 শর্টস বানিয়ে দেবে, YouTube Shorts-এ আপলোডের জন্য প্রস্তুত।</p>
+    <p class="muted">আপনার ভিডিও ফাইলটি ধাপ 1-এ ইতিমধ্যে বাছাই করা আছে। ক্লিপ কার্ডের বড় ডাউনলোড বোতামটি চাপুন — ClipBlaster ঠিক সেই ভাইরাল মুহূর্তটি কেটে আপনার বাছাই করা সাইজে (9:16 হলে 720×1280, 16:9 হলে 1280×720) MP4 শর্টস বানিয়ে দেবে, আপলোডের জন্য প্রস্তুত।</p>
     <h3>অথবা ffmpeg ব্যবহার করুন (একই ক্লিপ, আপনার কম্পিউটারে)</h3>
-    <p class="muted">প্রতিটি ক্লিপ কার্ডে নিজের ffmpeg কমান্ড দেওয়া আছে। কপি করুন, <code>input.mp4</code>-এর জায়গায় আপনার ফাইলটি বসান, আর চালিয়ে 720×1280 শর্টস কেটে নিন।</p>
+    <p class="muted">প্রতিটি ক্লিপ কার্ডে নিজের ffmpeg কমান্ড দেওয়া আছে। কপি করুন, <code>input.mp4</code>-এর জায়গায় আপনার ফাইলটি বসান, আর চালিয়ে আপনার বাছাই করা সাইজের শর্টস কেটে নিন।</p>
   </section>
 
   <section class="card">
@@ -257,7 +280,7 @@ body.is-pro #pricing{display:none}
       <div class="feat"><div class="fic">🎯</div><h3>আগে হুক</h3><p class="muted">প্রথম 3 সেকেন্ডে বড় হুক টেক্সট, আপনার টাইটেল থেকে লেখা — যেমন “শেষ পর্যন্ত দেখুন” — সঙ্গে পাঞ্চ-ইন জুম। (প্রো)</p></div>
       <div class="feat"><div class="fic">✨</div><h3>এফেক্ট</h3><p class="muted">পুরো ক্লিপজুড়ে স্লো জুম, মাঝখানে পাঞ্চ, ফেড ইন / আউট আর ভিগনেট। হাতে এডিট করতে হবে না। (প্রো)</p></div>
       <div class="feat"><div class="fic">🎨</div><h3>কালার</h3><p class="muted">ভাইব্র্যান্ট, সিনেমাটিক বা সফট কালার গ্রেড — প্রতিটি শর্টসে অটোমেটিক।</p></div>
-      <div class="feat"><div class="fic">📱</div><h3>আসল 9:16</h3><p class="muted">প্রতিটি ডাউনলোডই আসল 720×1280 ভার্টিকাল MP4, YouTube Shorts-এ আপলোডের জন্য প্রস্তুত।</p></div>
+      <div class="feat"><div class="fic">📱</div><h3>9:16 বা 16:9</h3><p class="muted">প্রতিটি ডাউনলোডই আপনার বাছাই করা সাইজে — 9:16 (720×1280) বা 16:9 (1280×720) MP4।</p></div>
       <div class="feat"><div class="fic">🔊</div><h3>সাউন্ড সিঙ্কে</h3><p class="muted">অডিও ঠিক কাট পয়েন্ট থেকে ছবির সঙ্গে লক থাকে। প্রো কাটে সাউন্ডও নরমালাইজ করা হয়। কোনো ড্রিফট নেই।</p></div>
       <div class="feat"><div class="fic">🔍</div><h3>SEO প্যাক</h3><p class="muted">প্রতিটি শর্টস পাবে SEO টাইটেল, ডেসক্রিপশন ও হ্যাশট্যাগ — কপি-পেস্ট করে YouTube Shorts-এ দিলেই হবে।</p></div>
     </div>
@@ -271,14 +294,14 @@ body.is-pro #pricing{display:none}
         <h3>Free</h3>
         <div class="amount">৳0</div>
         <p class="muted">চেষ্টা করে দেখুন</p>
-        <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>30 সেকেন্ডের ক্লিপ</li><li>আসল 9:16 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
+        <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>9:16 বা 16:9 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
         <button class="btn btn-ghost" onclick="openAuth('signup')">ফ্রি অ্যাকাউন্ট খুলুন</button>
       </div>
       <div class="price pro">
         <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
         <div class="amount">৳349<span style="font-size:16px"> /মাস</span></div>
         <p class="muted">সিরিয়াস ক্রিয়েটরদের জন্য</p>
-        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস</li><li>30 / 45 / 60 সেকেন্ডের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li><li>ডাউনলোডের জন্য প্রস্তুত MP4 শর্টস</li></ul>
+        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li><li>ডাউনলোডের জন্য প্রস্তুত MP4 শর্টস</li></ul>
         <button class="btn btn-red" onclick="getPro()">প্রো নিন — ৳349/মাস</button>
         <p class="muted" style="margin-top:10px">অনলাইনে কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই — bKash / Nagad / Rocket-এ ৳349 পাঠিয়ে TrxID দিন, অনুমোদনের পর প্রো চালু হবে।</p>
       </div>
@@ -289,15 +312,15 @@ body.is-pro #pricing{display:none}
     <h2>ClipBlaster কীভাবে ব্যবহার করবেন</h2>
     <div class="stepRow"><div class="stepNum">1</div><div><b>সাইন আপ করুন</b><p class="muted">ফ্রি অ্যাকাউন্ট খুলুন, তারপর লগ ইন করুন।</p></div></div>
     <div class="stepRow"><div class="stepNum">2</div><div><b>আপনার নিজের ভিডিও ফাইলটি বেছে নিন</b><p class="muted">আপনার ডিভাইস থেকে সরাসরি MP4 বা WebM।</p></div></div>
-    <div class="stepRow"><div class="stepNum">3</div><div><b>আপনার শর্টস প্ল্যানটি বেছে নিন</b><p class="muted">কয়টি শর্টস (1–5), দৈর্ঘ্য আর কালার স্টাইল।</p></div></div>
+    <div class="stepRow"><div class="stepNum">3</div><div><b>আপনার শর্টস প্ল্যানটি বেছে নিন</b><p class="muted">কয়টি শর্টস (1–20), দৈর্ঘ্য, সাইজ আর কালার স্টাইল।</p></div></div>
     <div class="stepRow"><div class="stepNum">4</div><div><b>শর্টস অটো ক্যাপচার চাপুন</b><p class="muted">ClipBlaster হুক, রাইজিং, ক্লাইম্যাক্স ও পেঅফ মুহূর্তগুলো বেছে নেয়।</p></div></div>
     <div class="stepRow"><div class="stepNum">5</div><div><b>SEO প্যাকটি কপি করুন</b><p class="muted">প্রতিটি কার্ড থেকে SEO টাইটেল, ডেসক্রিপশন ও হ্যাশট্যাগ।</p></div></div>
-    <div class="stepRow"><div class="stepNum">6</div><div><b>আপনার শর্টস ডাউনলোড করুন</b><p class="muted">9:16 শর্টসটি সেভ করতে ক্লিপে ডাউনলোড চাপুন।</p></div></div>
+    <div class="stepRow"><div class="stepNum">6</div><div><b>আপনার শর্টস ডাউনলোড করুন</b><p class="muted">শর্টসটি সেভ করতে ক্লিপে ডাউনলোড চাপুন।</p></div></div>
     <p class="muted">টিপস: প্রো কাটে পুরো এডিটসহ (হুক টেক্সট, জুম, ফেড) আবার এনকোড হয়, তাই ফ্রি কাটের চেয়ে একটু বেশি সময় লাগে — ট্যাবটি খোলা রাখুন।</p>
   </section>
 </div>
 
-<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস, প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span></footer>
+<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস, প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span></footer>
 
 <!-- Auth modal — Log In / Sign Up -->
 <div class="modal" id="authModal">
@@ -337,7 +360,7 @@ body.is-pro #pricing{display:none}
         <div id="profileName" style="font-size:20px;font-weight:900;margin-top:4px"></div>
         <div id="profileEmail" class="muted" style="font-size:14px"></div>
       </div>
-      <p id="profileProNote" class="status hidden" style="margin-top:10px">✅ আপনি ইতিমধ্যে <b>প্রো-তে 👑</b> আছেন — পুরো প্রোফেশনাল এডিটসহ প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস।</p>
+      <p id="profileProNote" class="status hidden" style="margin-top:10px">✅ আপনি ইতিমধ্যে <b>প্রো-তে 👑</b> আছেন — পুরো প্রোফেশনাল এডিটসহ প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস।</p>
       <div style="margin-top:12px">
         <div class="profileRow"><span>প্ল্যান</span><b id="profilePlan"></b></div>
         <div class="profileRow"><span>প্রতি ভিডিওতে শর্টস</span><b id="profileLimit"></b></div>
@@ -419,7 +442,7 @@ body.is-pro #pricing{display:none}
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('getProPopup')">×</button>
     <h2>🚀 প্রো-তে আপগ্রেড করুন</h2>
-    <p><b>৳349/মাস</b> — প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস, হুক টেক্সট, জুম ও ফেডসহ প্রোফেশনাল অটো-এডিট, আর পুরো SEO প্যাক।</p>
+    <p><b>৳349/মাস</b> — প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস, হুক টেক্সট, জুম ও ফেডসহ প্রোফেশনাল অটো-এডিট, আর পুরো SEO প্যাক।</p>
     <p style="display:flex;gap:8px;margin-top:12px">
       <button class="btn btn-red" style="flex:1" onclick="closeModal('getProPopup');getPro()">প্রো নিন — ৳349/মাস</button>
       <button class="btn btn-ghost" style="flex:1" onclick="closeModal('getProPopup')">পরে দেখব</button>
@@ -438,13 +461,13 @@ body.is-pro #pricing{display:none}
         <h3>ফ্রি</h3>
         <div class="amount">৳0</div>
         <p class="muted">চেষ্টা করে দেখুন</p>
-        <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>30 সেকেন্ডের ক্লিপ</li><li>আসল 9:16 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
+        <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>9:16 বা 16:9 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
       </div>
       <div class="price pro">
         <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
         <div class="amount">৳349<span style="font-size:16px"> /মাস</span></div>
         <p class="muted">সিরিয়াস ক্রিয়েটরদের জন্য</p>
-        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস</li><li>30 / 45 / 60 সেকেন্ডের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li><li>ডাউনলোডের জন্য প্রস্তুত MP4 শর্টস</li></ul>
+        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li><li>ডাউনলোডের জন্য প্রস্তুত MP4 শর্টস</li></ul>
       </div>
     </div>
     <p style="margin-top:16px"><button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('pricingModal')">বন্ধ করুন</button></p>
@@ -489,7 +512,7 @@ body.is-pro #pricing{display:none}
 </div>
 
 <script>
-let count=3, lenSec=30, durationSec=0, clips=[];
+let count=3, lenSec=30, lenUnit='sec', size='9:16', durationSec=0, clips=[];
 const $=id=>document.getElementById(id);
 const STYLE_BN={vibrant:'ভাইব্র্যান্ট',cinematic:'সিনেমাটিক',soft:'সফট'};
 // ---- Auth (email + password) ----
@@ -610,12 +633,58 @@ function openModal(id){$(id).classList.add('open')}
 function closeModal(id){$(id).classList.remove('open')}
 let toastTimer=null;
 function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),4000);}
-function buildChips(){
-  $('countChips').innerHTML=[1,2,3,4,5].map(n=>`<button class="chip ${n===count?'on':''}" onclick="setCount(${n})">${n}</button>`).join('');
-  $('lenChips').innerHTML=[30,45,60].map(n=>`<button class="chip ${n===lenSec?'on':''}" onclick="setLen(${n})">${n} সেকেন্ড</button>`).join('');
+const SIZE_DIMS={'9:16':{w:720,h:1280},'16:9':{w:1280,h:720}};
+function curDims(){return SIZE_DIMS[size]||SIZE_DIMS['9:16'];}
+function maxCount(){const u=currentUser();return (u&&u.plan==='pro')?20:1;}
+// Count box: typed number, Free max 1, Pro max 20. `announce` shows the
+// honest note + Pro popup when the plan limit clamps the typed value.
+function readCount(announce){
+  if(!hasRealAccount()){openAuth('signup');return count;}
+  const el=$('countInput'); let n=parseInt(el.value,10);
+  if(!isFinite(n)){ el.value=String(count); return count; }
+  n=Math.max(1,Math.round(n));
+  const mx=maxCount();
+  if(n>mx){
+    n=mx; el.value=String(n);
+    if(announce){
+      if(mx===1){showToast('ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। সর্বোচ্চ 20টি শর্টস পেতে প্রো-তে আপগ্রেড করুন।');getPro();}
+      else showToast('প্রো-তে সর্বোচ্চ 20টি শর্টস বানানো যায়।');
+    }
+  }
+  count=n; return n;
 }
-function setCount(n){if(!hasRealAccount()){openAuth('signup');return;} const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){showToast('ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। সর্বোচ্চ 5টি শর্টস পেতে প্রো-তে আপগ্রেড করুন।');getPro();return;} count=n;buildChips();}
-function setLen(n){if(!hasRealAccount()){openAuth('signup');return;} lenSec=n;buildChips();}
+// Typing in the count box: keep the value tentative — no clamping or
+// popup mid-typing (clamping happens on change / Auto Capture).
+function onCountInput(){ const n=parseInt($('countInput').value,10); if(isFinite(n)) count=Math.max(1,Math.round(n)); }
+// Length box: typed number + সেকেন্ড/মিনিট unit, clamped to 15s–3min.
+function readLen(announce){
+  if(!hasRealAccount()){openAuth('signup');return lenSec;}
+  const el=$('lenInput'); let v=parseFloat(el.value);
+  if(!isFinite(v)){ el.value=lenUnit==='min'?(Math.round(lenSec/60*100)/100):String(lenSec); return lenSec; }
+  let sec=lenUnit==='min'?v*60:v;
+  if(sec<15){sec=15; if(announce)showToast('সবচেয়ে ছোট শর্টস 15 সেকেন্ড — 15 সেকেন্ড ধরা হয়েছে।');}
+  if(sec>180){sec=180; if(announce)showToast('সবচেয়ে বড় শর্টস 3 মিনিট — 3 মিনিট ধরা হয়েছে।');}
+  sec=Math.round(sec); lenSec=sec;
+  el.value=lenUnit==='min'?(Math.round(sec/60*100)/100):String(sec);
+  return sec;
+}
+// Typing in the length box: tentative only, no clamping mid-typing.
+function onLenInput(){ const v=parseFloat($('lenInput').value); if(isFinite(v)){ const sec=lenUnit==='min'?v*60:v; if(sec>0) lenSec=Math.round(sec); } }
+function setLenUnit(u){
+  if(!hasRealAccount()){openAuth('signup');return;}
+  lenUnit=(u==='min')?'min':'sec';
+  const el=$('lenInput');
+  el.min=lenUnit==='min'?'0.25':'15'; el.max=lenUnit==='min'?'3':'180';
+  el.value=lenUnit==='min'?(Math.round(lenSec/60*100)/100):String(lenSec);
+}
+// Size selector — for Free and Pro alike. Default 9:16.
+function setSize(v){if(!hasRealAccount()){openAuth('signup');return;} size=(v==='16:9')?'16:9':'9:16'; $('sizeSel').value=size;}
+function syncInputs(){
+  const mx=maxCount(); if(count>mx)count=mx;
+  if($('countInput'))$('countInput').value=String(count);
+  if($('lenInput'))$('lenInput').value=lenUnit==='min'?(Math.round(lenSec/60*100)/100):String(lenSec);
+  if($('sizeSel'))$('sizeSel').value=size;
+}
 function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_session')||'null')}catch(e){return null}}
 // A real account = a server session with email + token. Guest sessions
 // (no token) no longer exist — anything without both is logged out.
@@ -630,6 +699,9 @@ function refreshAuthUI(){
   // No account, no tool: logged-out visitors see the gate panel instead
   // of the upload / Auto Capture / download workflow.
   const hasAccount=hasRealAccount();
+  // A Free account never keeps a Pro-sized plan in the boxes.
+  if(u&&u.plan!=='pro'&&count>1)count=1;
+  syncInputs();
   $('tool').classList.toggle('hidden',!hasAccount);
   $('toolStep2').classList.toggle('hidden',!hasAccount);
   $('toolGate').classList.toggle('hidden',hasAccount);
@@ -643,7 +715,7 @@ function fillProfile(u){
   $('profileName').textContent=u.name||'ইউজার';
   $('profileEmail').textContent=u.email||'এই অ্যাকাউন্টে কোনো ইমেইল নেই';
   $('profilePlan').textContent=u.plan==='pro'?'👑 প্রো — ৳349/মাস':'🔑 ফ্রি — ৳0';
-  $('profileLimit').textContent=u.plan==='pro'?'প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস':'প্রতি ভিডিওতে 1টি শর্টস';
+  $('profileLimit').textContent=u.plan==='pro'?'প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস':'প্রতি ভিডিওতে 1টি শর্টস';
   $('profileSince').textContent=u.created_at?new Date(u.created_at).toLocaleDateString():'—';
   $('profileProNote').classList.toggle('hidden',u.plan!=='pro');
   $('profileGetProRow').classList.toggle('hidden',u.plan==='pro');
@@ -910,9 +982,19 @@ async function refreshSession(){
 // A deactivated plan shows up as soon as the user comes back to the tab.
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) refreshSession(); });
 function fmt(t){t=Math.max(0,Math.round(t));const m=Math.floor(t/60),s=t%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-function zonesFor(dur,n){
-  const zones=[{name:'হুক',at:0.02,why:'শুরুর হুক — স্ক্রল থামিয়ে দেয়'},{name:'রাইজিং',at:0.28,why:'বাড়তে থাকা টান — দেখতে রাখে'},{name:'ক্লাইম্যাক্স',at:0.58,why:'ক্লাইম্যাক্স — সবচেয়ে বেশি দেখা অংশ'},{name:'পেঅফ',at:0.82,why:'পেঅফ — তৃপ্তিদায়ক শেষ'},{name:'বোনাস',at:0.45,why:'বোনাস মুহূর্ত — মাঝের শক্তিশালী অংশ'}];
-  return zones.slice(0,n);
+function zonesFor(dur,n,clipLen){
+  // Spread clip starts evenly across the video so every clip fits fully
+  // inside the duration. Clips may overlap when count*clipLen > duration.
+  const names=['হুক','রাইজিং','ক্লাইম্যাক্স','পেঅফ','বোনাস'];
+  const whys=['শুরুর হুক — স্ক্রল থামিয়ে দেয়','বাড়তে থাকা টান — দেখতে রাখে','ক্লাইম্যাক্স — সবচেয়ে বেশি দেখা অংশ','পেঅফ — তৃপ্তিদায়ক শেষ','বোনাস মুহূর্ত — মাঝের শক্তিশালী অংশ'];
+  const maxStart=Math.max(0,dur-clipLen);
+  const out=[];
+  for(let i=0;i<n;i++){
+    const start=n===1?0:Math.floor(maxStart*i/(n-1));
+    const cyc=Math.floor(i/5);
+    out.push({name:names[i%5]+(cyc>0?' '+(cyc+1):''),start:start,why:whys[i%5]});
+  }
+  return out;
 }
 function hookFor(title,i){
   const t=(title||'এই মুহূর্ত').trim();
@@ -922,26 +1004,32 @@ function hookFor(title,i){
 function autoCapture(){
   if(!hasRealAccount()){openAuth('signup');return;}
   if(!selectedFile){$('toolStatus').textContent='আগে আপনার ভিডিও ফাইলটি বেছে নিন।';return;}
-  const u=currentUser(); const maxN=u&&u.plan==='pro'?5:1; const n=Math.min(count,maxN);
+  const u=currentUser();
+  const n=readCount(true);
   let dur=durationSec||600;
   const title=$('videoTitle').value.trim()||'আপনার ভাইরাল শর্টস';
   const style=$('styleSel').value;
-  const zones=zonesFor(dur,n); clips=[];
+  const wantLen=readLen(true);
+  // If the video itself is shorter than the chosen length, each clip is
+  // the whole video — say so honestly instead of failing.
+  let clipLen=wantLen, shortened=false;
+  if(dur>0&&clipLen>dur){clipLen=dur; shortened=true;}
+  const zones=zonesFor(dur,n,clipLen); clips=[];
   $('progressBar').classList.remove('hidden');
   let done=0;
   const box=$('clips'); box.innerHTML='';
   $('toolStatus').textContent='⚡ অটো ক্যাপচার চলছে — '+n+'টি ভাইরাল মুহূর্ত বাছাই করা হচ্ছে…';
   zones.forEach((z,i)=>{
     setTimeout(()=>{
-      const start=Math.floor(dur*z.at);
-      const end=Math.min(dur,start+lenSec);
+      const start=z.start;
+      const end=Math.min(dur,start+clipLen);
       const hook=hookFor(title,i);
-      const clip={n:i+1,start,end,hook,zone:z.name,why:z.why,style};
+      const clip={n:i+1,start,end,len:Math.max(1,end-start),hook,zone:z.name,why:z.why,style};
       clips.push(clip);
       done++; $('progressFill').style.width=Math.round(done/n*100)+'%';
       renderClip(clip,title);
       if(done===n){
-        $('toolStatus').innerHTML='✅ অটো ক্যাপচার সম্পন্ন — '+n+'টি শর্টস প্রস্তুত। স্টাইল: '+(STYLE_BN[style]||style)+'। 9:16 শর্টসটি সেভ করতে ক্লিপে ডাউনলোড চাপুন।';
+        $('toolStatus').innerHTML='✅ অটো ক্যাপচার সম্পন্ন — '+n+'টি শর্টস প্রস্তুত। স্টাইল: '+(STYLE_BN[style]||style)+'। '+size+' শর্টসটি সেভ করতে ক্লিপে ডাউনলোড চাপুন।'+(shortened?' ⚠️ ভিডিওটি মাত্র '+fmt(dur)+' লম্বা, তাই প্রতিটি শর্টস '+fmt(clipLen)+' করা হয়েছে।':'');
         if(u&&u.plan!=='pro') setTimeout(()=>openModal('getProPopup'),800);
       }
     }, 400*(i+1));
@@ -952,16 +1040,17 @@ function renderClip(c,title){
   const box=$('clips');
   const div=document.createElement('div'); div.className='clip';
   const isPro=currentUser()&&currentUser().plan==='pro';
+  const d=curDims();
   const ffCmd=isPro
-    ? 'ffmpeg -ss '+fmt(c.start)+' -i input.mp4 -t '+lenSec+' -vf "scale=720:1280:...,crop=720:1280,zoompan,fade,eq,vignette,overlay(hook text)" -af loudnorm -c:v libx264 -preset ultrafast -c:a aac short-'+c.n+'.mp4'
-    : 'ffmpeg -ss '+fmt(c.start)+' -i input.mp4 -t '+lenSec+' -vf "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,eq=saturation=1.25:contrast=1.08" -c:v libx264 -preset ultrafast -c:a aac short-'+c.n+'.mp4';
-  div.innerHTML=`<h3>শর্টস ${c.n} — ${c.zone} • ${fmt(c.start)} → ${fmt(c.end)} (${lenSec} সেকেন্ড)</h3>
+    ? 'ffmpeg -ss '+fmt(c.start)+' -i input.mp4 -t '+c.len+' -vf "scale='+d.w+':'+d.h+':...,crop='+d.w+':'+d.h+',zoompan,fade,eq,vignette,overlay(hook text)" -af loudnorm -c:v libx264 -preset ultrafast -c:a aac short-'+c.n+'.mp4'
+    : 'ffmpeg -ss '+fmt(c.start)+' -i input.mp4 -t '+c.len+' -vf "scale='+d.w+':'+d.h+':force_original_aspect_ratio=increase,crop='+d.w+':'+d.h+',eq=saturation=1.25:contrast=1.08" -c:v libx264 -preset ultrafast -c:a aac short-'+c.n+'.mp4';
+  div.innerHTML=`<h3>শর্টস ${c.n} — ${c.zone} • ${fmt(c.start)} → ${fmt(c.end)} (${c.len} সেকেন্ড • ${size})</h3>
   <p class="muted">${c.why} • স্টাইল: ${STYLE_BN[c.style]||c.style} • ${isPro?'👑 প্রো এডিট':'ফ্রি কাট'}</p>
   <p><b>হুক:</b> ${c.hook}</p>
   <p><b>SEO টাইটেল:</b> ${seoTitle(title,c.n-1)}</p>
-  <p><b>SEO ডেসক্রিপশন:</b> ${title||'আপনার ভাইরাল শর্টস'} — ${lenSec} সেকেন্ডে সেরা মুহূর্তটি দেখুন। লাইক, শেয়ার ও সাবস্ক্রাইব করুন আরও শর্টসের জন্য! #shorts #viral</p>
+  <p><b>SEO ডেসক্রিপশন:</b> ${title||'আপনার ভাইরাল শর্টস'} — ${c.len} সেকেন্ডে সেরা মুহূর্তটি দেখুন। লাইক, শেয়ার ও সাবস্ক্রাইব করুন আরও শর্টসের জন্য! #shorts #viral</p>
   <p><b>হ্যাশট্যাগ:</b> #shorts #viral #${(title||'video').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,18)||'video'} #clipblaster</p>
-  <p class="muted">${isPro?'ডাউনলোডে প্রো এডিট লাগানো হবে: হুক টেক্সট বসানো (প্রথম 3 সেকেন্ড) + স্লো জুম, ফেড ইন/আউট, '+(STYLE_BN[c.style]||c.style)+' কালার গ্রেড, সাউন্ড নরমালাইজড।':'ফ্রি ডাউনলোড: আসল 9:16 কাট + '+(STYLE_BN[c.style]||c.style)+' কালার গ্রেড। হুক টেক্সট, জুম, ফেড ও সাউন্ড নরমালাইজেশনের জন্য প্রো নিন।'}</p>
+  <p class="muted">${isPro?'ডাউনলোডে প্রো এডিট লাগানো হবে: হুক টেক্সট বসানো (প্রথম 3 সেকেন্ড) + স্লো জুম, ফেড ইন/আউট, '+(STYLE_BN[c.style]||c.style)+' কালার গ্রেড, সাউন্ড নরমালাইজড।':'ফ্রি ডাউনলোড: '+size+' কাট ('+d.w+'×'+d.h+') + '+(STYLE_BN[c.style]||c.style)+' কালার গ্রেড। হুক টেক্সট, জুম, ফেড ও সাউন্ড নরমালাইজেশনের জন্য প্রো নিন।'}</p>
   <p class="muted">ffmpeg: <code>${ffCmd}</code></p>
   <button class="btn btn-red dl" onclick="downloadClip(${c.n})">⬇ শর্টস ${c.n} ভিডিও ডাউনলোড করুন</button>
   <p class="status muted" id="dlStatus${c.n}">ডাউনলোড চাপুন — এখনো কোনো ভিডিও ফাইল বাছাই না করে থাকলে ফাইল পিকার খুলবে।${isPro?' প্রো কাটে পুরো এডিটসহ আবার এনকোড হয়, তাই একটু বেশি সময় লাগে — ট্যাবটি খোলা রাখুন।':' এরপর শর্টসটি কেটে .mp4 হিসেবে ডাউনলোড হবে।'}</p>`;
@@ -1043,26 +1132,28 @@ function makeHookPng(text){
 function safeHook(s){
   return String(s||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu,'').replace(/[\r\n]+/g,' ').trim().slice(0,80);
 }
-// Free: true 9:16 cut + colour grade (re-encode, fast preset).
+// Free: true cut in the chosen size (9:16 or 16:9) + colour grade.
 async function freeCut(ff,c){
-  await ff.exec(['-i','input.mp4','-ss',fmt(c.start),'-t',String(lenSec),'-vf','scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,eq=saturation=1.25:contrast=1.08','-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-movflags','+faststart','out.mp4']);
+  const d=curDims();
+  await ff.exec(['-i','input.mp4','-ss',fmt(c.start),'-t',String(c.len),'-vf','scale='+d.w+':'+d.h+':force_original_aspect_ratio=increase,crop='+d.w+':'+d.h+',eq=saturation=1.25:contrast=1.08','-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-movflags','+faststart','out.mp4']);
 }
 // Pro: full edit — slow zoom, fade in/out, colour grade, hook text burned
 // in for the first 3 seconds (canvas PNG + overlay), loudness normalised.
 // Falls back to the Free cut if any Pro-only filter is unavailable in this
 // browser's ffmpeg — the caller records which path actually ran.
 async function proCut(ff,c){
-  const fadeOut=(lenSec-0.5).toFixed(1);
+  const d=curDims();
+  const fadeOut=(c.len-0.5).toFixed(1);
   // Colour grade + vignette follow the clip's chosen style, like the Pro tool.
   const grade={vibrant:"eq=saturation=1.45:contrast=1.12",cinematic:"eq=saturation=1.15:contrast=1.10",soft:"eq=saturation=1.10:contrast=1.03"}[c.style]||"eq=saturation=1.25:contrast=1.08";
   const vig={vibrant:"vignette=angle=PI/6",cinematic:"vignette=angle=PI/5",soft:"vignette=angle=PI/4"}[c.style]||"vignette=angle=PI/5";
   // Mid-clip punch: the zoom steps up 0.08 for half a second at the middle.
-  const midOn=Math.round(lenSec*15);
-  const base="scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,"
-    +"zoompan=z='min(zoom+0.0015,1.18)+if(between(on,"+midOn+","+(midOn+15)+"),0.08,0)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=720x1280:fps=30,"
+  const midOn=Math.round(c.len*15);
+  const base="scale="+d.w+":"+d.h+":force_original_aspect_ratio=increase,crop="+d.w+":"+d.h+","
+    +"zoompan=z='min(zoom+0.0015,1.18)+if(between(on,"+midOn+","+(midOn+15)+"),0.08,0)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s="+d.w+"x"+d.h+":fps=30,"
     +"fade=t=in:st=0:d=0.5,fade=t=out:st="+fadeOut+":d=0.5,"
     +grade+","+vig;
-  const args=['-i','input.mp4','-ss',fmt(c.start),'-t',String(lenSec)];
+  const args=['-i','input.mp4','-ss',fmt(c.start),'-t',String(c.len)];
   let hookOn=false;
   try{
     const hook=safeHook(c.hook);
@@ -1084,7 +1175,7 @@ async function downloadClip(n){
   if(!fileURL||!v.src||!selectedFile){pendingClip=n; $('dlStatus'+n).innerHTML='<span class="warn">⚠️ এখন আপনার ভিডিও ফাইলটি বেছে নিন — ফাইল পিকার খুলছে। বেছে নিলেই শর্টস '+n+' নিজে নিজে ডাউনলোড হবে।</span>'; document.getElementById('fileInput').click(); return;}
   const st=$('dlStatus'+n);
   const isPro=currentUser()&&currentUser().plan==='pro';
-  st.textContent=isPro?'✂️ প্রো এডিট: হুক টেক্সট, জুম, ফেড ও কালারসহ শর্টস '+n+' কাটা হচ্ছে — আবার এনকোড হতে একটু বেশি সময় লাগবে, ট্যাবটি খোলা রাখুন।':'✂️ শর্টস '+n+' ('+fmt(c.start)+' → '+fmt(c.end)+') আসল 9:16-এ কাটা হচ্ছে…';
+  st.textContent=isPro?'✂️ প্রো এডিট: হুক টেক্সট, জুম, ফেড ও কালারসহ শর্টস '+n+' কাটা হচ্ছে — আবার এনকোড হতে একটু বেশি সময় লাগবে, ট্যাবটি খোলা রাখুন।':'✂️ শর্টস '+n+' ('+fmt(c.start)+' → '+fmt(c.end)+') '+size+' ('+curDims().w+'×'+curDims().h+')-এ কাটা হচ্ছে…';
   try{
     const ff=await getFFmpeg();
     await ff.writeFile('input.mp4', new Uint8Array(await selectedFile.arrayBuffer()));
@@ -1106,7 +1197,7 @@ async function downloadClip(n){
     st.innerHTML='<span class="ok">✅ শর্টস '+n+' ডাউনলোড হয়েছে (.mp4)।</span>'+fbNote+' <a href="#" onclick="downloadClip('+n+');return false">আবার ডাউনলোড করুন</a>';
     try{await ff.deleteFile('input.mp4'); await ff.deleteFile('out.mp4'); await ff.deleteFile('hook.png');}catch(e){}
   }catch(err){
-    st.innerHTML='<span class="warn">⚠️ দ্রুত কাট ব্যর্থ হয়েছে: '+err.message+' — এই শর্টসটি এখন লাইভ রেকর্ড করা হচ্ছে ('+lenSec+' সেকেন্ড, ট্যাবটি খোলা রাখুন)…</span>';
+    st.innerHTML='<span class="warn">⚠️ দ্রুত কাট ব্যর্থ হয়েছে: '+err.message+' — এই শর্টসটি এখন লাইভ রেকর্ড করা হচ্ছে ('+c.len+' সেকেন্ড, ট্যাবটি খোলা রাখুন)…</span>';
     window.__cbLastError=String(err&&err.message||err);
     recordClip(n);
   }
@@ -1129,12 +1220,12 @@ function recordClip(n){
         v.pause();
       };
       rec.start();
-      setTimeout(()=>{try{rec.stop()}catch(e){}}, lenSec*1000);
+      setTimeout(()=>{try{rec.stop()}catch(e){}}, c.len*1000);
     };
     v.currentTime=c.start;
   }catch(err){ st.textContent='❌ এই ব্রাউজারে রেকর্ডিং ব্যর্থ হয়েছে: '+err.message+' — এর বদলে কার্ডের ffmpeg কমান্ডটি ব্যবহার করুন।'; }
 }
-buildChips(); refreshAuthUI(); refreshSession();
+syncInputs(); refreshAuthUI(); refreshSession();
 // Scroll reveal for cards.
 (function(){const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});document.querySelectorAll('.card').forEach(el=>{el.classList.add('reveal');io.observe(el)});})();
 </script>
