@@ -286,7 +286,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 <!-- Auth modal — Log In / Sign Up -->
 <div class="modal" id="authModal">
   <div class="modalBox">
-    <button class="closeX" onclick="closeModal('authModal')">×</button>
+    <button class="closeX" onclick="closeAuthModal()">×</button>
     <div style="font-size:26px;font-weight:900">CLIP<span style="color:#ff5a3c">BLASTER</span></div>
     <h2>Welcome to ClipBlaster</h2>
     <p class="muted" id="authSub">Log in or create a free account — no email verification needed.</p>
@@ -370,7 +370,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
     </div>
     <div id="payLoginNote" class="hidden">
       <p class="status">Please log in or sign up first — your payment will be linked to your account.</p>
-      <p><button class="btn btn-red" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('proModal');openAuth('signup')">Log In / Sign Up</button></p>
+      <p><button class="btn btn-red" style="width:100%;padding:13px;font-size:16px" onclick="loginThenPro()">Log In / Sign Up</button></p>
     </div>
     <p id="payMsg" class="status muted"></p>
     <h3 style="margin:16px 0 6px;letter-spacing:1px">INSTRUCTIONS</h3>
@@ -480,6 +480,7 @@ async function doLogin(){
     $('loginSubmit').disabled=false; $('loginSubmit').textContent='Log In';
     setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
+    if(window.__cbReturnToPro){ window.__cbReturnToPro=false; showToast('✅ Welcome back, '+d.user.name+'! Now enter your TrxID below.'); getPro(); return; }
     showToast('✅ Welcome back, '+d.user.name+'! '+(d.user.plan==='pro'?'👑 Pro is ON.':'Free plan is ON.'));
     scrollToId('tool');
   }catch(e){
@@ -501,6 +502,7 @@ async function doSignup(){
     $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
     setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
+    if(window.__cbReturnToPro){ window.__cbReturnToPro=false; showToast('✅ Account created — welcome, '+d.user.name+'! Now enter your TrxID below.'); getPro(); return; }
     showToast('✅ Account created — welcome, '+d.user.name+'! Free plan is ON. Upgrade to Pro anytime from Pricing.');
     scrollToId('tool');
   }catch(e){
@@ -513,6 +515,7 @@ async function doSignup(){
   }
 }
 function startFree(){
+  window.__cbReturnToPro=false;
   setSession({plan:'free',name:'Free User',verified:true,mode:'free'});
   closeModal('authModal');
   openModal('getProPopup');
@@ -537,20 +540,28 @@ function setPayMethod(m){
   $('payUssd').textContent=p.ussd; $('payNumber').textContent=p.number;
 }
 function getPro(){ payInvoice=newInvoice(); $('payInvoice').textContent=payInvoice; setPayMethod(payMethod); openModal('proModal'); refreshPayForm(); }
+// From the payment modal: log in / sign up, then come straight back
+// here so the TrxID box is waiting — no second Get Pro tap needed.
+function loginThenPro(){ window.__cbReturnToPro=true; closeModal('proModal'); openAuth('signup'); }
+function closeAuthModal(){ window.__cbReturnToPro=false; closeModal('authModal'); }
 function copyNum(n){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(n).then(()=>showToast('✅ Number copied: '+n)).catch(()=>showToast(n));}else{showToast(n);}}
 async function refreshPayForm(){
   const u=currentUser();
-  let showForm=!!u;
+  // Only a real account (email + token) can submit a payment — a guest
+  // Free session or a code session has no account to upgrade.
+  const hasAccount=!!(u && u.email && u.token);
+  let showForm=hasAccount;
   $('payLoginNote').classList.toggle('hidden',!!u);
   $('payMsg').textContent='';$('payMsg').className='status muted';
   if(u&&u.plan==='pro'){ $('payMsg').textContent='✅ You are already on Pro 👑.'; $('payMsg').className='status ok'; showForm=false; }
-  else if(u){
+  else if(hasAccount){
     try{
       const d=await apiCall('/api/payments/mine',{},u.token);
       if(d.payment&&d.payment.status==='pending'){ $('payMsg').textContent='⏳ Your payment ('+d.payment.method.toUpperCase()+' • '+d.payment.trxid+') is waiting for approval. You will be Pro as soon as it is approved.'; $('payMsg').className='status'; showForm=false; }
       else if(d.payment&&d.payment.status==='approved'){ $('payMsg').textContent='✅ Your payment was approved — refresh the page to see Pro active.'; $('payMsg').className='status ok'; showForm=false; }
     }catch(e){}
   }
+  else if(u){ $('payMsg').textContent='Please log in with your account (or sign up) to submit a payment — guest sessions cannot be upgraded to Pro.'; $('payMsg').className='status'; }
   $('payForm').classList.toggle('hidden',!showForm);
   $('payVerifyCard').classList.toggle('hidden',!showForm);
 }
