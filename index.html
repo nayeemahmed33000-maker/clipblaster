@@ -90,6 +90,8 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 /* ---- WOW redesign: hero, orbs, phone mockup, marquee, feature cards ---- */
 body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)}
 .hero{position:relative;overflow:hidden;padding:64px 0 10px}
+/* Pro users land straight on the tool — no marketing hero. */
+body.is-pro .hero{display:none}
 .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none;animation:floatY 9s ease-in-out infinite}
 .orb1{width:340px;height:340px;background:#ff5a3c;top:-90px;left:-70px}
 .orb2{width:300px;height:300px;background:#a855f7;top:40px;right:-80px;animation-delay:-3s}
@@ -433,6 +435,9 @@ function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stri
 function firstName(n){return String(n||'').trim().split(/\s+/)[0]||'User';}
 function refreshAuthUI(){
   const u=currentUser();
+  // Pro customers go straight to the tool — the marketing hero (with its
+  // Get Pro buttons) is hidden for them.
+  document.body.classList.toggle('is-pro', !!(u && u.plan==='pro'));
   $('signinBtn').classList.toggle('hidden',!!u);
   $('signupBtn').classList.toggle('hidden',!!u);
   $('logoutBtn').classList.toggle('hidden',!u);
