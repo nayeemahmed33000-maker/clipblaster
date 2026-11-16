@@ -561,6 +561,7 @@ async function doLogin(){
     $('loginSubmit').disabled=false; $('loginSubmit').textContent='লগ ইন';
     if(e.message==='no_account') authError('❌ এই ইমেইলে কোনো অ্যাকাউন্ট নেই। আগে সাইন আপ করুন।');
     else if(e.message==='wrong_password') authError('❌ ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।');
+    else if(e.message==='deactivated') authError('❌ আপনার অ্যাকাউন্টটি নিষ্ক্রিয় করা হয়েছে — সাপোর্টে যোগাযোগ করুন।');
     else if(e.message==='network') authError('সার্ভারে পৌঁছানো যাচ্ছে না — আপনার ইন্টারনেট দেখে আবার চেষ্টা করুন।');
     else authError('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।');
   }
