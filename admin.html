@@ -109,6 +109,27 @@ footer{color:#8a8aa2;font-size:13px;text-align:center;padding:20px}
     </section>
 
     <section class="card">
+      <h2>💬 Support Tickets</h2>
+      <p class="muted">Customers write in from the site. Open a ticket to read the thread, reply, or close it.</p>
+      <div class="tblWrap"><table>
+        <thead><tr><th>Email</th><th>Subject</th><th>Status</th><th>Replies</th><th>Date</th><th></th></tr></thead>
+        <tbody id="supportBody"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+      </table></div>
+      <div id="supportThread" class="hidden" style="margin-top:16px;border-top:1px solid #2a2a44;padding-top:16px">
+        <h3 id="supportThreadTitle" style="margin:0 0 4px"></h3>
+        <p id="supportThreadMeta" class="muted"></p>
+        <div id="supportThreadBody"></div>
+        <label>Reply</label>
+        <textarea id="supportReplyText" rows="3" placeholder="Write your reply…" style="width:100%;background:#0f0f1e;border:1px solid #3a3a55;color:#fff;border-radius:10px;padding:12px;font-size:15px"></textarea>
+        <p style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-green" id="supportReplyBtn" onclick="replySupportTicket()">Reply</button>
+          <button class="btn btn-ghost" id="supportCloseBtn" onclick="closeSupportTicket()">Close Ticket</button>
+        </p>
+        <p id="supportThreadMsg" class="status muted"></p>
+      </div>
+    </section>
+
+    <section class="card">
       <h2>👥 Users</h2>
       <div class="tblWrap"><table>
         <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Joined</th><th></th></tr></thead>
@@ -161,8 +182,8 @@ async function signOut(){
 async function loadAll(){
   $('dashMsg').textContent='Loading…'; $('dashMsg').className='status muted';
   try{
-    const [s,u,c,p]=await Promise.all([api('/api/admin/stats'),api('/api/admin/users'),api('/api/admin/codes'),api('/api/admin/payments')]);
-    renderStats(s.stats); renderUsers(u.users); renderCodes(c.codes); renderPayments(p.payments);
+    const [s,u,c,p,sup]=await Promise.all([api('/api/admin/stats'),api('/api/admin/users'),api('/api/admin/codes'),api('/api/admin/payments'),api('/api/admin/support')]);
+    renderStats(s.stats); renderUsers(u.users); renderCodes(c.codes); renderPayments(p.payments); renderSupport(sup.tickets);
     $('dashMsg').textContent='';
   }catch(e){
     if(e.message==='unauthorized'){ localStorage.removeItem('clipblaster_admin_token'); showLogin(); $('loginMsg').textContent='Session expired — log in again.'; $('loginMsg').className='status err'; return; }
@@ -175,6 +196,56 @@ function renderStats(st){
     ['Total users',st.users],['Pro users',st.proUsers],['Free users',st.freeUsers],
     ['Signups (7 days)',st.signups7d],['Pro codes',st.codes],['Active codes',st.codesActive],['Code uses',st.codeUses],['Pending payments',st.pendingPayments||0]
   ].map(x=>'<div class="stat"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
+}
+let supportTickets=[]; let openTicketId=null;
+function renderSupport(tickets){
+  supportTickets=tickets||[];
+  if(!supportTickets.length){ $('supportBody').innerHTML='<tr><td colspan="6" class="muted">No support tickets yet.</td></tr>'; return; }
+  $('supportBody').innerHTML=supportTickets.map(t=>{
+    const st=t.status==='closed'?'<span class="err">Closed</span>':(t.status==='answered'?'<span class="ok">Answered</span>':'<span>🟢 Open</span>');
+    return '<tr><td>'+esc(t.email)+'</td><td><b>'+esc(t.subject)+'</b></td><td>'+st+'</td><td>'+(t.reply_count||0)+'</td><td>'+new Date(t.created_at).toLocaleDateString()+'</td><td><button class="btn btn-ghost btn-sm" onclick="openSupportTicket(\''+esc(t.id)+'\')">Open</button></td></tr>';
+  }).join('');
+}
+async function openSupportTicket(id){
+  openTicketId=id;
+  $('supportThread').classList.remove('hidden');
+  $('supportThreadMsg').textContent='Loading…'; $('supportThreadMsg').className='status muted';
+  try{
+    const d=await api('/api/admin/support?ticket='+encodeURIComponent(id));
+    const t=d.ticket;
+    $('supportThreadTitle').textContent=t.subject;
+    $('supportThreadMeta').textContent=t.email+(t.name?' ('+t.name+')':'')+' • '+t.status+' • '+new Date(t.created_at).toLocaleString();
+    let html='<div style="border:1px solid #2a2a44;border-radius:10px;padding:12px;margin:10px 0;background:#0f0f1e"><b>👤 Customer</b><br>'+esc(t.message)+'</div>';
+    html+=(d.replies||[]).map(r=>'<div style="border:1px solid #2a2a44;border-radius:10px;padding:12px;margin:10px 0;background:#0f0f1e"><b>'+(r.author==='admin'?'🛎️ Admin':'👤 Customer')+'</b> <span class="muted">'+new Date(r.created_at).toLocaleString()+'</span><br>'+esc(r.message)+'</div>').join('');
+    $('supportThreadBody').innerHTML=html;
+    $('supportThreadMsg').textContent='';
+    $('supportThread').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }catch(e){ $('supportThreadMsg').textContent='Could not load that ticket.'; $('supportThreadMsg').className='status err'; }
+}
+async function replySupportTicket(){
+  if(!openTicketId) return;
+  const msg=$('supportReplyText').value.trim();
+  if(!msg){ $('supportThreadMsg').textContent='Write a reply first.'; $('supportThreadMsg').className='status err'; return; }
+  $('supportReplyBtn').disabled=true;
+  try{
+    await api('/api/admin/support/reply',{ticket_id:openTicketId,message:msg},'POST');
+    $('supportReplyText').value='';
+    await openSupportTicket(openTicketId);
+    await loadAll();
+    $('dashMsg').textContent='✅ Reply sent.'; $('dashMsg').className='status ok';
+  }catch(e){ $('supportThreadMsg').textContent='Could not send that reply.'; $('supportThreadMsg').className='status err'; }
+  $('supportReplyBtn').disabled=false;
+}
+async function closeSupportTicket(){
+  if(!openTicketId) return;
+  $('supportCloseBtn').disabled=true;
+  try{
+    await api('/api/admin/support/close',{ticket_id:openTicketId},'POST');
+    await openSupportTicket(openTicketId);
+    await loadAll();
+    $('dashMsg').textContent='✅ Ticket closed.'; $('dashMsg').className='status ok';
+  }catch(e){ $('supportThreadMsg').textContent='Could not close that ticket.'; $('supportThreadMsg').className='status err'; }
+  $('supportCloseBtn').disabled=false;
 }
 function renderPayments(payments){
   if(!payments.length){ $('paymentsBody').innerHTML='<tr><td colspan="7" class="muted">No payment requests yet.</td></tr>'; return; }
