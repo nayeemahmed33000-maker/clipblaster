@@ -103,8 +103,8 @@ footer{color:#8a8aa2;font-size:13px;text-align:center;padding:20px}
       <h2>💰 Payment Requests</h2>
       <p class="muted">Customers pay ৳349 by bKash / Nagad / Rocket and submit their TrxID. Check the TrxID in your app, then Approve — their account turns Pro instantly. Reject if the payment is not real.</p>
       <div class="tblWrap"><table>
-        <thead><tr><th>Email</th><th>Method</th><th>TrxID</th><th>Date</th><th>Status</th><th></th></tr></thead>
-        <tbody id="paymentsBody"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+        <thead><tr><th>Email</th><th>Method</th><th>TrxID</th><th>Invoice</th><th>Date</th><th>Status</th><th></th></tr></thead>
+        <tbody id="paymentsBody"><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
       </table></div>
     </section>
 
@@ -177,13 +177,13 @@ function renderStats(st){
   ].map(x=>'<div class="stat"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
 }
 function renderPayments(payments){
-  if(!payments.length){ $('paymentsBody').innerHTML='<tr><td colspan="6" class="muted">No payment requests yet.</td></tr>'; return; }
+  if(!payments.length){ $('paymentsBody').innerHTML='<tr><td colspan="7" class="muted">No payment requests yet.</td></tr>'; return; }
   $('paymentsBody').innerHTML=payments.map(p=>{
     const st = p.status==='approved' ? '<span class="ok">Approved</span>' : (p.status==='rejected' ? '<span class="err">Rejected</span>' : '<span>⏳ Pending</span>');
     const btns = p.status==='pending'
       ? '<button class="btn btn-green btn-sm" onclick="decidePayment(\''+esc(p.id)+'\',true)">Approve</button> <button class="btn btn-ghost btn-sm" onclick="decidePayment(\''+esc(p.id)+'\',false)">Reject</button>'
       : '';
-    return '<tr><td>'+esc(p.email)+'</td><td>'+esc(p.method)+'</td><td><b>'+esc(p.trxid)+'</b></td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td>'+st+'</td><td>'+btns+'</td></tr>';
+    return '<tr><td>'+esc(p.email)+'</td><td>'+esc(p.method)+'</td><td><b>'+esc(p.trxid)+'</b></td><td>'+esc(p.invoice_id||'—')+'</td><td>'+new Date(p.created_at).toLocaleDateString()+'</td><td>'+st+'</td><td>'+btns+'</td></tr>';
   }).join('');
 }
 async function decidePayment(id,approve){
