@@ -78,7 +78,6 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
     <span id="userChip" class="pill hidden" onclick="openAuth()" style="cursor:pointer" title="Tap to enter a Pro code"></span>
     <button class="btn btn-ghost" onclick="scrollToId('tool')">Use Tool</button>
     <button class="btn btn-ghost" onclick="scrollToId('pricing')">Pricing</button>
-    <button id="activateBtn" class="btn btn-red" onclick="openAuth()">🔑 Activate</button>
     <button id="logoutBtn" class="btn btn-ghost hidden" onclick="logout()">Sign Out</button>
   </nav>
 </header>
@@ -264,7 +263,6 @@ function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_s
 function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stringify(u));else localStorage.removeItem('clipblaster_session');refreshAuthUI();}
 function refreshAuthUI(){
   const u=currentUser();
-  $('activateBtn').classList.toggle('hidden',!!u);
   $('logoutBtn').classList.toggle('hidden',!u);
   $('userChip').classList.toggle('hidden',!u);
   if(u)$('userChip').textContent='🔑 '+(u.plan==='pro'?'👑 Pro':'Free');
