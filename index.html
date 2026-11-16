@@ -86,7 +86,8 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
     <span id="userChip" class="pill hidden" onclick="openAuth('profile')" style="cursor:pointer" title="Tap to view your profile"></span>
     <button class="btn btn-ghost" onclick="scrollToId('tool')">Use Tool</button>
     <button class="btn btn-ghost" onclick="scrollToId('pricing')">Pricing</button>
-    <button id="loginBtn" class="btn btn-red" onclick="openAuth('login')">Log In</button>
+    <button id="signinBtn" class="btn btn-ghost" onclick="openAuth('login')">Sign In</button>
+    <button id="signupBtn" class="btn btn-red" onclick="openAuth('signup')">Sign Up</button>
     <button id="logoutBtn" class="btn btn-ghost hidden" onclick="logout()">Sign Out</button>
   </nav>
 </header>
@@ -321,7 +322,8 @@ function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stri
 function firstName(n){return String(n||'').trim().split(/\s+/)[0]||'User';}
 function refreshAuthUI(){
   const u=currentUser();
-  $('loginBtn').classList.toggle('hidden',!!u);
+  $('signinBtn').classList.toggle('hidden',!!u);
+  $('signupBtn').classList.toggle('hidden',!!u);
   $('logoutBtn').classList.toggle('hidden',!u);
   $('userChip').classList.toggle('hidden',!u);
   if(u)$('userChip').textContent='👤 '+firstName(u.name)+' · '+(u.plan==='pro'?'👑 Pro':'🔑 Free');
