@@ -37,6 +37,9 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .chip{border:1px solid #3a3a55;background:#0f0f1e;color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:700}
 .chip.on{background:#ff5a3c;border-color:#ff5a3c}
+.tabs{display:flex;gap:8px;margin:14px 0 4px}
+.tab{flex:1;padding:10px;border:1px solid #3a3a55;background:#0f0f1e;color:#fff;border-radius:10px;cursor:pointer;font-weight:700;font-size:15px}
+.tab.on{background:#ff5a3c;border-color:#ff5a3c}
 .clip{border:1px solid #2a2a44;border-radius:14px;padding:16px;margin:14px 0;background:#101022}
 .clip h3{margin:0 0 6px}
 .dl{width:100%;padding:14px;font-size:16px;margin-top:10px}
@@ -75,9 +78,10 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 <header>
   <div class="logo">CLIP<span>BLASTER</span><small>TURN LONG VIDEO INTO VIRAL SHORTS</small></div>
   <nav>
-    <span id="userChip" class="pill hidden" onclick="openAuth()" style="cursor:pointer" title="Tap to enter a Pro code"></span>
+    <span id="userChip" class="pill hidden" onclick="openAuth('code')" style="cursor:pointer" title="Tap to enter a Pro code"></span>
     <button class="btn btn-ghost" onclick="scrollToId('tool')">Use Tool</button>
     <button class="btn btn-ghost" onclick="scrollToId('pricing')">Pricing</button>
+    <button id="loginBtn" class="btn btn-red" onclick="openAuth('login')">Log In</button>
     <button id="logoutBtn" class="btn btn-ghost hidden" onclick="logout()">Sign Out</button>
   </nav>
 </header>
@@ -94,7 +98,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
       <span class="pill">🔍 SEO title + description + hashtags</span>
     </div>
     <p style="margin-top:18px"><button class="btn btn-red" style="font-size:17px;padding:14px 22px" onclick="requireAuthThenTool()">🚀 Start Making Shorts — Free</button></p>
-    <p class="muted">No account or log-in — enter your activation code, or start Free with 1 Short per video. Free users see the Get Pro popup every time they start. Pro users never see it.</p>
+    <p class="muted">Log in or create a free account — or enter a Pro activation code, or start Free with 1 Short per video. Free users see the Get Pro popup every time they start. Pro users never see it.</p>
   </section>
 
   <section class="card" id="tool">
@@ -154,7 +158,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 
   <section class="card" id="pricing">
     <h2>Subscription — simple and honest</h2>
-    <p class="muted">No account or log-in — activate with a code, or start Free. Upgrade to Pro when you want the full professional edit on every Short.</p>
+    <p class="muted">Create a free account, log in, or activate with a Pro code — or start Free. Upgrade to Pro when you want the full professional edit on every Short.</p>
     <div class="grid3" style="grid-template-columns:1fr 1fr">
       <div class="price">
         <h3>Free</h3>
@@ -183,24 +187,51 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 
 <footer>ClipBlaster — Turn long videos into viral Shorts. Use your own videos only.<br><span class="muted">Free plan: 1 Short per video. Pro: ৳349/month, up to 5 Shorts per video. Payments are manual via bKash / Nagad — no card checkout yet.</span></footer>
 
-<!-- Activation modal — code-based, no sign-up or log-in -->
+<!-- Auth modal — Log In / Sign Up / Pro Code -->
 <div class="modal" id="authModal">
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('authModal')">×</button>
     <div style="font-size:26px;font-weight:900">CLIP<span style="color:#ff5a3c">BLASTER</span></div>
-    <h2>🔑 Activate ClipBlaster</h2>
-    <p class="muted">Got a Pro code? Enter it below — the tool activates instantly. No account, no password, no email.</p>
-    <label>Activation code</label>
-    <input id="authCode" type="text" placeholder="e.g. NILOY-PRO-2026" autocomplete="off" style="text-transform:uppercase">
-    <p style="margin-top:16px">
-      <button class="btn btn-red" id="authSubmit" style="width:100%;padding:13px;font-size:16px" onclick="activateCode()">✅ Activate &amp; Start</button>
-    </p>
+    <h2>Welcome to ClipBlaster</h2>
+    <p class="muted">Log in, create a free account, or enter a Pro code — no email verification needed.</p>
+    <div class="tabs">
+      <button class="tab on" id="tab-login" onclick="showAuthTab('login')">Log In</button>
+      <button class="tab" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
+      <button class="tab" id="tab-code" onclick="showAuthTab('code')">👑 Pro Code</button>
+    </div>
+    <div id="pane-login">
+      <label>Email</label>
+      <input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
+      <label>Password</label>
+      <input id="loginPass" type="password" placeholder="Your password" autocomplete="current-password">
+      <p style="margin-top:16px">
+        <button class="btn btn-red" id="loginSubmit" style="width:100%;padding:13px;font-size:16px" onclick="doLogin()">Log In</button>
+      </p>
+    </div>
+    <div id="pane-signup" class="hidden">
+      <label>Your name</label>
+      <input id="signupName" type="text" placeholder="e.g. Nayeem Ahmed" autocomplete="name">
+      <label>Email</label>
+      <input id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email">
+      <label>Password (min 6 characters)</label>
+      <input id="signupPass" type="password" placeholder="Choose a password" autocomplete="new-password">
+      <p style="margin-top:16px">
+        <button class="btn btn-red" id="signupSubmit" style="width:100%;padding:13px;font-size:16px" onclick="doSignup()">Create Account</button>
+      </p>
+    </div>
+    <div id="pane-code" class="hidden">
+      <label>Activation code</label>
+      <input id="authCode" type="text" placeholder="e.g. NILOY-PRO-2026" autocomplete="off" style="text-transform:uppercase">
+      <p style="margin-top:16px">
+        <button class="btn btn-red" id="authSubmit" style="width:100%;padding:13px;font-size:16px" onclick="activateCode()">✅ Activate &amp; Start</button>
+      </p>
+      <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">One code works everywhere — phone, PC, any browser. Never share your Pro code with anyone.</p>
+    </div>
     <p id="authMsg" class="status muted"></p>
     <p style="text-align:center;margin:14px 0 4px;color:#8a8aa2">— or —</p>
     <p style="margin-top:8px">
       <button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="startFree()">▶ Use Free — 1 Short per video, no code needed</button>
     </p>
-    <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">One code works everywhere — phone, PC, any browser. Never share your Pro code with anyone.</p>
   </div>
 </div>
 
@@ -263,12 +294,61 @@ function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_s
 function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stringify(u));else localStorage.removeItem('clipblaster_session');refreshAuthUI();}
 function refreshAuthUI(){
   const u=currentUser();
+  $('loginBtn').classList.toggle('hidden',!!u);
   $('logoutBtn').classList.toggle('hidden',!u);
   $('userChip').classList.toggle('hidden',!u);
   if(u)$('userChip').textContent='🔑 '+(u.plan==='pro'?'👑 Pro':'Free');
 }
-function openAuth(){$('authMsg').textContent='';$('authMsg').className='status muted';openModal('authModal');}
+function openAuth(tab){$('authMsg').textContent='';$('authMsg').className='status muted';showAuthTab(tab||'login');openModal('authModal');}
+function showAuthTab(tab){
+  ['login','signup','code'].forEach(t=>{
+    $('tab-'+t).classList.toggle('on',t===tab);
+    $('pane-'+t).classList.toggle('hidden',t!==tab);
+  });
+  $('authMsg').textContent='';$('authMsg').className='status muted';
+}
 function authError(msg){const m=$('authMsg');m.textContent=msg;m.className='status err';}
+async function doLogin(){
+  const email=$('loginEmail').value.trim(), pass=$('loginPass').value;
+  if(!email||!pass){authError('Enter your email and password.');return;}
+  $('loginSubmit').disabled=true; $('loginSubmit').textContent='Logging in…';
+  try{
+    const d=await apiCall('/api/auth/login',{email:email,password:pass});
+    $('loginSubmit').disabled=false; $('loginSubmit').textContent='Log In';
+    setSession({token:d.token,name:d.user.name,plan:d.user.plan,verified:true});
+    closeModal('authModal'); $('authMsg').textContent='';
+    alert('✅ Welcome back, '+d.user.name+'! '+(d.user.plan==='pro'?'👑 Pro is ON.':'Free plan is ON.'));
+    scrollToId('tool');
+  }catch(e){
+    $('loginSubmit').disabled=false; $('loginSubmit').textContent='Log In';
+    if(e.message==='no_account') authError('❌ No account with this email. Sign up first.');
+    else if(e.message==='wrong_password') authError('❌ Wrong password. Try again.');
+    else if(e.message==='network') authError('Could not reach the server — check your connection and try again.');
+    else authError('Something went wrong — please try again.');
+  }
+}
+async function doSignup(){
+  const name=$('signupName').value.trim(), email=$('signupEmail').value.trim(), pass=$('signupPass').value;
+  if(!name){authError('Enter your name.');return;}
+  if(!email){authError('Enter your email.');return;}
+  if(pass.length<6){authError('Password must be at least 6 characters.');return;}
+  $('signupSubmit').disabled=true; $('signupSubmit').textContent='Creating account…';
+  try{
+    const d=await apiCall('/api/auth/signup',{name:name,email:email,password:pass});
+    $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
+    setSession({token:d.token,name:d.user.name,plan:d.user.plan,verified:true});
+    closeModal('authModal'); $('authMsg').textContent='';
+    alert('✅ Account created — welcome, '+d.user.name+'! Free plan is ON. Upgrade to Pro anytime with a code.');
+    scrollToId('tool');
+  }catch(e){
+    $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
+    if(e.message==='exists') authError('❌ An account with this email already exists. Log in instead.');
+    else if(e.message==='invalid_email') authError('❌ That email does not look right.');
+    else if(e.message==='password_short') authError('Password must be at least 6 characters.');
+    else if(e.message==='network') authError('Could not reach the server — check your connection and try again.');
+    else authError('Something went wrong — please try again.');
+  }
+}
 async function activateCode(){
   const code=$('authCode').value.trim().toUpperCase();
   if(!code){authError('Enter your activation code first.');return;}
