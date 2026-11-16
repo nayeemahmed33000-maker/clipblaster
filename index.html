@@ -47,6 +47,14 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .profileRow span{color:#9a9ab2}
 .payRow{display:flex;align-items:center;gap:10px;background:#0f0f1e;border:1px solid #2a2a44;border-radius:10px;padding:10px 12px;margin:6px 0}
 .payRow code{flex:1;font-size:17px;letter-spacing:1px}
+.payTabs{display:flex;gap:8px;margin:12px 0}
+.payTab{flex:1;border:1px solid #3a3a55;background:#0f0f1e;color:#fff;border-radius:10px;padding:10px 4px;font-weight:800;font-size:14px;cursor:pointer}
+.payTab.on{background:#ff5a3c;border-color:#ff5a3c}
+.payMethodCard{display:flex;align-items:center;gap:10px;background:#0f0f1e;border:1px solid #2a2a44;border-radius:12px;padding:14px}
+.payNote{background:#2a2a10;border:1px solid #4a4a20;color:#ffe9a8;border-radius:10px;padding:10px 12px;text-align:center;margin:12px 0;font-size:14px}
+.payVerifyCard{background:#c81e1e;border-radius:16px;padding:18px;margin:12px 0}
+.paySteps{margin:6px 0;padding-left:20px}
+.paySteps li{margin:9px 0;font-size:15px}
 .clip{border:1px solid #2a2a44;border-radius:14px;padding:16px;margin:14px 0;background:#101022}
 .clip h3{margin:0 0 6px}
 .dl{width:100%;padding:14px;font-size:16px;margin-top:10px}
@@ -60,7 +68,7 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .price ul{margin:12px 0 12px 18px;color:#c9c9dc}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
 .modal.open{display:flex}
-.modalBox{background:#171729;border:1px solid #33334d;border-radius:18px;max-width:480px;width:100%;padding:22px}
+.modalBox{background:#171729;border:1px solid #33334d;border-radius:18px;max-width:480px;width:100%;padding:22px;max-height:92vh;overflow-y:auto}
 .modalBox h2{margin-bottom:6px}
 .closeX{float:right;background:none;border:0;color:#fff;font-size:22px;cursor:pointer}
 footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:1px solid #22223a;margin-top:30px}
@@ -267,25 +275,38 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('proModal')">×</button>
     <h2>👑 Get Pro — ৳349/month</h2>
-    <p><b>1.</b> Pay ৳349 with <b>Send Money</b> to any one of these numbers (Personal):</p>
-    <div>
-      <div class="payRow"><span>🩷 <b>bKash</b></span><code>01402029316</code><button class="btn btn-ghost btn-sm" onclick="copyNum('01402029316')">Copy</button></div>
-      <div class="payRow"><span>💜 <b>Nagad</b></span><code>01883621355</code><button class="btn btn-ghost btn-sm" onclick="copyNum('01883621355')">Copy</button></div>
-      <div class="payRow"><span>💚 <b>Rocket</b></span><code>014020293163</code><button class="btn btn-ghost btn-sm" onclick="copyNum('014020293163')">Copy</button></div>
+    <div class="payTabs" id="payTabs">
+      <button class="payTab on" data-m="bkash" onclick="setPayMethod('bkash')">🩷 bKash</button>
+      <button class="payTab" data-m="nagad" onclick="setPayMethod('nagad')">💜 Nagad</button>
+      <button class="payTab" data-m="rocket" onclick="setPayMethod('rocket')">💚 Rocket</button>
     </div>
-    <p><b>2.</b> Enter the <b>TrxID</b> from your payment receipt below and submit. The admin approves it and your account turns Pro automatically.</p>
-    <div id="payForm">
-      <label>Payment method</label>
-      <select id="payMethod"><option value="bkash">bKash</option><option value="nagad">Nagad</option><option value="rocket">Rocket</option></select>
-      <label>TrxID (from the payment SMS / app receipt)</label>
-      <input id="payTrxid" type="text" placeholder="e.g. 9KX7A1B2C3" autocomplete="off" style="text-transform:uppercase">
-      <p style="margin-top:12px"><button class="btn btn-green" id="paySubmitBtn" style="width:100%;padding:13px;font-size:16px" onclick="submitPayment()">✅ Submit Payment — ৳349</button></p>
+    <div class="payMethodCard">
+      <span id="payMethodIcon" style="font-size:26px">🩷</span>
+      <b id="payMethodName" style="font-size:20px">bKash</b>
+      <span style="margin-left:auto;font-size:22px;font-weight:900">৳349</span>
+    </div>
+    <p style="text-align:center;margin:10px 0 0">Invoice ID:<br><b id="payInvoice" style="letter-spacing:1px"></b> <button class="btn btn-ghost btn-sm" onclick="copyNum($('payInvoice').textContent)">⧉</button></p>
+    <p class="payNote">নোটঃ টাকা পাঠানোর ৫-১০ সেকেন্ড পর ভেরিফাই করবেন।</p>
+    <div class="payVerifyCard" id="payVerifyCard">
+      <h3 style="margin:0 0 10px;text-align:center">ট্রান্সজেকশন আইডি দিন</h3>
+      <div id="payForm">
+        <input id="payTrxid" type="text" placeholder="ট্রান্সজেকশন আইডি দিন" autocomplete="off" style="text-transform:uppercase;text-align:center;font-size:17px;letter-spacing:1px">
+        <p style="margin-top:12px"><button class="btn btn-red" id="paySubmitBtn" style="width:100%;padding:14px;font-size:17px" onclick="submitPayment()">VERIFY TRANSACTION</button></p>
+      </div>
     </div>
     <div id="payLoginNote" class="hidden">
       <p class="status">Please log in or sign up first — your payment will be linked to your account.</p>
       <p><button class="btn btn-red" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('proModal');openAuth('signup')">Log In / Sign Up</button></p>
     </div>
     <p id="payMsg" class="status muted"></p>
+    <h3 style="margin:16px 0 6px;letter-spacing:1px">INSTRUCTIONS</h3>
+    <ul class="paySteps">
+      <li><b id="payUssd">*247#</b> ডায়াল করে আপনার <b id="payMethodName2">bKash</b> মোবাইল মেনুতে যান অথবা অ্যাপে যান।</li>
+      <li><b>"Send Money"</b> এ ক্লিক করুন।</li>
+      <li>প্রাপক নম্বর: <b id="payNumber">01402029316</b> <button class="btn btn-ghost btn-sm" onclick="copyNum($('payNumber').textContent)">⧉ Copy</button></li>
+      <li>পরিমাণ: <b>৳349</b> টাকা দিয়ে <b>SUBMIT</b> করুন।</li>
+      <li><b>Transaction ID</b> দিয়ে <b>VERIFY</b> করুন।</li>
+    </ul>
     <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">No online card checkout yet. Facing trouble? Send the payment screenshot to nayeemahmed33000@gmail.com.</p>
     <p style="margin-top:12px"><button class="btn btn-ghost" style="width:100%" onclick="closeModal('proModal')">Maybe Later</button></p>
   </div>
@@ -447,31 +468,48 @@ function logout(){
   if(u&&u.token){ apiCall('/api/auth/logout',{},u.token).catch(()=>{}); }
   setSession(null);
 }
-function getPro(){openModal('proModal');refreshPayForm();}
+const PAY_METHODS={
+  bkash:{label:'bKash',icon:'🩷',ussd:'*247#',number:'01402029316'},
+  nagad:{label:'Nagad',icon:'💜',ussd:'*167#',number:'01883621355'},
+  rocket:{label:'Rocket',icon:'💚',ussd:'*322#',number:'014020293163'}
+};
+let payMethod='bkash', payInvoice='';
+function newInvoice(){ const b=new Uint8Array(4); crypto.getRandomValues(b); return 'CB-'+Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join('').toUpperCase(); }
+function setPayMethod(m){
+  payMethod=m; const p=PAY_METHODS[m];
+  document.querySelectorAll('.payTab').forEach(t=>t.classList.toggle('on',t.dataset.m===m));
+  $('payMethodIcon').textContent=p.icon; $('payMethodName').textContent=p.label; $('payMethodName2').textContent=p.label;
+  $('payUssd').textContent=p.ussd; $('payNumber').textContent=p.number;
+}
+function getPro(){ payInvoice=newInvoice(); $('payInvoice').textContent=payInvoice; setPayMethod(payMethod); openModal('proModal'); refreshPayForm(); }
 function copyNum(n){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(n).then(()=>showToast('✅ Number copied: '+n)).catch(()=>showToast(n));}else{showToast(n);}}
 async function refreshPayForm(){
   const u=currentUser();
-  $('payForm').classList.toggle('hidden',!u);
+  let showForm=!!u;
   $('payLoginNote').classList.toggle('hidden',!!u);
   $('payMsg').textContent='';$('payMsg').className='status muted';
-  if(!u) return;
-  if(u.plan==='pro'){ $('payMsg').textContent='✅ You are already on Pro 👑.'; $('payMsg').className='status ok'; $('payForm').classList.add('hidden'); return; }
-  try{
-    const d=await apiCall('/api/payments/mine',{},u.token);
-    if(d.payment&&d.payment.status==='pending'){ $('payMsg').textContent='⏳ Your payment ('+d.payment.method.toUpperCase()+' • '+d.payment.trxid+') is waiting for approval. You will be Pro as soon as it is approved.'; $('payMsg').className='status'; $('payForm').classList.add('hidden'); }
-    else if(d.payment&&d.payment.status==='approved'){ $('payMsg').textContent='✅ Your payment was approved — refresh the page to see Pro active.'; $('payMsg').className='status ok'; $('payForm').classList.add('hidden'); }
-  }catch(e){}
+  if(u&&u.plan==='pro'){ $('payMsg').textContent='✅ You are already on Pro 👑.'; $('payMsg').className='status ok'; showForm=false; }
+  else if(u){
+    try{
+      const d=await apiCall('/api/payments/mine',{},u.token);
+      if(d.payment&&d.payment.status==='pending'){ $('payMsg').textContent='⏳ Your payment ('+d.payment.method.toUpperCase()+' • '+d.payment.trxid+') is waiting for approval. You will be Pro as soon as it is approved.'; $('payMsg').className='status'; showForm=false; }
+      else if(d.payment&&d.payment.status==='approved'){ $('payMsg').textContent='✅ Your payment was approved — refresh the page to see Pro active.'; $('payMsg').className='status ok'; showForm=false; }
+    }catch(e){}
+  }
+  $('payForm').classList.toggle('hidden',!showForm);
+  $('payVerifyCard').classList.toggle('hidden',!showForm);
 }
 async function submitPayment(){
   const u=currentUser(); if(!u){ openAuth('signup'); return; }
-  const method=$('payMethod').value, trxid=$('payTrxid').value.trim().toUpperCase();
+  const trxid=$('payTrxid').value.trim().toUpperCase();
   if(!/^[A-Z0-9]{6,20}$/.test(trxid)){ $('payMsg').textContent='❌ Enter the TrxID from your payment receipt (6–20 letters/numbers).'; $('payMsg').className='status err'; return; }
-  $('paySubmitBtn').disabled=true; $('paySubmitBtn').textContent='Submitting…';
+  $('paySubmitBtn').disabled=true; $('paySubmitBtn').textContent='Verifying…';
   try{
-    await apiCall('/api/payments/submit',{method:method,trxid:trxid},u.token);
+    await apiCall('/api/payments/submit',{method:payMethod,trxid:trxid,invoice_id:payInvoice},u.token);
     $('payMsg').textContent='✅ Payment submitted! The admin will approve it shortly — refresh the page after approval to see Pro active.';
     $('payMsg').className='status ok';
     $('payForm').classList.add('hidden');
+    $('payVerifyCard').classList.add('hidden');
   }catch(e){
     if(e.message==='duplicate') $('payMsg').textContent='❌ This TrxID was already submitted.';
     else if(e.message==='already_pending') $('payMsg').textContent='⏳ You already have a payment waiting for approval.';
@@ -480,7 +518,7 @@ async function submitPayment(){
     else $('payMsg').textContent='Something went wrong — please try again.';
     $('payMsg').className='status err';
   }
-  $('paySubmitBtn').disabled=false; $('paySubmitBtn').textContent='✅ Submit Payment — ৳349';
+  $('paySubmitBtn').disabled=false; $('paySubmitBtn').textContent='VERIFY TRANSACTION';
 }
 function requireAuthThenTool(){ const u=currentUser(); if(!u){openAuth();return;} scrollToId('tool'); }
 // On load: a code session (token) is re-checked with the server; a Free
