@@ -443,7 +443,8 @@ async function activateCode(){
   if(!code){authError('Enter your activation code first.');return;}
   $('authSubmit').disabled=true; $('authSubmit').textContent='Activating…';
   try{
-    const d=await apiCall('/api/auth/activate',{code:code});
+    const cu=currentUser();
+    const d=await apiCall('/api/auth/activate',{code:code}, cu&&cu.token);
     $('authSubmit').disabled=false; $('authSubmit').textContent='✅ Activate & Start';
     setSession({token:d.token,name:d.name,plan:d.plan,verified:true,code:code});
     closeModal('authModal'); $('authMsg').textContent='';
@@ -531,8 +532,10 @@ async function refreshSession(){
   try{
     const d=await apiCall('/api/auth/me',{},u.token);
     setSession({token:u.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,code:u.code});
-  }catch(e){ setSession(null); }
+  }catch(e){ if(e.message==='unauthorized'||e.message==='http_401') setSession(null); }
 }
+// A deactivated plan shows up as soon as the user comes back to the tab.
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) refreshSession(); });
 function fmt(t){t=Math.max(0,Math.round(t));const m=Math.floor(t/60),s=t%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
 function zonesFor(dur,n){
   const zones=[{name:'Hook',at:0.02,why:'Opening hook — stops the scroll'},{name:'Rising',at:0.28,why:'Rising tension — keeps watching'},{name:'Climax',at:0.58,why:'Climax — the most-replayed part'},{name:'Payoff',at:0.82,why:'Payoff — the satisfying ending'},{name:'Bonus',at:0.45,why:'Bonus moment — strong middle beat'}];
