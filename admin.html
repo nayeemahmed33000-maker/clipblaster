@@ -224,11 +224,11 @@ async function createCode(){
   $('createBtn').disabled=false;
 }
 async function toggleCode(code,active){
-  try{ await api('/api/admin/codes/toggle',{code:code,active:!!active}); await loadAll(); }
+  try{ await api('/api/admin/codes/toggle',{code:code,active:!!active}); await loadAll(); $('dashMsg').textContent='✅ Code '+code+' is now '+(active?'Active':'Off')+'.'; $('dashMsg').className='status ok'; }
   catch(e){ $('dashMsg').textContent='Could not update that code.'; $('dashMsg').className='status err'; }
 }
 async function setPlan(email,plan){
-  try{ await api('/api/admin/users/set-plan',{email:email,plan:plan}); await loadAll(); }
+  try{ await api('/api/admin/users/set-plan',{email:email,plan:plan}); await loadAll(); $('dashMsg').textContent='✅ '+email+' is now '+plan.toUpperCase()+'.'; $('dashMsg').className='status ok'; }
   catch(e){ $('dashMsg').textContent='Could not update that user.'; $('dashMsg').className='status err'; }
 }
 // On load: a saved admin token is re-checked with the server.
