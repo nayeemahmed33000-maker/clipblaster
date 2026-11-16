@@ -167,6 +167,17 @@ body.is-pro #pricing{display:none}
 </header>
 
 <div class="wrap">
+  <!-- Subscription status — only for logged-in subscribers (plan + expiry + days left, from /api/auth/me). Free users see nothing here. -->
+  <section class="card hidden" id="subBar" style="border-color:#ffd166;background:linear-gradient(135deg,#2a1f00,#151527 65%)">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+      <div>
+        <div style="font-weight:900;font-size:17px" id="subBarTitle"></div>
+        <div class="muted" id="subBarText" style="font-size:14px"></div>
+      </div>
+      <button class="btn btn-red" id="subBarBtn" onclick="getPro()">🔄 রিনিউ করুন</button>
+    </div>
+  </section>
+
   <section class="hero">
     <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
     <div class="heroBadge">🔥 1টি লং ভিডিও থেকে 20টি ভাইরাল শর্টস</div>
@@ -289,7 +300,7 @@ body.is-pro #pricing{display:none}
   <section class="card" id="pricing">
     <h2>সাবস্ক্রিপশন — সহজ ও স্বচ্ছ</h2>
     <p class="muted">ফ্রি অ্যাকাউন্ট খুলুন বা লগ ইন করুন। প্রতিটি শর্টসে পুরো প্রোফেশনাল এডিট চাইলে প্রো-তে আপগ্রেড করুন।</p>
-    <div class="grid3" style="grid-template-columns:1fr 1fr">
+    <div class="grid3">
       <div class="price">
         <h3>Free</h3>
         <div class="amount">৳0</div>
@@ -297,12 +308,19 @@ body.is-pro #pricing{display:none}
         <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>9:16 বা 16:9 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
         <button class="btn btn-ghost" onclick="openAuth('signup')">ফ্রি অ্যাকাউন্ট খুলুন</button>
       </div>
+      <div class="price">
+        <h3>📅 সাপ্তাহিক</h3>
+        <div class="amount">৳100<span style="font-size:16px"> /7 দিন</span></div>
+        <p class="muted">স্বল্পমেয়াদে প্রো-র সব সুবিধা</p>
+        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li></ul>
+        <button class="btn btn-red" onclick="getPro('weekly')">সাপ্তাহিক নিন — ৳100</button>
+      </div>
       <div class="price pro">
         <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
         <div class="amount">৳349<span style="font-size:16px"> /মাস</span></div>
         <p class="muted">সিরিয়াস ক্রিয়েটরদের জন্য</p>
         <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li><li>ডাউনলোডের জন্য প্রস্তুত MP4 শর্টস</li></ul>
-        <button class="btn btn-red" onclick="getPro()">প্রো নিন — ৳349/মাস</button>
+        <button class="btn btn-red" onclick="getPro('monthly')">প্রো নিন — ৳349/মাস</button>
         <p class="muted" style="margin-top:10px">অনলাইনে কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই — bKash / Nagad / Rocket-এ ৳349 পাঠিয়ে TrxID দিন, অনুমোদনের পর প্রো চালু হবে।</p>
       </div>
     </div>
@@ -320,7 +338,7 @@ body.is-pro #pricing{display:none}
   </section>
 </div>
 
-<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস, প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span></footer>
+<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস বা সাপ্তাহিক ৳100/7 দিন, প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span></footer>
 
 <!-- Auth modal — Log In / Sign Up -->
 <div class="modal" id="authModal">
@@ -342,6 +360,7 @@ body.is-pro #pricing{display:none}
       <p style="margin-top:16px">
         <button class="btn btn-red" id="loginSubmit" style="width:100%;padding:13px;font-size:16px" onclick="doLogin()">লগ ইন</button>
       </p>
+      <p class="authSwitch"><button type="button" onclick="closeModal('authModal');openForgot()">পাসওয়ার্ড ভুলে গেছেন?</button></p>
     </div>
     <div id="pane-signup" class="hidden">
       <label>আপনার নাম</label>
@@ -363,6 +382,7 @@ body.is-pro #pricing{display:none}
       <p id="profileProNote" class="status hidden" style="margin-top:10px">✅ আপনি ইতিমধ্যে <b>প্রো-তে 👑</b> আছেন — পুরো প্রোফেশনাল এডিটসহ প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস।</p>
       <div style="margin-top:12px">
         <div class="profileRow"><span>প্ল্যান</span><b id="profilePlan"></b></div>
+        <div class="profileRow" id="profileExpiryRow"><span>সাবস্ক্রিপশনের মেয়াদ</span><b id="profileExpiry"></b></div>
         <div class="profileRow"><span>প্রতি ভিডিওতে শর্টস</span><b id="profileLimit"></b></div>
         <div class="profileRow"><span>সদস্য যেদিন থেকে</span><b id="profileSince"></b></div>
       </div>
@@ -395,11 +415,43 @@ body.is-pro #pricing{display:none}
   </div>
 </div>
 
+<!-- Forgot password modal — 6-digit reset code goes to the user's Gmail -->
+<div class="modal" id="forgotModal">
+  <div class="modalBox">
+    <button class="closeX" onclick="closeModal('forgotModal')">×</button>
+    <h2>🔑 পাসওয়ার্ড রিসেট</h2>
+    <div id="forgotStep1">
+      <p class="muted">আপনার অ্যাকাউন্টের ইমেইল দিন — Gmail-এ 6 সংখ্যার রিসেট কোড পাঠানো হবে।</p>
+      <label>ইমেইল</label>
+      <input id="forgotEmail" type="email" placeholder="you@example.com" autocomplete="email">
+      <p style="margin-top:16px"><button class="btn btn-red" id="forgotSendBtn" style="width:100%;padding:13px;font-size:16px" onclick="doForgotSend()">কোড পাঠান</button></p>
+    </div>
+    <div id="forgotStep2" class="hidden">
+      <p class="muted">কোড পাঠানো হয়েছে:<br><b id="forgotEmailText" style="color:#fff"></b></p>
+      <p class="muted">Gmail ইনবক্স (আর স্প্যাম ফোল্ডার) দেখে কোডটি নিচে দিন। কোডের মেয়াদ 10 মিনিট।</p>
+      <label>রিসেট কোড</label>
+      <input id="forgotCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code">
+      <label>নতুন পাসওয়ার্ড (কমপক্ষে 6 অক্ষর)</label>
+      <input id="forgotPass" type="password" placeholder="নতুন পাসওয়ার্ড" autocomplete="new-password">
+      <p style="margin-top:16px"><button class="btn btn-red" id="forgotResetBtn" style="width:100%;padding:13px;font-size:16px" onclick="doForgotReset()">পাসওয়ার্ড বদলান</button></p>
+      <p style="text-align:center;margin-top:14px">
+        কোড পাননি? <button type="button" id="forgotResendBtn" class="btn btn-ghost" onclick="resendForgotCode()">আবার পাঠান</button><br>
+        <span style="color:#8a8aa2">ইমেইল ভুল হয়েছে? </span><button type="button" style="background:none;border:0;color:#ff5a3c;font-weight:800;cursor:pointer;font-size:14px" onclick="showForgotStep(1)">ইমেইল বদলান</button>
+      </p>
+    </div>
+    <p id="forgotMsg" class="status muted"></p>
+  </div>
+</div>
+
 <!-- Get Pro modal -->
 <div class="modal" id="proModal">
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('proModal')">×</button>
-    <h2>👑 প্রো নিন — ৳349/মাস</h2>
+    <h2 id="proModalTitle">👑 প্রো নিন — ৳349/মাস</h2>
+    <div class="payTabs" id="planTabs">
+      <button class="payTab" data-p="weekly" onclick="setPayPlan('weekly')">📅 সাপ্তাহিক — ৳100 / 7 দিন</button>
+      <button class="payTab on" data-p="monthly" onclick="setPayPlan('monthly')">👑 মাসিক — ৳349 / 30 দিন</button>
+    </div>
     <div class="payTabs" id="payTabs">
       <button class="payTab on" data-m="bkash" onclick="setPayMethod('bkash')">💗 bKash</button>
       <button class="payTab" data-m="nagad" onclick="setPayMethod('nagad')">💜 Nagad</button>
@@ -408,7 +460,7 @@ body.is-pro #pricing{display:none}
     <div class="payMethodCard">
       <span id="payMethodIcon" style="font-size:26px">💗</span>
       <b id="payMethodName" style="font-size:20px">bKash</b>
-      <span style="margin-left:auto;font-size:22px;font-weight:900">৳349</span>
+      <span id="payAmount" style="margin-left:auto;font-size:22px;font-weight:900">৳349</span>
     </div>
     <p style="text-align:center;margin:10px 0 0">ইনভয়েস আইডি:<br><b id="payInvoice" style="letter-spacing:1px"></b> <button class="btn btn-ghost btn-sm" onclick="copyNum($('payInvoice').textContent)">⧉</button></p>
     <p class="payNote">নোটঃ টাকা পাঠানোর ৫-১০ সেকেন্ড পর ভেরিফাই করবেন।</p>
@@ -429,7 +481,7 @@ body.is-pro #pricing{display:none}
       <li><b id="payUssd">*247#</b> ডায়াল করে আপনার <b id="payMethodName2">bKash</b> মোবাইল মেনুতে যান অথবা অ্যাপে যান।</li>
       <li><b>"Send Money"</b> এ ক্লিক করুন।</li>
       <li>প্রাপক নম্বর: <b id="payNumber">01402029316</b> <button class="btn btn-ghost btn-sm" onclick="copyNum($('payNumber').textContent)">⧉ কপি</button></li>
-      <li>পরিমাণ: <b>৳349</b> টাকা দিয়ে <b>সাবমিট</b> করুন।</li>
+      <li>পরিমাণ: <b id="payAmount2">৳349</b> টাকা দিয়ে <b>সাবমিট</b> করুন।</li>
       <li><b>TrxID</b> দিয়ে <b>ভেরিফাই</b> করুন।</li>
     </ul>
     <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">অনলাইনে কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই। সমস্যা হলে পেমেন্টের স্ক্রিনশট পাঠান: nayeemahmed33000@gmail.com।</p>
@@ -442,7 +494,7 @@ body.is-pro #pricing{display:none}
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('getProPopup')">×</button>
     <h2>🚀 প্রো-তে আপগ্রেড করুন</h2>
-    <p><b>৳349/মাস</b> — প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস, হুক টেক্সট, জুম ও ফেডসহ প্রোফেশনাল অটো-এডিট, আর পুরো SEO প্যাক।</p>
+    <p><b>৳349/মাস</b> — প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস, হুক টেক্সট, জুম ও ফেডসহ প্রোফেশনাল অটো-এডিট, আর পুরো SEO প্যাক। অথবা সাপ্তাহিক ৳100/7 দিন।</p>
     <p style="display:flex;gap:8px;margin-top:12px">
       <button class="btn btn-red" style="flex:1" onclick="closeModal('getProPopup');getPro()">প্রো নিন — ৳349/মাস</button>
       <button class="btn btn-ghost" style="flex:1" onclick="closeModal('getProPopup')">পরে দেখব</button>
@@ -455,13 +507,19 @@ body.is-pro #pricing{display:none}
   <div class="modalBox" style="max-width:720px">
     <button class="closeX" onclick="closeModal('pricingModal')">×</button>
     <h2>সাবস্ক্রিপশন — সহজ ও স্বচ্ছ</h2>
-    <p class="muted">আপনি ইতিমধ্যে <b>প্রো-তে 👑</b> আছেন — ৳349/মাস।</p>
-    <div class="grid3" style="grid-template-columns:1fr 1fr;margin-top:12px">
+    <p class="muted" id="pricingModalNote">আপনি ইতিমধ্যে <b>প্রো-তে 👑</b> আছেন — ৳349/মাস।</p>
+    <div class="grid3" style="margin-top:12px">
       <div class="price">
         <h3>ফ্রি</h3>
         <div class="amount">৳0</div>
         <p class="muted">চেষ্টা করে দেখুন</p>
         <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>9:16 বা 16:9 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
+      </div>
+      <div class="price">
+        <h3>📅 সাপ্তাহিক</h3>
+        <div class="amount">৳100<span style="font-size:16px"> /7 দিন</span></div>
+        <p class="muted">স্বল্পমেয়াদে প্রো-র সব সুবিধা</p>
+        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li></ul>
       </div>
       <div class="price pro">
         <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
@@ -580,7 +638,7 @@ async function submitVerifyCode(){
     const retPro=window.__cbReturnToPro, retSup=window.__cbReturnToSupport;
     window.__cbReturnToPro=false; window.__cbReturnToSupport=false;
     pendingVerify=null;
-    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
+    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,pro_expires_at:d.user.pro_expires_at||null,sub_plan:d.user.sub_plan||null});
     closeModal('verifyModal');
     if(retPro){ showToast('✅ ইমেইল ভেরিফাই হয়েছে — স্বাগতম, '+d.user.name+'! এখন নিচে আপনার TrxID দিন।'); getPro(); return; }
     if(retSup){ showToast('✅ ইমেইল ভেরিফাই হয়েছে — স্বাগতম, '+d.user.name+'! এখন আপনার টিকিট লিখুন।'); openSupport(); return; }
@@ -628,7 +686,7 @@ async function apiCall(path,body,token){
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
 // Pro users don't see the pricing section (hidden) — the menu button shows
 // the prices in a popup instead; everyone else scrolls to the section.
-function openPricing(){ const u=currentUser(); if(u&&u.plan==='pro'){ openModal('pricingModal'); return; } scrollToId('pricing'); }
+function openPricing(){ const u=currentUser(); if(u&&u.plan==='pro'){ const n=$('pricingModalNote'); if(n) n.textContent='আপনি ইতিমধ্যে '+(u.sub_plan==='weekly'?'সাপ্তাহিক 📅':'প্রো-তে 👑')+' আছেন'+(u.pro_expires_at?' — মেয়াদ: '+fmtDateBn(u.pro_expires_at)+' পর্যন্ত।':'।'); openModal('pricingModal'); return; } scrollToId('pricing'); }
 function openModal(id){$(id).classList.add('open')}
 function closeModal(id){$(id).classList.remove('open')}
 let toastTimer=null;
@@ -691,6 +749,51 @@ function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_s
 function hasRealAccount(){ const u=currentUser(); return !!(u&&u.email&&u.token); }
 function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stringify(u));else localStorage.removeItem('clipblaster_session');refreshAuthUI();}
 function firstName(n){return String(n||'').trim().split(/\s+/)[0]||'ইউজার';}
+// Subscription dates — Bengali month names, Western digits (matches the
+// rest of the site). The expiry itself always comes from the server
+// (/api/auth/me → pro_expires_at); only the display math is done here.
+const BN_MONTHS=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+function fmtDateBn(ts){ const d=new Date(ts); return d.getDate()+' '+BN_MONTHS[d.getMonth()]+' '+d.getFullYear(); }
+function planNameBn(u){ if(!u||u.plan!=='pro') return 'ফ্রি'; return u.sub_plan==='weekly'?'সাপ্তাহিক':'প্রো মাসিক'; }
+function daysLeft(ts){ return Math.ceil((ts-Date.now())/86400000); }
+// Dashboard subscription line (under the header): plan + expiry + days
+// left for subscribers; "মেয়াদ শেষ হয়েছে" + renew for a lapsed paid
+// subscription (latest approved payment whose plan period has passed).
+// Free users with no lapsed payment see nothing here.
+async function refreshSubBar(){
+  const bar=$('subBar'); if(!bar) return;
+  const u=currentUser();
+  if(!u||!u.email||!u.token){ bar.classList.add('hidden'); return; }
+  if(u.plan==='pro'){
+    bar.classList.remove('hidden');
+    const name=planNameBn(u);
+    if(u.pro_expires_at){
+      const dl=daysLeft(u.pro_expires_at);
+      $('subBarTitle').textContent='✅ '+name+' চালু আছে';
+      $('subBarText').textContent='মেয়াদ: '+fmtDateBn(u.pro_expires_at)+' পর্যন্ত'+(dl>1?' • আরও '+dl+' দিন বাকি':dl===1?' • আরও 1 দিন বাকি':' • আজই মেয়াদ শেষ হচ্ছে');
+    }else{
+      $('subBarTitle').textContent='✅ '+name+' চালু আছে';
+      $('subBarText').textContent='মেয়াদ: চিরকাল';
+    }
+    $('subBarBtn').classList.remove('hidden');
+    return;
+  }
+  try{
+    const d=await apiGet('/api/payments/mine',u.token);
+    const p=d.payment;
+    if(p&&p.status==='approved'&&p.decided_at){
+      const days=p.plan==='weekly'?7:30;
+      if(Date.now()>p.decided_at+days*86400000){
+        bar.classList.remove('hidden');
+        $('subBarTitle').textContent='⏰ সাবস্ক্রিপশনের মেয়াদ শেষ হয়েছে';
+        $('subBarText').textContent='আপনার '+(p.plan==='weekly'?'সাপ্তাহিক':'প্রো মাসিক')+' প্ল্যানের মেয়াদ শেষ। রিনিউ করলে আবার প্রো চালু হবে।';
+        $('subBarBtn').classList.remove('hidden');
+        return;
+      }
+    }
+  }catch(e){}
+  bar.classList.add('hidden');
+}
 function refreshAuthUI(){
   const u=currentUser();
   // Pro customers go straight to the tool — the marketing hero (with its
@@ -709,12 +812,22 @@ function refreshAuthUI(){
   $('signupBtn').classList.toggle('hidden',!!u);
   $('logoutBtn').classList.toggle('hidden',!u);
   $('userChip').classList.toggle('hidden',!u);
-  if(u)$('userChip').textContent='👤 '+firstName(u.name)+' · '+(u.plan==='pro'?'👑 প্রো':'🔑 ফ্রি');
+  if(u)$('userChip').textContent='👤 '+firstName(u.name)+' · '+(u.plan==='pro'?(u.sub_plan==='weekly'?'📅 সাপ্তাহিক':'👑 প্রো'):'🔑 ফ্রি');
+  refreshSubBar();
 }
 function fillProfile(u){
   $('profileName').textContent=u.name||'ইউজার';
   $('profileEmail').textContent=u.email||'এই অ্যাকাউন্টে কোনো ইমেইল নেই';
-  $('profilePlan').textContent=u.plan==='pro'?'👑 প্রো — ৳349/মাস':'🔑 ফ্রি — ৳0';
+  $('profilePlan').textContent=u.plan==='pro'?(u.sub_plan==='weekly'?'📅 সাপ্তাহিক — ৳100 / 7 দিন':'👑 প্রো মাসিক — ৳349/মাস'):'🔑 ফ্রি — ৳0';
+  const expRow=$('profileExpiryRow');
+  if(u.plan==='pro'&&u.pro_expires_at){
+    expRow.classList.remove('hidden');
+    const dl=daysLeft(u.pro_expires_at);
+    $('profileExpiry').textContent='মেয়াদ: '+fmtDateBn(u.pro_expires_at)+' পর্যন্ত'+(dl>1?' (আরও '+dl+' দিন বাকি)':dl===1?' (আরও 1 দিন বাকি)':' (আজই শেষ হচ্ছে)');
+  }else if(u.plan==='pro'){
+    expRow.classList.remove('hidden');
+    $('profileExpiry').textContent='মেয়াদ: চিরকাল';
+  }else expRow.classList.add('hidden');
   $('profileLimit').textContent=u.plan==='pro'?'প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস':'প্রতি ভিডিওতে 1টি শর্টস';
   $('profileSince').textContent=u.created_at?new Date(u.created_at).toLocaleDateString():'—';
   $('profileProNote').classList.toggle('hidden',u.plan!=='pro');
@@ -749,7 +862,7 @@ async function doLogin(){
   try{
     const d=await apiCall('/api/auth/login',{email:email,password:pass});
     $('loginSubmit').disabled=false; $('loginSubmit').textContent='লগ ইন';
-    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
+    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,pro_expires_at:d.user.pro_expires_at||null,sub_plan:d.user.sub_plan||null});
     closeModal('authModal'); $('authMsg').textContent='';
     if(window.__cbReturnToPro){ window.__cbReturnToPro=false; showToast('✅ স্বাগতম, '+d.user.name+'! এখন নিচে আপনার TrxID দিন।'); getPro(); return; }
     if(window.__cbReturnToSupport){ window.__cbReturnToSupport=false; showToast('✅ স্বাগতম, '+d.user.name+'! এখন আপনার টিকিট লিখুন।'); openSupport(); return; }
@@ -783,7 +896,7 @@ async function doSignup(){
       await emailCodeAndOpen(email,name,code);
       return;
     }
-    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
+    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,pro_expires_at:d.user.pro_expires_at||null,sub_plan:d.user.sub_plan||null});
     closeModal('authModal'); $('authMsg').textContent='';
     if(window.__cbReturnToPro){ window.__cbReturnToPro=false; showToast('✅ অ্যাকাউন্ট খোলা হয়েছে — স্বাগতম, '+d.user.name+'! এখন নিচে আপনার TrxID দিন।'); getPro(); return; }
     if(window.__cbReturnToSupport){ window.__cbReturnToSupport=false; showToast('✅ অ্যাকাউন্ট খোলা হয়েছে — স্বাগতম, '+d.user.name+'! এখন আপনার টিকিট লিখুন।'); openSupport(); return; }
@@ -816,7 +929,19 @@ function setPayMethod(m){
   $('payMethodIcon').textContent=p.icon; $('payMethodName').textContent=p.label; $('payMethodName2').textContent=p.label;
   $('payUssd').textContent=p.ussd; $('payNumber').textContent=p.number;
 }
-function getPro(){ payInvoice=newInvoice(); $('payInvoice').textContent=payInvoice; setPayMethod(payMethod); openModal('proModal'); refreshPayForm(); }
+const PAY_PLAN_DEFS={weekly:{label:'সাপ্তাহিক',amount:100,days:7},monthly:{label:'প্রো (মাসিক)',amount:349,days:30}};
+let payPlan='monthly';
+// Plan picker in the Get Pro modal — the amount shown everywhere in the
+// modal follows the chosen plan; the server still sets the real amount.
+function setPayPlan(p){
+  payPlan=(p==='weekly')?'weekly':'monthly';
+  document.querySelectorAll('#planTabs .payTab').forEach(t=>t.classList.toggle('on',t.dataset.p===payPlan));
+  const def=PAY_PLAN_DEFS[payPlan];
+  $('proModalTitle').textContent='👑 '+def.label+' নিন — ৳'+def.amount+(payPlan==='weekly'?' / 7 দিন':'/মাস');
+  $('payAmount').textContent='৳'+def.amount;
+  $('payAmount2').textContent='৳'+def.amount;
+}
+function getPro(plan){ if(plan==='weekly'||plan==='monthly') payPlan=plan; setPayPlan(payPlan); payInvoice=newInvoice(); $('payInvoice').textContent=payInvoice; setPayMethod(payMethod); openModal('proModal'); refreshPayForm(); }
 // From the payment modal: log in / sign up, then come straight back
 // here so the TrxID box is waiting — no second Get Pro tap needed.
 function loginThenPro(){ window.__cbReturnToPro=true; closeModal('proModal'); openAuth('signup'); }
@@ -830,20 +955,31 @@ async function refreshPayForm(){
   let showForm=hasAccount;
   $('payLoginNote').classList.toggle('hidden',!!u);
   $('payMsg').textContent='';$('payMsg').className='status muted';
-  // Use the live plan, not the possibly stale saved one — an approval
-  // that landed after this tab loaded must not read as a downgrade,
-  // and a downgrade must not promise Pro on refresh.
-  let plan=u&&u.plan;
+  // Use the live plan + expiry, not the possibly stale saved ones — an
+  // approval that landed after this tab loaded must not read as a
+  // downgrade, and a downgrade must not promise Pro on refresh.
+  let plan=u&&u.plan, meUser=u;
   if(hasAccount){
-    try{ const me=await apiCall('/api/auth/me',{},u.token); plan=me.user.plan; if(plan!==u.plan) setSession({...u,plan:plan,name:me.user.name,email:me.user.email,created_at:me.user.created_at}); }
+    try{ const me=await apiCall('/api/auth/me',{},u.token); meUser=me.user; plan=me.user.plan; if(plan!==u.plan||me.user.pro_expires_at!==(u.pro_expires_at||null)||me.user.sub_plan!==(u.sub_plan||null)) setSession({...u,plan:plan,name:me.user.name,email:me.user.email,created_at:me.user.created_at,pro_expires_at:me.user.pro_expires_at||null,sub_plan:me.user.sub_plan||null}); }
     catch(e){}
   }
-  if(plan==='pro'){ $('payMsg').textContent='✅ আপনি ইতিমধ্যে প্রো-তে আছেন 👑।'; $('payMsg').className='status ok'; showForm=false; }
+  if(plan==='pro'){
+    let t='✅ আপনি ইতিমধ্যে '+(meUser&&meUser.sub_plan==='weekly'?'সাপ্তাহিক':'প্রো')+'-তে আছেন 👑।';
+    if(meUser&&meUser.pro_expires_at) t+=' মেয়াদ: '+fmtDateBn(meUser.pro_expires_at)+' পর্যন্ত।';
+    else if(meUser) t+=' মেয়াদ: চিরকাল।';
+    $('payMsg').textContent=t; $('payMsg').className='status ok'; showForm=false;
+  }
   else if(hasAccount){
     try{
       const d=await apiCall('/api/payments/mine',{},u.token);
       if(d.payment&&d.payment.status==='pending'){ $('payMsg').textContent='⏳ আপনার পেমেন্ট ('+d.payment.method.toUpperCase()+' • '+d.payment.trxid+') অনুমোদনের অপেক্ষায় আছে। অনুমোদন হলেই আপনি প্রো হয়ে যাবেন।'; $('payMsg').className='status'; showForm=false; }
-      else if(d.payment&&d.payment.status==='approved'){ $('payMsg').textContent='✅ আপনার পেমেন্ট অনুমোদিত হয়েছে, কিন্তু আপনার অ্যাকাউন্ট এখন ফ্রি প্ল্যানে আছে — অনুগ্রহ করে সাপোর্টে যোগাযোগ করুন।'; $('payMsg').className='status ok'; showForm=false; }
+      else if(d.payment&&d.payment.status==='approved'){
+        // A paid subscription that lapsed is a renewal, not an error:
+        // approval time + the plan's duration is when it ended.
+        const pdays=d.payment.plan==='weekly'?7:30;
+        if(d.payment.decided_at && Date.now()>d.payment.decided_at+pdays*86400000){ $('payMsg').textContent='⏰ আপনার '+(d.payment.plan==='weekly'?'সাপ্তাহিক':'প্রো')+' প্ল্যানের মেয়াদ শেষ হয়েছে — রিনিউ করতে নিচে TrxID দিন।'; $('payMsg').className='status'; }
+        else { $('payMsg').textContent='✅ আপনার পেমেন্ট অনুমোদিত হয়েছে, কিন্তু আপনার অ্যাকাউন্ট এখন ফ্রি প্ল্যানে আছে — অনুগ্রহ করে সাপোর্টে যোগাযোগ করুন।'; $('payMsg').className='status ok'; showForm=false; }
+      }
     }catch(e){}
   }
   else if(u){ $('payMsg').textContent='পেমেন্ট জমা দিতে আপনার অ্যাকাউন্টে লগ ইন করুন (বা সাইন আপ করুন) — গেস্ট সেশনকে প্রো করা যায় না।'; $('payMsg').className='status'; }
@@ -856,13 +992,14 @@ async function submitPayment(){
   if(!/^[A-Z0-9]{6,20}$/.test(trxid)){ $('payMsg').textContent='❌ আপনার পেমেন্ট রসিদের TrxID দিন (6–20টি অক্ষর/সংখ্যা)।'; $('payMsg').className='status err'; return; }
   $('paySubmitBtn').disabled=true; $('paySubmitBtn').textContent='যাচাই হচ্ছে…';
   try{
-    await apiCall('/api/payments/submit',{method:payMethod,trxid:trxid,invoice_id:payInvoice},u.token);
-    $('payMsg').textContent='✅ পেমেন্ট জমা হয়েছে! অ্যাডমিন শীঘ্রই অনুমোদন দেবেন — অনুমোদনের পর পেজটি রিফ্রেশ করলে প্রো চালু দেখাবে।';
+    await apiCall('/api/payments/submit',{method:payMethod,trxid:trxid,invoice_id:payInvoice,plan:payPlan},u.token);
+    $('payMsg').textContent='✅ পেমেন্ট জমা হয়েছে! অ্যাডমিন অনুমোদন দিলে আপনার '+PAY_PLAN_DEFS[payPlan].label+' প্ল্যান চালু হবে।';
     $('payMsg').className='status ok';
     $('payForm').classList.add('hidden');
     $('payVerifyCard').classList.add('hidden');
   }catch(e){
     if(e.message==='duplicate') $('payMsg').textContent='❌ এই TrxID ইতিমধ্যে জমা দেওয়া হয়েছে।';
+    else if(e.message==='bad_plan') $('payMsg').textContent='❌ প্ল্যানটি সঠিক নয় — আবার চেষ্টা করুন।';
     else if(e.message==='already_pending') $('payMsg').textContent='⏳ আপনার একটি পেমেন্ট ইতিমধ্যে অনুমোদনের অপেক্ষায় আছে।';
     else if(e.message==='unauthorized') $('payMsg').textContent='আবার লগ ইন করে, তারপর জমা দিন।';
     else if(e.message==='network') $('payMsg').textContent='সার্ভারে পৌঁছানো যাচ্ছে না — আপনার ইন্টারনেট দেখে আবার চেষ্টা করুন।';
@@ -870,6 +1007,85 @@ async function submitPayment(){
     $('payMsg').className='status err';
   }
   $('paySubmitBtn').disabled=false; $('paySubmitBtn').textContent='ভেরিফাই করুন';
+}
+// ---- Forgot password ----
+// Same pattern as signup verification: the 6-digit code is generated
+// here, emailed from the browser via EmailJS (same service + template),
+// and only its hash is stored on the server (/api/auth/forgot). The
+// server answers ok even when the email has no account, so the generic
+// message below never reveals whether an account exists.
+let pendingForgot=null, forgotResendTimer=null;
+function forgotMsg(msg,cls){ const m=$('forgotMsg'); m.textContent=msg||''; m.className='status '+(cls||'muted'); }
+function showForgotStep(n){ $('forgotStep1').classList.toggle('hidden',n!==1); $('forgotStep2').classList.toggle('hidden',n!==2); }
+function openForgot(){
+  $('forgotEmail').value=($('loginEmail')?$('loginEmail').value.trim():'');
+  $('forgotCode').value=''; $('forgotPass').value=''; pendingForgot=null;
+  showForgotStep(1); forgotMsg(''); openModal('forgotModal');
+}
+async function doForgotSend(){
+  const email=$('forgotEmail').value.trim().toLowerCase();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ forgotMsg('❌ সঠিক ইমেইল দিন।','err'); return; }
+  const code=newVerifyCode();
+  $('forgotSendBtn').disabled=true; $('forgotSendBtn').textContent='পাঠানো হচ্ছে…';
+  try{
+    await apiCall('/api/auth/forgot',{email:email,code:code});
+    const result=await sendVerificationEmail(email,'ClipBlaster user',code);
+    pendingForgot={email:email};
+    $('forgotEmailText').textContent=email;
+    showForgotStep(2);
+    if(result==='sent') forgotMsg('✅ যদি এই ইমেইলে অ্যাকাউন্ট থাকে, কোড পাঠানো হয়েছে। ইনবক্স (আর স্প্যাম ফোল্ডার) দেখুন।','ok');
+    else forgotMsg('⚠️ ইমেইল পাঠানো যায়নি — "আবার পাঠান" চাপুন।','err');
+  }catch(e){
+    if(e.message==='cooldown') forgotMsg('⏳ একটু অপেক্ষা করুন — 60 সেকেন্ড পর আবার পাঠাতে পারবেন।','err');
+    else if(e.message==='network') forgotMsg('সার্ভারে পৌঁছানো যাচ্ছে না — ইন্টারনেট দেখে আবার চেষ্টা করুন।','err');
+    else forgotMsg('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।','err');
+  }
+  $('forgotSendBtn').disabled=false; $('forgotSendBtn').textContent='কোড পাঠান';
+}
+async function resendForgotCode(){
+  if(!pendingForgot) return;
+  const btn=$('forgotResendBtn'); if(btn.disabled) return;
+  btn.disabled=true; let left=60; btn.textContent='আবার পাঠাতে '+left+' সেকেন্ড';
+  if(forgotResendTimer) clearInterval(forgotResendTimer);
+  forgotResendTimer=setInterval(()=>{left--; if(left<=0){clearInterval(forgotResendTimer); btn.disabled=false; btn.textContent='আবার পাঠান';} else btn.textContent='আবার পাঠাতে '+left+' সেকেন্ড';},1000);
+  const code=newVerifyCode();
+  try{
+    await apiCall('/api/auth/resend',{email:pendingForgot.email,code:code,purpose:'reset'});
+    const result=await sendVerificationEmail(pendingForgot.email,'ClipBlaster user',code);
+    if(result==='sent') forgotMsg('✅ নতুন কোড আপনার Gmail-এ পাঠানো হয়েছে।','ok');
+    else forgotMsg('⚠️ ইমেইল পাঠানো যায়নি — আবার চেষ্টা করুন।','err');
+  }catch(e){
+    if(e.message==='cooldown') forgotMsg('⏳ একটু অপেক্ষা করুন — 60 সেকেন্ড পর আবার পাঠাতে পারবেন।','err');
+    else if(e.message==='network') forgotMsg('সার্ভারে পৌঁছানো যাচ্ছে না — আবার চেষ্টা করুন।','err');
+    else forgotMsg('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।','err');
+  }
+}
+async function doForgotReset(){
+  if(!pendingForgot){ forgotMsg('আগে ইমেইল দিয়ে কোড পাঠান।','err'); return; }
+  const code=$('forgotCode').value.trim();
+  const pass=$('forgotPass').value;
+  if(!/^\d{6}$/.test(code)){ forgotMsg('❌ 6 সংখ্যার কোডটি দিন।','err'); return; }
+  if(pass.length<6){ forgotMsg('পাসওয়ার্ড কমপক্ষে 6 অক্ষরের হতে হবে।','err'); return; }
+  $('forgotResetBtn').disabled=true; $('forgotResetBtn').textContent='বদলানো হচ্ছে…';
+  try{
+    await apiCall('/api/auth/reset',{email:pendingForgot.email,code:code,password:pass});
+    $('forgotResetBtn').disabled=false; $('forgotResetBtn').textContent='পাসওয়ার্ড বদলান';
+    const em=pendingForgot.email; pendingForgot=null;
+    closeModal('forgotModal');
+    openAuth('login');
+    $('loginEmail').value=em;
+    showToast('✅ পাসওয়ার্ড বদলে গেছে — নতুন পাসওয়ার্ড দিয়ে লগ ইন করুন।');
+  }catch(e){
+    $('forgotResetBtn').disabled=false; $('forgotResetBtn').textContent='পাসওয়ার্ড বদলান';
+    if(e.message==='wrong') forgotMsg('❌ ভুল কোড। Gmail-এ পাঠানো কোডটি দেখে আবার দিন।','err');
+    else if(e.message==='expired') forgotMsg('⏰ কোডের মেয়াদ শেষ (10 মিনিট)। "আবার পাঠান" চাপুন।','err');
+    else if(e.message==='too_many') forgotMsg('❌ অনেকবার ভুল কোড দেওয়া হয়েছে। "আবার পাঠান" চাপুন।','err');
+    else if(e.message==='no_code') forgotMsg('কোনো কোড পাওয়া যায়নি — আবার কোড পাঠান।','err');
+    else if(e.message==='no_account') forgotMsg('এই ইমেইলে কোনো অ্যাকাউন্ট নেই।','err');
+    else if(e.message==='password_short') forgotMsg('পাসওয়ার্ড কমপক্ষে 6 অক্ষরের হতে হবে।','err');
+    else if(e.message==='network') forgotMsg('সার্ভারে পৌঁছানো যাচ্ছে না — আবার চেষ্টা করুন।','err');
+    else forgotMsg('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।','err');
+  }
 }
 // ---- Support tickets ----
 // A signed-in customer opens a ticket; the owner replies from Admin.
@@ -976,7 +1192,7 @@ async function refreshSession(){
     // A session for an unverified account must not reach the tool —
     // clear it; logging in again takes the user to the verify screen.
     if(!d.user.verified){ setSession(null); return; }
-    setSession({token:u.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,code:u.code});
+    setSession({token:u.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,pro_expires_at:d.user.pro_expires_at||null,sub_plan:d.user.sub_plan||null,code:u.code});
   }catch(e){ if(e.message==='unauthorized'||e.message==='http_401') setSession(null); }
 }
 // A deactivated plan shows up as soon as the user comes back to the tab.
