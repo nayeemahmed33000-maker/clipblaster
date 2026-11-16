@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClipBlaster Admin — Dashboard</title>
+<meta name="description" content="ClipBlaster owner dashboard — users, Pro codes and sales at a glance.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff5a3c'/%3E%3Ctext x='32' y='44' font-size='34' font-weight='900' text-anchor='middle' fill='white' font-family='Arial'%3ECB%3C/text%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b0b14;color:#fff;line-height:1.5}
+a{color:#ff8a70}
+header{position:sticky;top:0;background:#101022;border-bottom:1px solid #23233a;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;z-index:5}
+.logo{font-weight:900;font-size:22px;letter-spacing:.5px}
+.logo span{color:#ff5a3c}
+.logo small{display:block;font-size:10px;color:#8a8aa2;letter-spacing:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 60px}
+.card{background:#141428;border:1px solid #2a2a44;border-radius:16px;padding:20px;margin:16px 0}
+h1{font-size:28px;margin:0 0 4px}
+h2{font-size:20px;margin:0 0 12px}
+.muted{color:#9a9ab2}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-weight:700;cursor:pointer;font-size:15px;color:#fff}
+.btn-red{background:#ff5a3c}
+.btn-green{background:#22a06b}
+.btn-ghost{background:transparent;border:1px solid #3a3a55;color:#fff}
+.btn-sm{padding:7px 12px;font-size:13px;border-radius:9px}
+.btn:disabled{opacity:.55;cursor:wait}
+input,select{width:100%;background:#0f0f1e;border:1px solid #3a3a55;color:#fff;border-radius:10px;padding:12px;font-size:15px;margin:6px 0 12px}
+label{font-size:13px;color:#b9b9cc;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:#0f0f1e;border:1px solid #2a2a44;border-radius:14px;padding:16px}
+.stat .n{font-size:30px;font-weight:900}
+.stat .l{font-size:13px;color:#9a9ab2}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid #23233a;vertical-align:top}
+th{color:#9a9ab2;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.tblWrap{overflow-x:auto}
+.status{margin:10px 0;font-size:14px}
+.err{color:#ff8a80}
+.ok{color:#7be3b0}
+.hidden{display:none!important}
+.pill{display:inline-block;background:#1e1e38;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.pill.pro{background:#3a2b00;color:#ffd166}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.row>div{flex:1;min-width:140px}
+footer{color:#8a8aa2;font-size:13px;text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">CLIP<span>BLASTER</span> <small>ADMIN DASHBOARD</small></div>
+  <div>
+    <span id="adminChip" class="pill hidden"></span>
+    <button class="btn btn-ghost btn-sm" onclick="location.href='index.html'">← Back to site</button>
+    <button id="signOutBtn" class="btn btn-ghost btn-sm hidden" onclick="signOut()">Sign Out</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- Login -->
+  <section class="card" id="loginView">
+    <h1>🔐 Admin Log In</h1>
+    <p class="muted">Enter your admin code to open the dashboard. Only the owner has this code — never share it.</p>
+    <label>Admin code</label>
+    <input id="adminCode" type="text" placeholder="e.g. ADMIN-XXXXXX" autocomplete="off" style="text-transform:uppercase">
+    <p><button class="btn btn-red" id="loginBtn" style="width:100%;padding:13px;font-size:16px" onclick="adminLogin()">Log In to Dashboard</button></p>
+    <p id="loginMsg" class="status muted"></p>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashView" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <h1 style="margin:0">📊 Dashboard</h1>
+      <button class="btn btn-ghost btn-sm" onclick="loadAll()">↻ Refresh</button>
+    </div>
+    <p id="dashMsg" class="status muted"></p>
+
+    <div class="grid" id="statsGrid"></div>
+
+    <section class="card">
+      <h2>➕ Create a Pro Code</h2>
+      <p class="muted">Give this code to a paying customer — they enter it on the site and Pro activates. Leave "Max uses" empty for unlimited.</p>
+      <div class="row">
+        <div><label>Code</label><input id="newCode" type="text" placeholder="e.g. CUSTOMER-PRO-2026" style="text-transform:uppercase"></div>
+        <div><label>Plan</label><select id="newPlan"><option value="pro">Pro</option><option value="free">Free</option></select></div>
+        <div><label>Max uses (optional)</label><input id="newMaxUses" type="number" min="1" placeholder="Unlimited"></div>
+      </div>
+      <label>Label (who is it for?)</label>
+      <input id="newLabel" type="text" placeholder="e.g. Rahim — paid ৳349 on bKash">
+      <p><button class="btn btn-green" id="createBtn" onclick="createCode()">Create Code</button></p>
+      <p id="createMsg" class="status muted"></p>
+    </section>
+
+    <section class="card">
+      <h2>🎟️ Pro Codes</h2>
+      <div class="tblWrap"><table>
+        <thead><tr><th>Code</th><th>Plan</th><th>Label</th><th>Uses</th><th>Status</th><th></th></tr></thead>
+        <tbody id="codesBody"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="card">
+      <h2>👥 Users</h2>
+      <div class="tblWrap"><table>
+        <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Joined</th><th></th></tr></thead>
+        <tbody id="usersBody"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+      </table></div>
+    </section>
+  </section>
+</div>
+
+<footer>ClipBlaster Admin — for the owner only. <a href="index.html">Back to ClipBlaster</a></footer>
+
+<script>
+const API_BASE='https://clipblaster-api.nayeemahmed33000.workers.dev';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function token(){return localStorage.getItem('clipblaster_admin_token')||''}
+async function api(path,body,method){
+  const headers={'Content-Type':'application/json'};
+  const t=token(); if(t) headers['Authorization']='Bearer '+t;
+  let r;
+  try{ r=await fetch(API_BASE+path,{method:method||(body?'POST':'GET'),headers:headers,body:body?JSON.stringify(body):undefined}); }
+  catch(e){ throw new Error('network'); }
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(d.error||('http_'+r.status));
+  return d;
+}
+function showLogin(){$('loginView').classList.remove('hidden');$('dashView').classList.add('hidden');$('adminChip').classList.add('hidden');$('signOutBtn').classList.add('hidden');}
+function showDash(name){$('loginView').classList.add('hidden');$('dashView').classList.remove('hidden');$('adminChip').classList.remove('hidden');$('adminChip').textContent='👑 '+name;$('signOutBtn').classList.remove('hidden');}
+async function adminLogin(){
+  const code=$('adminCode').value.trim().toUpperCase();
+  if(!code){$('loginMsg').textContent='Enter your admin code first.';$('loginMsg').className='status err';return;}
+  $('loginBtn').disabled=true; $('loginBtn').textContent='Logging in…';
+  try{
+    const d=await api('/api/admin/login',{code:code});
+    localStorage.setItem('clipblaster_admin_token',d.token);
+    $('loginMsg').textContent='';
+    showDash(d.name||'Admin');
+    await loadAll();
+  }catch(e){
+    $('loginMsg').textContent = e.message==='invalid_code' ? '❌ This admin code is not valid.' : (e.message==='network' ? 'Could not reach the server — check your connection.' : 'Something went wrong — please try again.');
+    $('loginMsg').className='status err';
+  }
+  $('loginBtn').disabled=false; $('loginBtn').textContent='Log In to Dashboard';
+}
+async function signOut(){
+  try{ await api('/api/auth/logout',{},'POST'); }catch(e){}
+  localStorage.removeItem('clipblaster_admin_token');
+  showLogin();
+}
+async function loadAll(){
+  $('dashMsg').textContent='Loading…'; $('dashMsg').className='status muted';
+  try{
+    const [s,u,c]=await Promise.all([api('/api/admin/stats'),api('/api/admin/users'),api('/api/admin/codes')]);
+    renderStats(s.stats); renderUsers(u.users); renderCodes(c.codes);
+    $('dashMsg').textContent='';
+  }catch(e){
+    if(e.message==='unauthorized'){ localStorage.removeItem('clipblaster_admin_token'); showLogin(); $('loginMsg').textContent='Session expired — log in again.'; $('loginMsg').className='status err'; return; }
+    $('dashMsg').textContent='Could not load the dashboard — check your connection and press Refresh.';
+    $('dashMsg').className='status err';
+  }
+}
+function renderStats(st){
+  $('statsGrid').innerHTML=[
+    ['Total users',st.users],['Pro users',st.proUsers],['Free users',st.freeUsers],
+    ['Signups (7 days)',st.signups7d],['Pro codes',st.codes],['Active codes',st.codesActive],['Code uses',st.codeUses]
+  ].map(x=>'<div class="stat"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>').join('');
+}
+function renderUsers(users){
+  if(!users.length){ $('usersBody').innerHTML='<tr><td colspan="5" class="muted">No users yet.</td></tr>'; return; }
+  $('usersBody').innerHTML=users.map(u=>'<tr><td>'+esc(u.name)+'</td><td>'+esc(u.email)+'</td><td><span class="pill'+(u.plan==='pro'?' pro':'')+'">'+esc(u.plan)+'</span></td><td>'+new Date(u.created_at).toLocaleDateString()+'</td><td><button class="btn btn-ghost btn-sm" onclick="setPlan(\''+esc(u.email)+'\',\''+(u.plan==='pro'?'free':'pro')+'\')">'+(u.plan==='pro'?'Make Free':'Make Pro')+'</button></td></tr>').join('');
+}
+function renderCodes(codes){
+  if(!codes.length){ $('codesBody').innerHTML='<tr><td colspan="6" class="muted">No codes yet — create one above.</td></tr>'; return; }
+  $('codesBody').innerHTML=codes.map(c=>'<tr><td><b>'+esc(c.code)+'</b></td><td><span class="pill'+(c.plan==='pro'?' pro':'')+'">'+esc(c.plan)+'</span></td><td>'+esc(c.label||'')+'</td><td>'+c.uses+(c.max_uses?' / '+c.max_uses:'')+'</td><td>'+(c.active?'<span class="ok">Active</span>':'<span class="err">Off</span>')+'</td><td><button class="btn btn-ghost btn-sm" onclick="toggleCode(\''+esc(c.code)+'\','+(c.active?0:1)+')">'+(c.active?'Deactivate':'Activate')+'</button></td></tr>').join('');
+}
+async function createCode(){
+  const code=$('newCode').value.trim().toUpperCase();
+  if(!code){$('createMsg').textContent='Enter a code first.';$('createMsg').className='status err';return;}
+  $('createBtn').disabled=true;
+  try{
+    await api('/api/admin/codes',{code:code,plan:$('newPlan').value,label:$('newLabel').value.trim(),max_uses:$('newMaxUses').value.trim()===''?null:Number($('newMaxUses').value)});
+    $('createMsg').textContent='✅ Code '+code+' created — send it to the customer.';
+    $('createMsg').className='status ok';
+    $('newCode').value=''; $('newLabel').value=''; $('newMaxUses').value='';
+    await loadAll();
+  }catch(e){
+    $('createMsg').textContent = e.message==='exists' ? '❌ This code already exists.' : (e.message==='bad_code' ? '❌ Code must be 4–32 letters, numbers or dashes.' : 'Something went wrong — please try again.');
+    $('createMsg').className='status err';
+  }
+  $('createBtn').disabled=false;
+}
+async function toggleCode(code,active){
+  try{ await api('/api/admin/codes/toggle',{code:code,active:!!active}); await loadAll(); }
+  catch(e){ $('dashMsg').textContent='Could not update that code.'; $('dashMsg').className='status err'; }
+}
+async function setPlan(email,plan){
+  try{ await api('/api/admin/users/set-plan',{email:email,plan:plan}); await loadAll(); }
+  catch(e){ $('dashMsg').textContent='Could not update that user.'; $('dashMsg').className='status err'; }
+}
+// On load: a saved admin token is re-checked with the server.
+(async()=>{
+  const t=token(); if(!t){ showLogin(); return; }
+  try{ const s=await api('/api/admin/stats'); showDash('Admin'); renderStats(s.stats); await loadAll(); }
+  catch(e){ localStorage.removeItem('clipblaster_admin_token'); showLogin(); }
+})();
+</script>
+</body>
+</html>
