@@ -150,7 +150,7 @@ body.is-pro #pricing{display:none}
   <div class="logo">CLIP<span>BLASTER</span><small>লং ভিডিও থেকে ভাইরাল শর্টস</small></div>
   <nav>
     <span id="userChip" class="pill hidden" onclick="openAuth('profile')" style="cursor:pointer" title="প্রোফাইল দেখতে চাপুন"></span>
-    <button class="btn btn-ghost" onclick="scrollToId('tool')">টুল ব্যবহার করুন</button>
+    <button class="btn btn-ghost" onclick="requireAuthThenTool()">টুল ব্যবহার করুন</button>
     <button class="btn btn-ghost" onclick="openPricing()">প্রাইসিং</button>
     <button class="btn btn-ghost" onclick="openSupport()">সাপোর্ট</button>
     <button id="signinBtn" class="btn btn-ghost" onclick="openAuth('login')">লগ ইন</button>
@@ -194,10 +194,20 @@ body.is-pro #pricing{display:none}
       <div class="floatChip chipC">⚡ 1 ক্লিকে কাট</div>
     </div>
     <div class="marquee"><div class="marqueeTrack">হুক ✦ স্লো জুম ✦ ভাইরাল মুহূর্ত ✦ 9:16 ভার্টিকাল ✦ SEO টাইটেল ✦ হ্যাশট্যাগ ✦ হুক ✦ স্লো জুম ✦ ভাইরাল মুহূর্ত ✦ 9:16 ভার্টিকাল ✦ SEO টাইটেল ✦ হ্যাশট্যাগ ✦ </div></div>
-    <p class="muted" style="margin-top:16px">লগ ইন করুন বা ফ্রি অ্যাকাউন্ট খুলুন — অথবা প্রতি ভিডিওতে 1টি শর্টস নিয়ে ফ্রি শুরু করুন।</p>
+    <p class="muted" style="margin-top:16px">ফ্রি অ্যাকাউন্ট খুলুন বা লগ ইন করুন — প্রতি ভিডিওতে 1টি শর্টস ফ্রি।</p>
   </section>
 
-  <section class="card toolCard" id="tool">
+  <section class="card toolCard" id="toolGate">
+    <h2>🔒 ফ্রি টুল ব্যবহার করতে অ্যাকাউন্ট লাগবে</h2>
+    <p class="muted">আপনার নিজের লং ভিডিও থেকে ভাইরাল শর্টস বানাতে প্রথমে একটি ফ্রি অ্যাকাউন্ট খুলুন বা লগ ইন করুন — অ্যাকাউন্ট ছাড়া টুল ব্যবহার করা যাবে না।</p>
+    <p style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+      <button class="btn btn-red" style="flex:1" onclick="openAuth('signup')">✍️ সাইন আপ করুন — ফ্রি</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="openAuth('login')">🔑 লগ ইন</button>
+    </p>
+    <p class="muted" style="margin-top:12px">ফ্রি অ্যাকাউন্টে প্রতি ভিডিওতে 1টি শর্টস। প্রো-তে (৳349/মাস) সর্বোচ্চ 5টি শর্টস + পুরো প্রো এডিট।</p>
+  </section>
+
+  <section class="card toolCard hidden" id="tool">
     <h2>ধাপ 1 — আপনার ভিডিও + শর্টস প্ল্যান</h2>
     <p class="muted">শুধু আপনার নিজের ভিডিও ব্যবহার করুন। অন্যের ভিডিওতে কপিরাইট / রিইউজড-কনটেন্টের ঝুঁকি থাকে, মনিটাইজ হবে না।</p>
     <label>আপনার নিজের ভিডিও ফাইল (MP4 / WebM)</label>
@@ -233,7 +243,7 @@ body.is-pro #pricing{display:none}
     <div id="clips"></div>
   </section>
 
-  <section class="card">
+  <section class="card hidden" id="toolStep2">
     <h2>ধাপ 2 — আপনার শর্টস ডাউনলোড করুন</h2>
     <p class="muted">আপনার ভিডিও ফাইলটি ধাপ 1-এ ইতিমধ্যে বাছাই করা আছে। ক্লিপ কার্ডের বড় ডাউনলোড বোতামটি চাপুন — ClipBlaster ঠিক সেই ভাইরাল মুহূর্তটি কেটে আসল 720×1280 MP4 শর্টস বানিয়ে দেবে, YouTube Shorts-এ আপলোডের জন্য প্রস্তুত।</p>
     <h3>অথবা ffmpeg ব্যবহার করুন (একই ক্লিপ, আপনার কম্পিউটারে)</h3>
@@ -254,14 +264,14 @@ body.is-pro #pricing{display:none}
 
   <section class="card" id="pricing">
     <h2>সাবস্ক্রিপশন — সহজ ও স্বচ্ছ</h2>
-    <p class="muted">ফ্রি অ্যাকাউন্ট খুলুন, লগ ইন করুন, অথবা ফ্রি শুরু করুন। প্রতিটি শর্টসে পুরো প্রোফেশনাল এডিট চাইলে প্রো-তে আপগ্রেড করুন।</p>
+    <p class="muted">ফ্রি অ্যাকাউন্ট খুলুন বা লগ ইন করুন। প্রতিটি শর্টসে পুরো প্রোফেশনাল এডিট চাইলে প্রো-তে আপগ্রেড করুন।</p>
     <div class="grid3" style="grid-template-columns:1fr 1fr">
       <div class="price">
         <h3>Free</h3>
         <div class="amount">৳0</div>
         <p class="muted">চেষ্টা করে দেখুন</p>
         <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>30 সেকেন্ডের ক্লিপ</li><li>আসল 9:16 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
-        <button class="btn btn-ghost" onclick="startFree()">ফ্রি ব্যবহার করুন — কোনো কোড লাগবে না</button>
+        <button class="btn btn-ghost" onclick="openAuth('signup')">ফ্রি অ্যাকাউন্ট খুলুন</button>
       </div>
       <div class="price pro">
         <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
@@ -276,7 +286,7 @@ body.is-pro #pricing{display:none}
 
   <section class="card">
     <h2>ClipBlaster কীভাবে ব্যবহার করবেন</h2>
-    <div class="stepRow"><div class="stepNum">1</div><div><b>সাইন আপ করুন বা ফ্রি শুরু করুন</b><p class="muted">ফ্রি অ্যাকাউন্ট খুলুন, অথবা ফ্রি শুরু করুন — লগ-ইন লাগবে না।</p></div></div>
+    <div class="stepRow"><div class="stepNum">1</div><div><b>সাইন আপ করুন</b><p class="muted">ফ্রি অ্যাকাউন্ট খুলুন, তারপর লগ ইন করুন।</p></div></div>
     <div class="stepRow"><div class="stepNum">2</div><div><b>আপনার নিজের ভিডিও ফাইলটি বেছে নিন</b><p class="muted">আপনার ডিভাইস থেকে সরাসরি MP4 বা WebM।</p></div></div>
     <div class="stepRow"><div class="stepNum">3</div><div><b>আপনার শর্টস প্ল্যানটি বেছে নিন</b><p class="muted">কয়টি শর্টস (1–5), দৈর্ঘ্য আর কালার স্টাইল।</p></div></div>
     <div class="stepRow"><div class="stepNum">4</div><div><b>শর্টস অটো ক্যাপচার চাপুন</b><p class="muted">ClipBlaster হুক, রাইজিং, ক্লাইম্যাক্স ও পেঅফ মুহূর্তগুলো বেছে নেয়।</p></div></div>
@@ -340,12 +350,6 @@ body.is-pro #pricing{display:none}
       </p>
     </div>
     <p id="authMsg" class="status muted"></p>
-    <div id="authFreeRow">
-    <p style="text-align:center;margin:14px 0 4px;color:#8a8aa2">— অথবা —</p>
-    <p style="margin-top:8px">
-      <button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="startFree()">▶ ফ্রি ব্যবহার করুন — প্রতি ভিডিওতে 1টি শর্টস, কোনো কোড লাগবে না</button>
-    </p>
-    </div>
   </div>
 </div>
 
@@ -471,8 +475,8 @@ const $=id=>document.getElementById(id);
 const STYLE_BN={vibrant:'ভাইব্র্যান্ট',cinematic:'সিনেমাটিক',soft:'সফট'};
 // ---- Auth (email + password) ----
 // Accounts sign in with email + password; the server returns a 30-day
-// session. Free visitors start with one click and no account — their
-// session lives only in this browser.
+// session. There is no guest use — every tool action needs a real
+// account (email + token); a session without both is treated as logged out.
 const API_BASE='https://clipblaster-api.nayeemahmed33000.workers.dev';
 async function apiCall(path,body,token){
   const headers={'Content-Type':'application/json'};
@@ -496,9 +500,12 @@ function buildChips(){
   $('countChips').innerHTML=[1,2,3,4,5].map(n=>`<button class="chip ${n===count?'on':''}" onclick="setCount(${n})">${n}</button>`).join('');
   $('lenChips').innerHTML=[30,45,60].map(n=>`<button class="chip ${n===lenSec?'on':''}" onclick="setLen(${n})">${n} সেকেন্ড</button>`).join('');
 }
-function setCount(n){const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){showToast('ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। সর্বোচ্চ 5টি শর্টস পেতে প্রো-তে আপগ্রেড করুন।');getPro();return;} count=n;buildChips();}
-function setLen(n){lenSec=n;buildChips();}
+function setCount(n){if(!hasRealAccount()){openAuth('signup');return;} const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){showToast('ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। সর্বোচ্চ 5টি শর্টস পেতে প্রো-তে আপগ্রেড করুন।');getPro();return;} count=n;buildChips();}
+function setLen(n){if(!hasRealAccount()){openAuth('signup');return;} lenSec=n;buildChips();}
 function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_session')||'null')}catch(e){return null}}
+// A real account = a server session with email + token. Guest sessions
+// (no token) no longer exist — anything without both is logged out.
+function hasRealAccount(){ const u=currentUser(); return !!(u&&u.email&&u.token); }
 function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stringify(u));else localStorage.removeItem('clipblaster_session');refreshAuthUI();}
 function firstName(n){return String(n||'').trim().split(/\s+/)[0]||'ইউজার';}
 function refreshAuthUI(){
@@ -506,6 +513,12 @@ function refreshAuthUI(){
   // Pro customers go straight to the tool — the marketing hero (with its
   // Get Pro buttons) is hidden for them.
   document.body.classList.toggle('is-pro', !!(u && u.plan==='pro'));
+  // No account, no tool: logged-out visitors see the gate panel instead
+  // of the upload / Auto Capture / download workflow.
+  const hasAccount=hasRealAccount();
+  $('tool').classList.toggle('hidden',!hasAccount);
+  $('toolStep2').classList.toggle('hidden',!hasAccount);
+  $('toolGate').classList.toggle('hidden',hasAccount);
   $('signinBtn').classList.toggle('hidden',!!u);
   $('signupBtn').classList.toggle('hidden',!!u);
   $('logoutBtn').classList.toggle('hidden',!u);
@@ -528,7 +541,6 @@ function openAuth(tab){
   $('tab-login').classList.toggle('hidden',loggedIn);
   $('tab-signup').classList.toggle('hidden',loggedIn);
   $('tab-profile').classList.toggle('hidden',!loggedIn);
-  $('authFreeRow').classList.toggle('hidden',loggedIn);
   $('authSub').textContent = !u ? 'লগ ইন করুন বা ফ্রি অ্যাকাউন্ট খুলুন — ইমেইল ভেরিফিকেশন লাগবে না।'
     : (u.plan==='pro' ? 'লগ ইন করেছেন: '+u.name+' — 👑 প্রো।' : 'লগ ইন করেছেন: '+u.name+' — ফ্রি। নিচে আপনার প্রোফাইল থেকে প্রো-তে আপগ্রেড করুন।');
   $('authMsg').textContent='';$('authMsg').className='status muted';
@@ -589,13 +601,6 @@ async function doSignup(){
     else if(e.message==='network') authError('সার্ভারে পৌঁছানো যাচ্ছে না — আপনার ইন্টারনেট দেখে আবার চেষ্টা করুন।');
     else authError('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।');
   }
-}
-function startFree(){
-  window.__cbReturnToPro=false;
-  setSession({plan:'free',name:'ফ্রি ইউজার',verified:true,mode:'free'});
-  closeModal('authModal');
-  openModal('getProPopup');
-  scrollToId('tool');
 }
 function logout(){
   const u=currentUser();
@@ -683,7 +688,7 @@ async function apiGet(path,token){
   if(!r.ok) throw new Error(d.error||('http_'+r.status));
   return d;
 }
-function supportHasAccount(){ const u=currentUser(); return !!(u&&u.email&&u.token); }
+function supportHasAccount(){ return hasRealAccount(); }
 function openSupport(){
   openModal('supportModal');
   $('supportMsg').textContent=''; $('supportMsg').className='status muted';
@@ -761,14 +766,15 @@ async function replySupport(id){
     else supportError('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।');
   }
 }
-function requireAuthThenTool(){ const u=currentUser(); if(!u){openAuth();return;} scrollToId('tool'); }
-// On load: a code session (token) is re-checked with the server; a Free
-// session (no token) lives in this browser only and is kept as-is.
-// Old account sessions (from before the code system) have no code and
-// no valid token — they are cleared so the visitor activates fresh.
+function requireAuthThenTool(){ if(!hasRealAccount()){openAuth('signup');return;} scrollToId('tool'); }
+// On load: a server session (token) is re-checked with the server.
+// Anything without a token (old guest Free sessions, old account
+// sessions from before the code system) is cleared — no guest use.
 async function refreshSession(){
   const u=currentUser(); if(!u) return;
-  if(!u.token){ if(u.mode==='free') return; setSession(null); return; }
+  // No guest sessions anymore: anything without a server token is
+  // cleared, so an old guest Free session can't reach the tool.
+  if(!u.token){ setSession(null); return; }
   try{
     const d=await apiCall('/api/auth/me',{},u.token);
     setSession({token:u.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,code:u.code});
@@ -787,6 +793,7 @@ function hookFor(title,i){
   return hooks[i%hooks.length]+' — '+t.slice(0,40);
 }
 function autoCapture(){
+  if(!hasRealAccount()){openAuth('signup');return;}
   if(!selectedFile){$('toolStatus').textContent='আগে আপনার ভিডিও ফাইলটি বেছে নিন।';return;}
   const u=currentUser(); const maxN=u&&u.plan==='pro'?5:1; const n=Math.min(count,maxN);
   let dur=durationSec||600;
@@ -847,6 +854,7 @@ async function getFFmpeg(){
   ffmpegInst=await ffmpegLoading; return ffmpegInst;
 }
 $('fileInput').addEventListener('change',e=>{
+  if(!hasRealAccount()){ e.target.value=''; openAuth('signup'); return; }
   const f=e.target.files[0]; if(!f) return;
   selectedFile=f;
   fileURL=URL.createObjectURL(f);
@@ -943,6 +951,7 @@ async function proCut(ff,c){
   window.__cbProHook=hookOn;
 }
 async function downloadClip(n){
+  if(!hasRealAccount()){openAuth('signup');return;}
   const c=clips.find(x=>x.n===n); if(!c) return;
   const v=$('fileVideo');
   if(!fileURL||!v.src||!selectedFile){pendingClip=n; $('dlStatus'+n).innerHTML='<span class="warn">⚠️ এখন আপনার ভিডিও ফাইলটি বেছে নিন — ফাইল পিকার খুলছে। বেছে নিলেই শর্টস '+n+' নিজে নিজে ডাউনলোড হবে।</span>'; document.getElementById('fileInput').click(); return;}
