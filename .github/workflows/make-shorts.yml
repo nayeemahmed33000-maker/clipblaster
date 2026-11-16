@@ -11,6 +11,7 @@
 #   4. It can also be run by hand from the Actions tab (workflow_dispatch).
 #
 # Public repo, so Actions minutes are free. Runs are serialized
+# (re-push 2026-11-16 16:41 to re-register the schedule)
 # (concurrency group) so two runs never claim the same job.
 
 name: Make Shorts (Pro)
