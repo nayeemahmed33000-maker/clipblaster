@@ -152,6 +152,7 @@ body.is-pro #pricing{display:none}
     <span id="userChip" class="pill hidden" onclick="openAuth('profile')" style="cursor:pointer" title="প্রোফাইল দেখতে চাপুন"></span>
     <button class="btn btn-ghost" onclick="scrollToId('tool')">টুল ব্যবহার করুন</button>
     <button class="btn btn-ghost" onclick="openPricing()">প্রাইসিং</button>
+    <button class="btn btn-ghost" onclick="openSupport()">সাপোর্ট</button>
     <button id="signinBtn" class="btn btn-ghost" onclick="openAuth('login')">লগ ইন</button>
     <button id="signupBtn" class="btn btn-red" onclick="openAuth('signup')">সাইন আপ</button>
     <button id="logoutBtn" class="btn btn-ghost hidden" onclick="logout()">লগ আউট</button>
@@ -285,7 +286,7 @@ body.is-pro #pricing{display:none}
   </section>
 </div>
 
-<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস, প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span><br><a href="admin.html" style="color:#8a8aa2">Admin Dashboard</a></footer>
+<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস, প্রতি ভিডিওতে সর্বোচ্চ 5টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span></footer>
 
 <!-- Auth modal — Log In / Sign Up -->
 <div class="modal" id="authModal">
@@ -427,6 +428,43 @@ body.is-pro #pricing{display:none}
   </div>
 </div>
 
+<!-- Support modal — tickets + direct contact -->
+<div class="modal" id="supportModal">
+  <div class="modalBox" style="max-width:560px">
+    <button class="closeX" onclick="closeModal('supportModal')">×</button>
+    <h2>💬 সাপোর্ট</h2>
+    <p class="muted">সমস্যা বা প্রশ্ন থাকলে টিকিট খুলুন — অ্যাডমিন উত্তর দেবেন। অথবা সরাসরি যোগাযোগ করুন।</p>
+    <div id="supportLoginNote" class="hidden">
+      <p class="status">সাপোর্ট টিকিট খুলতে লগ ইন করুন।</p>
+      <p><button class="btn btn-red" style="width:100%;padding:13px;font-size:16px" onclick="loginThenSupport()">লগ ইন / সাইন আপ</button></p>
+    </div>
+    <div id="supportMain">
+      <div class="tabs">
+        <button class="tab on" id="supportTab-new" onclick="showSupportTab('new')">✉️ নতুন টিকিট</button>
+        <button class="tab" id="supportTab-mine" onclick="showSupportTab('mine')">📋 আমার টিকিট</button>
+      </div>
+      <div id="supportPane-new">
+        <label>বিষয়</label>
+        <input id="supportSubject" type="text" placeholder="যেমন: পেমেন্ট অনুমোদন হয়নি" maxlength="120">
+        <label>বার্তা</label>
+        <textarea id="supportMessage" rows="4" placeholder="আপনার সমস্যাটি বিস্তারিত লিখুন…" maxlength="2000"></textarea>
+        <p style="margin-top:14px"><button class="btn btn-red" id="supportSubmitBtn" style="width:100%;padding:13px;font-size:16px" onclick="submitSupport()">পাঠান</button></p>
+      </div>
+      <div id="supportPane-mine" class="hidden">
+        <div id="supportList"></div>
+      </div>
+      <p id="supportMsg" class="status muted"></p>
+    </div>
+    <div style="border-top:1px solid #2a2a44;margin-top:16px;padding-top:14px">
+      <p class="muted" style="margin-bottom:10px">সরাসরি যোগাযোগ</p>
+      <p style="display:flex;gap:8px">
+        <a class="btn btn-green" style="flex:1;text-align:center;text-decoration:none" href="https://wa.me/8801402029316" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <a class="btn btn-ghost" style="flex:1;text-align:center;text-decoration:none" href="https://t.me/nayeemahmed4500" target="_blank" rel="noopener">✈️ Telegram</a>
+      </p>
+    </div>
+  </div>
+</div>
+
 <script>
 let count=3, lenSec=30, durationSec=0, clips=[];
 const $=id=>document.getElementById(id);
@@ -516,6 +554,7 @@ async function doLogin(){
     setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
     if(window.__cbReturnToPro){ window.__cbReturnToPro=false; showToast('✅ স্বাগতম, '+d.user.name+'! এখন নিচে আপনার TrxID দিন।'); getPro(); return; }
+    if(window.__cbReturnToSupport){ window.__cbReturnToSupport=false; showToast('✅ স্বাগতম, '+d.user.name+'! এখন আপনার টিকিট লিখুন।'); openSupport(); return; }
     showToast('✅ স্বাগতম, '+d.user.name+'! '+(d.user.plan==='pro'?'👑 প্রো চালু আছে।':'ফ্রি প্ল্যান চালু আছে।'));
     scrollToId('tool');
   }catch(e){
@@ -538,6 +577,7 @@ async function doSignup(){
     setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
     if(window.__cbReturnToPro){ window.__cbReturnToPro=false; showToast('✅ অ্যাকাউন্ট খোলা হয়েছে — স্বাগতম, '+d.user.name+'! এখন নিচে আপনার TrxID দিন।'); getPro(); return; }
+    if(window.__cbReturnToSupport){ window.__cbReturnToSupport=false; showToast('✅ অ্যাকাউন্ট খোলা হয়েছে — স্বাগতম, '+d.user.name+'! এখন আপনার টিকিট লিখুন।'); openSupport(); return; }
     showToast('✅ অ্যাকাউন্ট খোলা হয়েছে — স্বাগতম, '+d.user.name+'! ফ্রি প্ল্যান চালু আছে। যেকোনো সময় প্রাইসিং থেকে প্রো-তে আপগ্রেড করতে পারেন।');
     scrollToId('tool');
   }catch(e){
@@ -578,7 +618,7 @@ function getPro(){ payInvoice=newInvoice(); $('payInvoice').textContent=payInvoi
 // From the payment modal: log in / sign up, then come straight back
 // here so the TrxID box is waiting — no second Get Pro tap needed.
 function loginThenPro(){ window.__cbReturnToPro=true; closeModal('proModal'); openAuth('signup'); }
-function closeAuthModal(){ window.__cbReturnToPro=false; closeModal('authModal'); }
+function closeAuthModal(){ window.__cbReturnToPro=false; window.__cbReturnToSupport=false; closeModal('authModal'); }
 function copyNum(n){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(n).then(()=>showToast('✅ নম্বর কপি হয়েছে: '+n)).catch(()=>showToast(n));}else{showToast(n);}}
 async function refreshPayForm(){
   const u=currentUser();
@@ -628,6 +668,97 @@ async function submitPayment(){
     $('payMsg').className='status err';
   }
   $('paySubmitBtn').disabled=false; $('paySubmitBtn').textContent='ভেরিফাই করুন';
+}
+// ---- Support tickets ----
+// A signed-in customer opens a ticket; the owner replies from Admin.
+// Only real accounts (email + token) can open tickets — a guest Free
+// session or a code session has no account to attach the ticket to.
+const SUPPORT_STATUS_BN={open:'🟢 খোলা',answered:'💬 উত্তর দেওয়া হয়েছে',closed:'⚪ বন্ধ'};
+const escHtml=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function apiGet(path,token){
+  const headers={}; if(token) headers['Authorization']='Bearer '+token;
+  let r; try{ r=await fetch(API_BASE+path,{headers:headers}); }catch(e){ throw new Error('network'); }
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(d.error||('http_'+r.status));
+  return d;
+}
+function supportHasAccount(){ const u=currentUser(); return !!(u&&u.email&&u.token); }
+function openSupport(){
+  openModal('supportModal');
+  $('supportMsg').textContent=''; $('supportMsg').className='status muted';
+  $('supportLoginNote').classList.toggle('hidden',supportHasAccount());
+  $('supportMain').classList.toggle('hidden',!supportHasAccount());
+  if(supportHasAccount()){ showSupportTab('new'); loadMyTickets(); }
+}
+// From the support modal: log in / sign up, then come straight back
+// here so the ticket form is waiting.
+function loginThenSupport(){ window.__cbReturnToSupport=true; closeModal('supportModal'); openAuth('signup'); }
+function showSupportTab(tab){
+  $('supportTab-new').classList.toggle('on',tab==='new');
+  $('supportTab-mine').classList.toggle('on',tab==='mine');
+  $('supportPane-new').classList.toggle('hidden',tab!=='new');
+  $('supportPane-mine').classList.toggle('hidden',tab!=='mine');
+  if(tab==='mine') loadMyTickets();
+}
+function supportError(msg){ const m=$('supportMsg'); m.textContent=msg; m.className='status err'; }
+function supportOk(msg){ const m=$('supportMsg'); m.textContent=msg; m.className='status ok'; }
+async function submitSupport(){
+  const u=currentUser(); if(!supportHasAccount()){ openAuth('signup'); return; }
+  const subject=$('supportSubject').value.trim(), message=$('supportMessage').value.trim();
+  if(!subject){ supportError('❌ টিকিটের বিষয় লিখুন।'); return; }
+  if(!message){ supportError('❌ আপনার বার্তাটি লিখুন।'); return; }
+  $('supportSubmitBtn').disabled=true; $('supportSubmitBtn').textContent='পাঠানো হচ্ছে…';
+  try{
+    await apiCall('/api/support/submit',{subject:subject,message:message},u.token);
+    supportOk('✅ আপনার টিকিট জমা হয়েছে — অ্যাডমিন শীঘ্রই উত্তর দেবেন।');
+    $('supportSubject').value=''; $('supportMessage').value='';
+    loadMyTickets();
+  }catch(e){
+    if(e.message==='unauthorized') supportError('আবার লগ ইন করে, তারপর পাঠান।');
+    else if(e.message==='network') supportError('সার্ভারে পৌঁছানো যাচ্ছে না — আপনার ইন্টারনেট দেখে আবার চেষ্টা করুন।');
+    else supportError('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।');
+  }
+  $('supportSubmitBtn').disabled=false; $('supportSubmitBtn').textContent='পাঠান';
+}
+let myTickets=[];
+async function loadMyTickets(){
+  const u=currentUser(); if(!supportHasAccount()) return;
+  try{
+    const d=await apiGet('/api/support/mine',u.token);
+    myTickets=d.tickets||[];
+    renderMyTickets();
+  }catch(e){ $('supportList').innerHTML='<p class="status err">টিকিট লোড করা যায়নি — আবার চেষ্টা করুন।</p>'; }
+}
+function renderMyTickets(){
+  const box=$('supportList');
+  if(!myTickets.length){ box.innerHTML='<p class="muted">আপনার এখনো কোনো টিকিট নেই।</p>'; return; }
+  box.innerHTML=myTickets.map(t=>{
+    const replies=(t.replies||[]).map(r=>'<div style="border-top:1px solid #23233a;padding:8px 0"><b>'+(r.author==='admin'?'🛎️ অ্যাডমিন':'👤 আপনি')+'</b> <span class="muted">'+new Date(r.created_at).toLocaleString()+'</span><br>'+escHtml(r.message)+'</div>').join('');
+    return '<div class="clip" style="margin:10px 0"><h3 style="margin:0 0 4px">'+escHtml(t.subject)+'</h3>'
+      +'<p class="muted">'+(SUPPORT_STATUS_BN[t.status]||t.status)+' • '+new Date(t.created_at).toLocaleDateString()+'</p>'
+      +'<p>'+escHtml(t.message)+'</p>'
+      +'<div id="thread-'+escHtml(t.id)+'" class="hidden">'+replies
+      +'<textarea id="reply-'+escHtml(t.id)+'" rows="2" placeholder="আরও কিছু লিখুন…" style="margin-top:8px"></textarea>'
+      +'<p style="margin-top:8px"><button class="btn btn-ghost" onclick="replySupport(\''+escHtml(t.id)+'\')">উত্তর পাঠান</button></p></div>'
+      +'<p><button class="btn btn-ghost btn-sm" onclick="toggleTicket(\''+escHtml(t.id)+'\')">💬 কথোপকথন দেখুন ('+(t.replies||[]).length+')</button></p></div>';
+  }).join('');
+}
+function toggleTicket(id){ const el=$('thread-'+id); if(el) el.classList.toggle('hidden'); }
+async function replySupport(id){
+  const u=currentUser(); if(!supportHasAccount()){ openAuth('signup'); return; }
+  const ta=$('reply-'+id); const message=(ta?ta.value:'').trim();
+  if(!message){ supportError('❌ উত্তরটি লিখুন।'); return; }
+  try{
+    await apiCall('/api/support/reply',{ticket_id:id,message:message},u.token);
+    supportOk('✅ আপনার উত্তর পাঠানো হয়েছে।');
+    const wasOpen=$('thread-'+id)&&!$('thread-'+id).classList.contains('hidden');
+    await loadMyTickets();
+    if(wasOpen){ const el=$('thread-'+id); if(el) el.classList.remove('hidden'); }
+  }catch(e){
+    if(e.message==='unauthorized') supportError('আবার লগ ইন করে, তারপর পাঠান।');
+    else if(e.message==='network') supportError('সার্ভারে পৌঁছানো যাচ্ছে না — আপনার ইন্টারনেট দেখে আবার চেষ্টা করুন।');
+    else supportError('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।');
+  }
 }
 function requireAuthThenTool(){ const u=currentUser(); if(!u){openAuth();return;} scrollToId('tool'); }
 // On load: a code session (token) is re-checked with the server; a Free
