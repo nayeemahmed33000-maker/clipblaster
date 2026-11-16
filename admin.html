@@ -129,8 +129,8 @@ footer{color:#8a8aa2;font-size:13px;text-align:center;padding:20px}
     <section class="card">
       <h2>👥 Users</h2>
       <div class="tblWrap"><table>
-        <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Joined</th><th></th></tr></thead>
-        <tbody id="usersBody"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+        <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+        <tbody id="usersBody"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
       </table></div>
     </section>
   </section>
@@ -264,8 +264,8 @@ async function decidePayment(id,approve){
   catch(e){ $('dashMsg').textContent = e.message==='no_account' ? 'That email has no ClipBlaster account yet.' : 'Could not update that payment.'; $('dashMsg').className='status err'; }
 }
 function renderUsers(users){
-  if(!users.length){ $('usersBody').innerHTML='<tr><td colspan="5" class="muted">No users yet.</td></tr>'; return; }
-  $('usersBody').innerHTML=users.map(u=>'<tr><td>'+esc(u.name)+'</td><td>'+esc(u.email)+'</td><td><span class="pill'+(u.plan==='pro'?' pro':'')+'">'+esc(u.plan)+'</span></td><td>'+new Date(u.created_at).toLocaleDateString()+'</td><td><button class="btn btn-ghost btn-sm" onclick="setPlan(\''+esc(u.email)+'\',\''+(u.plan==='pro'?'free':'pro')+'\')">'+(u.plan==='pro'?'Make Free':'Make Pro')+'</button></td></tr>').join('');
+  if(!users.length){ $('usersBody').innerHTML='<tr><td colspan="6" class="muted">No users yet.</td></tr>'; return; }
+  $('usersBody').innerHTML=users.map(u=>'<tr><td>'+esc(u.name)+'</td><td>'+esc(u.email)+'</td><td><span class="pill'+(u.plan==='pro'?' pro':'')+'">'+esc(u.plan)+'</span></td><td>'+(u.status==='deactivated'?'<span class="err">Deactivated</span>':'<span class="ok">Active</span>')+'</td><td>'+new Date(u.created_at).toLocaleDateString()+'</td><td><button class="btn btn-ghost btn-sm" onclick="setPlan(\''+esc(u.email)+'\',\''+(u.plan==='pro'?'free':'pro')+'\')">'+(u.plan==='pro'?'Make Free':'Make Pro')+'</button> <button class="btn btn-ghost btn-sm" onclick="setStatus(\''+esc(u.email)+'\',\''+(u.status==='deactivated'?'active':'deactivated')+'\')">'+(u.status==='deactivated'?'Activate':'Deactivate')+'</button> <button class="btn btn-red btn-sm" onclick="deleteUser(\''+esc(u.email)+'\')">Delete</button></td></tr>').join('');
 }
 function renderCodes(codes){
   if(!codes.length){ $('codesBody').innerHTML='<tr><td colspan="6" class="muted">No codes yet.</td></tr>'; return; }
@@ -278,6 +278,15 @@ async function toggleCode(code,active){
 async function setPlan(email,plan){
   try{ await api('/api/admin/users/set-plan',{email:email,plan:plan}); await loadAll(); $('dashMsg').textContent='✅ '+email+' is now '+plan.toUpperCase()+'.'; $('dashMsg').className='status ok'; }
   catch(e){ $('dashMsg').textContent='Could not update that user.'; $('dashMsg').className='status err'; }
+}
+async function setStatus(email,status){
+  try{ await api('/api/admin/users/set-status',{email:email,status:status}); await loadAll(); $('dashMsg').textContent='✅ '+email+' is now '+(status==='deactivated'?'Deactivated':'Active')+'.'; $('dashMsg').className='status ok'; }
+  catch(e){ $('dashMsg').textContent='Could not update that user.'; $('dashMsg').className='status err'; }
+}
+async function deleteUser(email){
+  if(!confirm('Delete this account permanently?\n\n'+email+'\n\nTheir sessions and support tickets will be deleted too. Their payments stay as sales records. This cannot be undone.')) return;
+  try{ await api('/api/admin/users/delete',{email:email}); await loadAll(); $('dashMsg').textContent='✅ '+email+' deleted.'; $('dashMsg').className='status ok'; }
+  catch(e){ $('dashMsg').textContent='Could not delete that user.'; $('dashMsg').className='status err'; }
 }
 // On load: a saved admin token is re-checked with the server.
 // Only a real 401 (unauthorized) logs out — a network blip or a single
