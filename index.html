@@ -45,6 +45,8 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .profileRow{display:flex;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid #23233a;font-size:15px}
 .profileRow span{color:#9a9ab2}
+.payRow{display:flex;align-items:center;gap:10px;background:#0f0f1e;border:1px solid #2a2a44;border-radius:10px;padding:10px 12px;margin:6px 0}
+.payRow code{flex:1;font-size:17px;letter-spacing:1px}
 .clip{border:1px solid #2a2a44;border-radius:14px;padding:16px;margin:14px 0;background:#101022}
 .clip h3{margin:0 0 6px}
 .dl{width:100%;padding:14px;font-size:16px;margin-top:10px}
@@ -179,7 +181,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
         <p class="muted">For serious creators</p>
         <ul><li>Up to 5 Shorts per video</li><li>30 / 45 / 60-sec clips</li><li>Professional auto-edit: hook, zoom, colour grade</li><li>Hook text burned in + slow zoom + mid punch + fade in/out + vignette</li><li>Loudness normalised</li><li>SEO title + description + hashtags</li><li>Download ready MP4 Shorts</li></ul>
         <button class="btn btn-red" onclick="getPro()">Get Pro — ৳349/month</button>
-        <p class="muted" style="margin-top:10px">No online card checkout yet — payment is manual via bKash / Nagad.</p>
+        <p class="muted" style="margin-top:10px">No online card checkout yet — pay ৳349 via bKash / Nagad / Rocket, submit your TrxID, and Pro activates after approval.</p>
       </div>
     </div>
   </section>
@@ -265,13 +267,27 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('proModal')">×</button>
     <h2>👑 Get Pro — ৳349/month</h2>
-    <p>3 easy steps:</p>
-    <p><b>1.</b> Pay ৳349 via bKash / Nagad.<br><b>2.</b> Send the payment screenshot to <b>nayeemahmed33000@gmail.com</b>.<br><b>3.</b> You get a Pro activation code — enter it on ClipBlaster and Pro activates instantly.</p>
-    <p class="muted">No online card checkout yet — payment is manual via bKash / Nagad. No bKash / Nagad number is shown here.</p>
-    <p style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn btn-green" style="flex:1" onclick="markProRequested()">I Paid — Got It</button>
-      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('proModal')">Maybe Later</button>
-    </p>
+    <p><b>1.</b> Pay ৳349 with <b>Send Money</b> to any one of these numbers (Personal):</p>
+    <div>
+      <div class="payRow"><span>🩷 <b>bKash</b></span><code>01402029316</code><button class="btn btn-ghost btn-sm" onclick="copyNum('01402029316')">Copy</button></div>
+      <div class="payRow"><span>💜 <b>Nagad</b></span><code>01883621355</code><button class="btn btn-ghost btn-sm" onclick="copyNum('01883621355')">Copy</button></div>
+      <div class="payRow"><span>💚 <b>Rocket</b></span><code>014020293163</code><button class="btn btn-ghost btn-sm" onclick="copyNum('014020293163')">Copy</button></div>
+    </div>
+    <p><b>2.</b> Enter the <b>TrxID</b> from your payment receipt below and submit. The admin approves it and your account turns Pro automatically.</p>
+    <div id="payForm">
+      <label>Payment method</label>
+      <select id="payMethod"><option value="bkash">bKash</option><option value="nagad">Nagad</option><option value="rocket">Rocket</option></select>
+      <label>TrxID (from the payment SMS / app receipt)</label>
+      <input id="payTrxid" type="text" placeholder="e.g. 9KX7A1B2C3" autocomplete="off" style="text-transform:uppercase">
+      <p style="margin-top:12px"><button class="btn btn-green" id="paySubmitBtn" style="width:100%;padding:13px;font-size:16px" onclick="submitPayment()">✅ Submit Payment — ৳349</button></p>
+    </div>
+    <div id="payLoginNote" class="hidden">
+      <p class="status">Please log in or sign up first — your payment will be linked to your account.</p>
+      <p><button class="btn btn-red" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('proModal');openAuth('signup')">Log In / Sign Up</button></p>
+    </div>
+    <p id="payMsg" class="status muted"></p>
+    <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">No online card checkout yet. Facing trouble? Send the payment screenshot to nayeemahmed33000@gmail.com.</p>
+    <p style="margin-top:12px"><button class="btn btn-ghost" style="width:100%" onclick="closeModal('proModal')">Maybe Later</button></p>
   </div>
 </div>
 
@@ -282,7 +298,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
     <h2>🚀 Upgrade to Pro</h2>
     <p><b>৳349/month</b> — up to 5 Shorts per video, professional auto-edit with hook text, zoom and fade, and full SEO packs.</p>
     <p style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn btn-red" style="flex:1" onclick="closeModal('getProPopup');openModal('proModal')">Get Pro — ৳349/month</button>
+      <button class="btn btn-red" style="flex:1" onclick="closeModal('getProPopup');getPro()">Get Pro — ৳349/month</button>
       <button class="btn btn-ghost" style="flex:1" onclick="closeModal('getProPopup')">Maybe Later</button>
     </p>
   </div>
@@ -315,7 +331,7 @@ function buildChips(){
   $('countChips').innerHTML=[1,2,3,4,5].map(n=>`<button class="chip ${n===count?'on':''}" onclick="setCount(${n})">${n}</button>`).join('');
   $('lenChips').innerHTML=[30,45,60].map(n=>`<button class="chip ${n===lenSec?'on':''}" onclick="setLen(${n})">${n} sec</button>`).join('');
 }
-function setCount(n){const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){showToast('Free plan: 1 Short per video. Upgrade to Pro for up to 5 Shorts.');openModal('proModal');return;} count=n;buildChips();}
+function setCount(n){const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){showToast('Free plan: 1 Short per video. Upgrade to Pro for up to 5 Shorts.');getPro();return;} count=n;buildChips();}
 function setLen(n){lenSec=n;buildChips();}
 function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_session')||'null')}catch(e){return null}}
 function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stringify(u));else localStorage.removeItem('clipblaster_session');refreshAuthUI();}
@@ -431,10 +447,40 @@ function logout(){
   if(u&&u.token){ apiCall('/api/auth/logout',{},u.token).catch(()=>{}); }
   setSession(null);
 }
-function getPro(){openModal('proModal')}
-function markProRequested(){
-  closeModal('proModal');
-  showToast('Thanks! Send your payment screenshot to nayeemahmed33000@gmail.com — you will get a Pro activation code. Enter it and Pro activates instantly.');
+function getPro(){openModal('proModal');refreshPayForm();}
+function copyNum(n){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(n).then(()=>showToast('✅ Number copied: '+n)).catch(()=>showToast(n));}else{showToast(n);}}
+async function refreshPayForm(){
+  const u=currentUser();
+  $('payForm').classList.toggle('hidden',!u);
+  $('payLoginNote').classList.toggle('hidden',!!u);
+  $('payMsg').textContent='';$('payMsg').className='status muted';
+  if(!u) return;
+  if(u.plan==='pro'){ $('payMsg').textContent='✅ You are already on Pro 👑.'; $('payMsg').className='status ok'; $('payForm').classList.add('hidden'); return; }
+  try{
+    const d=await apiCall('/api/payments/mine',{},u.token);
+    if(d.payment&&d.payment.status==='pending'){ $('payMsg').textContent='⏳ Your payment ('+d.payment.method.toUpperCase()+' • '+d.payment.trxid+') is waiting for approval. You will be Pro as soon as it is approved.'; $('payMsg').className='status'; $('payForm').classList.add('hidden'); }
+    else if(d.payment&&d.payment.status==='approved'){ $('payMsg').textContent='✅ Your payment was approved — refresh the page to see Pro active.'; $('payMsg').className='status ok'; $('payForm').classList.add('hidden'); }
+  }catch(e){}
+}
+async function submitPayment(){
+  const u=currentUser(); if(!u){ openAuth('signup'); return; }
+  const method=$('payMethod').value, trxid=$('payTrxid').value.trim().toUpperCase();
+  if(!/^[A-Z0-9]{6,20}$/.test(trxid)){ $('payMsg').textContent='❌ Enter the TrxID from your payment receipt (6–20 letters/numbers).'; $('payMsg').className='status err'; return; }
+  $('paySubmitBtn').disabled=true; $('paySubmitBtn').textContent='Submitting…';
+  try{
+    await apiCall('/api/payments/submit',{method:method,trxid:trxid},u.token);
+    $('payMsg').textContent='✅ Payment submitted! The admin will approve it shortly — refresh the page after approval to see Pro active.';
+    $('payMsg').className='status ok';
+    $('payForm').classList.add('hidden');
+  }catch(e){
+    if(e.message==='duplicate') $('payMsg').textContent='❌ This TrxID was already submitted.';
+    else if(e.message==='already_pending') $('payMsg').textContent='⏳ You already have a payment waiting for approval.';
+    else if(e.message==='unauthorized') $('payMsg').textContent='Please log in again, then submit.';
+    else if(e.message==='network') $('payMsg').textContent='Could not reach the server — check your connection and try again.';
+    else $('payMsg').textContent='Something went wrong — please try again.';
+    $('payMsg').className='status err';
+  }
+  $('paySubmitBtn').disabled=false; $('paySubmitBtn').textContent='✅ Submit Payment — ৳349';
 }
 function requireAuthThenTool(){ const u=currentUser(); if(!u){openAuth();return;} scrollToId('tool'); }
 // On load: a code session (token) is re-checked with the server; a Free
