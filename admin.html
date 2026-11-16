@@ -120,7 +120,7 @@ async function api(path,body,method){
   const headers={'Content-Type':'application/json'};
   const t=token(); if(t) headers['Authorization']='Bearer '+t;
   let r;
-  try{ r=await fetch(API_BASE+path,{method:method||(body?'POST':'GET'),headers:headers,body:body?JSON.stringify(body):undefined}); }
+  try{ r=await fetch(API_BASE+path,{method:method||(body?'POST':'GET'),headers:headers,body:body?JSON.stringify(body):undefined,cache:'no-store'}); }
   catch(e){ throw new Error('network'); }
   const d=await r.json().catch(()=>({}));
   if(!r.ok) throw new Error(d.error||('http_'+r.status));
@@ -179,11 +179,20 @@ async function createCode(){
   const code=$('newCode').value.trim().toUpperCase();
   if(!code){$('createMsg').textContent='Enter a code first.';$('createMsg').className='status err';return;}
   $('createBtn').disabled=true;
+  const plan=$('newPlan').value, label=$('newLabel').value.trim();
   try{
-    await api('/api/admin/codes',{code:code,plan:$('newPlan').value,label:$('newLabel').value.trim(),max_uses:$('newMaxUses').value.trim()===''?null:Number($('newMaxUses').value)});
+    await api('/api/admin/codes',{code:code,plan:plan,label:label,max_uses:$('newMaxUses').value.trim()===''?null:Number($('newMaxUses').value)});
     $('createMsg').textContent='✅ Code '+code+' created — send it to the customer.';
     $('createMsg').className='status ok';
     $('newCode').value=''; $('newLabel').value=''; $('newMaxUses').value='';
+    // Show the new row at once, even if the refetch below is slow or stale.
+    const tb=$('codesBody');
+    if(tb){
+      if(tb.querySelector('td[colspan]')) tb.innerHTML='';
+      const tr=document.createElement('tr');
+      tr.innerHTML='<td><b>'+esc(code)+'</b></td><td><span class="pill'+(plan==='pro'?' pro':'')+'">'+esc(plan)+'</span></td><td>'+esc(label)+'</td><td>0</td><td><span class="ok">Active</span></td><td><button class="btn btn-ghost btn-sm" onclick="toggleCode(\''+esc(code)+'\',0)">Deactivate</button></td>';
+      tb.prepend(tr);
+    }
     await loadAll();
   }catch(e){
     $('createMsg').textContent = e.message==='exists' ? '❌ This code already exists.' : (e.message==='bad_code' ? '❌ Code must be 4–32 letters, numbers or dashes.' : 'Something went wrong — please try again.');
