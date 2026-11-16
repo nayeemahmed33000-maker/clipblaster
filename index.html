@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClipBlaster — Turn Long Videos Into Viral Shorts</title>
 <meta name="description" content="ClipBlaster turns your own long video into 1-5 viral vertical Shorts with professional auto-edit, hook text, zoom and colour grade, and SEO titles, descriptions and hashtags.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff5a3c'/%3E%3Ctext x='32' y='44' font-size='34' font-weight='900' text-anchor='middle' fill='white' font-family='Arial'%3ECB%3C/text%3E%3C/svg%3E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b0b16;color:#f2f2f8;line-height:1.6}
@@ -40,6 +41,8 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .tabs{display:flex;gap:8px;margin:14px 0 4px}
 .tab{flex:1;padding:10px;border:1px solid #3a3a55;background:#0f0f1e;color:#fff;border-radius:10px;cursor:pointer;font-weight:700;font-size:15px}
 .tab.on{background:#ff5a3c;border-color:#ff5a3c}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1e1e38;border:1px solid #3a3a55;color:#fff;padding:13px 18px;border-radius:12px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:all .25s;z-index:999;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .clip{border:1px solid #2a2a44;border-radius:14px;padding:16px;margin:14px 0;background:#101022}
 .clip h3{margin:0 0 6px}
 .dl{width:100%;padding:14px;font-size:16px;margin-top:10px}
@@ -292,11 +295,13 @@ async function apiCall(path,body,token){
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
 function openModal(id){$(id).classList.add('open')}
 function closeModal(id){$(id).classList.remove('open')}
+let toastTimer=null;
+function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),4000);}
 function buildChips(){
   $('countChips').innerHTML=[1,2,3,4,5].map(n=>`<button class="chip ${n===count?'on':''}" onclick="setCount(${n})">${n}</button>`).join('');
   $('lenChips').innerHTML=[30,45,60].map(n=>`<button class="chip ${n===lenSec?'on':''}" onclick="setLen(${n})">${n} sec</button>`).join('');
 }
-function setCount(n){const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){alert('Free plan: 1 Short per video. Upgrade to Pro for up to 5 Shorts.');openModal('proModal');return;} count=n;buildChips();}
+function setCount(n){const u=currentUser(); if(u&&u.plan!=='pro'&&n>1){showToast('Free plan: 1 Short per video. Upgrade to Pro for up to 5 Shorts.');openModal('proModal');return;} count=n;buildChips();}
 function setLen(n){lenSec=n;buildChips();}
 function currentUser(){try{return JSON.parse(localStorage.getItem('clipblaster_session')||'null')}catch(e){return null}}
 function setSession(u){if(u)localStorage.setItem('clipblaster_session',JSON.stringify(u));else localStorage.removeItem('clipblaster_session');refreshAuthUI();}
@@ -340,7 +345,7 @@ async function doLogin(){
     $('loginSubmit').disabled=false; $('loginSubmit').textContent='Log In';
     setSession({token:d.token,name:d.user.name,plan:d.user.plan,verified:true});
     closeModal('authModal'); $('authMsg').textContent='';
-    alert('✅ Welcome back, '+d.user.name+'! '+(d.user.plan==='pro'?'👑 Pro is ON.':'Free plan is ON.'));
+    showToast('✅ Welcome back, '+d.user.name+'! '+(d.user.plan==='pro'?'👑 Pro is ON.':'Free plan is ON.'));
     scrollToId('tool');
   }catch(e){
     $('loginSubmit').disabled=false; $('loginSubmit').textContent='Log In';
@@ -361,7 +366,7 @@ async function doSignup(){
     $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
     setSession({token:d.token,name:d.user.name,plan:d.user.plan,verified:true});
     closeModal('authModal'); $('authMsg').textContent='';
-    alert('✅ Account created — welcome, '+d.user.name+'! Free plan is ON. Upgrade to Pro anytime with a code.');
+    showToast('✅ Account created — welcome, '+d.user.name+'! Free plan is ON. Upgrade to Pro anytime with a code.');
     scrollToId('tool');
   }catch(e){
     $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
@@ -381,7 +386,7 @@ async function activateCode(){
     $('authSubmit').disabled=false; $('authSubmit').textContent='✅ Activate & Start';
     setSession({token:d.token,name:d.name,plan:d.plan,verified:true,code:code});
     closeModal('authModal'); $('authMsg').textContent='';
-    alert('✅ ClipBlaster activated — '+(d.plan==='pro'?'👑 Pro is ON. Up to 5 Shorts per video.':'Free plan is ON.'));
+    showToast('✅ ClipBlaster activated — '+(d.plan==='pro'?'👑 Pro is ON. Up to 5 Shorts per video.':'Free plan is ON.'));
   }catch(e){
     $('authSubmit').disabled=false; $('authSubmit').textContent='✅ Activate & Start';
     if(e.message==='invalid_code') authError('❌ This code is not valid. Check the code and try again.');
@@ -405,7 +410,7 @@ function logout(){
 function getPro(){openModal('proModal')}
 function markProRequested(){
   closeModal('proModal');
-  alert('Thanks! Send your payment screenshot to nayeemahmed33000@gmail.com — you will get a Pro activation code. Enter it and Pro activates instantly.');
+  showToast('Thanks! Send your payment screenshot to nayeemahmed33000@gmail.com — you will get a Pro activation code. Enter it and Pro activates instantly.');
 }
 function requireAuthThenTool(){ const u=currentUser(); if(!u){openAuth();return;} scrollToId('tool'); }
 // On load: a code session (token) is re-checked with the server; a Free
@@ -644,5 +649,6 @@ function recordClip(n){
 }
 buildChips(); refreshAuthUI(); refreshSession();
 </script>
+<div class="toast" id="toast"></div>
 </body>
 </html>
