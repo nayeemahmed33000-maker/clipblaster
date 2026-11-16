@@ -68,7 +68,8 @@ html,body{overflow-x:hidden}
 .status{font-size:14px;margin-top:8px}
 .ok{color:#4ade80}.warn{color:#facc15}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media(max-width:700px){.grid3{grid-template-columns:1fr}}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:700px){.grid3,.grid2{grid-template-columns:1fr}}
 .price{border:1px solid #2a2a44;border-radius:16px;padding:20px;background:#151527}
 .price.pro{border-color:#ff5a3c;box-shadow:0 0 0 1px #ff5a3c}
 .price .amount{font-size:32px;font-weight:900}
@@ -300,20 +301,13 @@ body.is-pro #pricing{display:none}
   <section class="card" id="pricing">
     <h2>সাবস্ক্রিপশন — সহজ ও স্বচ্ছ</h2>
     <p class="muted">ফ্রি অ্যাকাউন্ট খুলুন বা লগ ইন করুন। প্রতিটি শর্টসে পুরো প্রোফেশনাল এডিট চাইলে প্রো-তে আপগ্রেড করুন।</p>
-    <div class="grid3">
+    <div class="grid2">
       <div class="price">
         <h3>Free</h3>
         <div class="amount">৳0</div>
         <p class="muted">চেষ্টা করে দেখুন</p>
         <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>9:16 বা 16:9 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
         <button class="btn btn-ghost" onclick="openAuth('signup')">ফ্রি অ্যাকাউন্ট খুলুন</button>
-      </div>
-      <div class="price">
-        <h3>📅 সাপ্তাহিক</h3>
-        <div class="amount">৳100<span style="font-size:16px"> /7 দিন</span></div>
-        <p class="muted">স্বল্পমেয়াদে প্রো-র সব সুবিধা</p>
-        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li></ul>
-        <button class="btn btn-red" onclick="getPro('weekly')">সাপ্তাহিক নিন — ৳100</button>
       </div>
       <div class="price pro">
         <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
@@ -338,7 +332,7 @@ body.is-pro #pricing{display:none}
   </section>
 </div>
 
-<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস বা সাপ্তাহিক ৳100/7 দিন, প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span></footer>
+<footer>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান। শুধু আপনার নিজের ভিডিও ব্যবহার করুন।<br><span class="muted">ফ্রি প্ল্যান: প্রতি ভিডিওতে 1টি শর্টস। প্রো: ৳349/মাস, প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস। পেমেন্ট ম্যানুয়াল — bKash / Nagad দিয়ে, কার্ডে পেমেন্টের ব্যবস্থা এখনো নেই।</span></footer>
 
 <!-- Auth modal — Log In / Sign Up -->
 <div class="modal" id="authModal">
@@ -449,7 +443,6 @@ body.is-pro #pricing{display:none}
     <button class="closeX" onclick="closeModal('proModal')">×</button>
     <h2 id="proModalTitle">👑 প্রো নিন — ৳349/মাস</h2>
     <div class="payTabs" id="planTabs">
-      <button class="payTab" data-p="weekly" onclick="setPayPlan('weekly')">📅 সাপ্তাহিক — ৳100 / 7 দিন</button>
       <button class="payTab on" data-p="monthly" onclick="setPayPlan('monthly')">👑 মাসিক — ৳349 / 30 দিন</button>
     </div>
     <div class="payTabs" id="payTabs">
@@ -494,7 +487,7 @@ body.is-pro #pricing{display:none}
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('getProPopup')">×</button>
     <h2>🚀 প্রো-তে আপগ্রেড করুন</h2>
-    <p><b>৳349/মাস</b> — প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস, হুক টেক্সট, জুম ও ফেডসহ প্রোফেশনাল অটো-এডিট, আর পুরো SEO প্যাক। অথবা সাপ্তাহিক ৳100/7 দিন।</p>
+    <p><b>৳349/মাস</b> — প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস, হুক টেক্সট, জুম ও ফেডসহ প্রোফেশনাল অটো-এডিট, আর পুরো SEO প্যাক।</p>
     <p style="display:flex;gap:8px;margin-top:12px">
       <button class="btn btn-red" style="flex:1" onclick="closeModal('getProPopup');getPro()">প্রো নিন — ৳349/মাস</button>
       <button class="btn btn-ghost" style="flex:1" onclick="closeModal('getProPopup')">পরে দেখব</button>
@@ -508,18 +501,12 @@ body.is-pro #pricing{display:none}
     <button class="closeX" onclick="closeModal('pricingModal')">×</button>
     <h2>সাবস্ক্রিপশন — সহজ ও স্বচ্ছ</h2>
     <p class="muted" id="pricingModalNote">আপনি ইতিমধ্যে <b>প্রো-তে 👑</b> আছেন — ৳349/মাস।</p>
-    <div class="grid3" style="margin-top:12px">
+    <div class="grid2" style="margin-top:12px">
       <div class="price">
         <h3>ফ্রি</h3>
         <div class="amount">৳0</div>
         <p class="muted">চেষ্টা করে দেখুন</p>
         <ul><li>প্রতি ভিডিওতে 1টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>9:16 বা 16:9 কাট + কালার গ্রেড</li><li>ক্লিপ প্ল্যান + SEO প্যাক</li></ul>
-      </div>
-      <div class="price">
-        <h3>📅 সাপ্তাহিক</h3>
-        <div class="amount">৳100<span style="font-size:16px"> /7 দিন</span></div>
-        <p class="muted">স্বল্পমেয়াদে প্রো-র সব সুবিধা</p>
-        <ul><li>প্রতি ভিডিওতে সর্বোচ্চ 20টি শর্টস</li><li>15 সেকেন্ড – 3 মিনিটের ক্লিপ</li><li>প্রোফেশনাল অটো-এডিট: হুক, জুম, কালার গ্রেড</li><li>হুক টেক্সট বসানো + স্লো জুম + মাঝখানে পাঞ্চ + ফেড ইন/আউট + ভিগনেট</li><li>সাউন্ড নরমালাইজড</li><li>SEO টাইটেল + ডেসক্রিপশন + হ্যাশট্যাগ</li></ul>
       </div>
       <div class="price pro">
         <h3>👑 প্রো — সবচেয়ে জনপ্রিয়</h3>
@@ -929,19 +916,19 @@ function setPayMethod(m){
   $('payMethodIcon').textContent=p.icon; $('payMethodName').textContent=p.label; $('payMethodName2').textContent=p.label;
   $('payUssd').textContent=p.ussd; $('payNumber').textContent=p.number;
 }
-const PAY_PLAN_DEFS={weekly:{label:'সাপ্তাহিক',amount:100,days:7},monthly:{label:'প্রো (মাসিক)',amount:349,days:30}};
+const PAY_PLAN_DEFS={monthly:{label:'প্রো (মাসিক)',amount:349,days:30}};
 let payPlan='monthly';
-// Plan picker in the Get Pro modal — the amount shown everywhere in the
-// modal follows the chosen plan; the server still sets the real amount.
+// Plan picker in the Get Pro modal — Weekly is off sale (owner order
+// 2026-11-17): Monthly is the only plan; the server still sets the real amount.
 function setPayPlan(p){
-  payPlan=(p==='weekly')?'weekly':'monthly';
+  payPlan='monthly';
   document.querySelectorAll('#planTabs .payTab').forEach(t=>t.classList.toggle('on',t.dataset.p===payPlan));
   const def=PAY_PLAN_DEFS[payPlan];
-  $('proModalTitle').textContent='👑 '+def.label+' নিন — ৳'+def.amount+(payPlan==='weekly'?' / 7 দিন':'/মাস');
+  $('proModalTitle').textContent='👑 '+def.label+' নিন — ৳'+def.amount+'/মাস';
   $('payAmount').textContent='৳'+def.amount;
   $('payAmount2').textContent='৳'+def.amount;
 }
-function getPro(plan){ if(plan==='weekly'||plan==='monthly') payPlan=plan; setPayPlan(payPlan); payInvoice=newInvoice(); $('payInvoice').textContent=payInvoice; setPayMethod(payMethod); openModal('proModal'); refreshPayForm(); }
+function getPro(plan){ payPlan='monthly'; setPayPlan(payPlan); payInvoice=newInvoice(); $('payInvoice').textContent=payInvoice; setPayMethod(payMethod); openModal('proModal'); refreshPayForm(); }
 // From the payment modal: log in / sign up, then come straight back
 // here so the TrxID box is waiting — no second Get Pro tap needed.
 function loginThenPro(){ window.__cbReturnToPro=true; closeModal('proModal'); openAuth('signup'); }
@@ -983,7 +970,7 @@ async function refreshPayForm(){
         // together in one atomic UPDATE, so no inconsistent state is
         // left to report. Cancelled note + renew form (form stays
         // shown) — never "contact support". The user can buy again now.
-        else { $('payMsg').textContent='ℹ️ আপনার সাবস্ক্রিপশন বাতিল করা হয়েছে — আবার কিনতে পারেন। নিচে প্ল্যান বেছে TrxID দিন।'; $('payMsg').className='status'; }
+        else { $('payMsg').textContent='ℹ️ আপনার সাবস্ক্রিপশন বাতিল করা হয়েছে — আবার কিনতে পারেন। নিচে TrxID দিন।'; $('payMsg').className='status'; }
       }
     }catch(e){}
   }
