@@ -280,10 +280,19 @@ async function setPlan(email,plan){
   catch(e){ $('dashMsg').textContent='Could not update that user.'; $('dashMsg').className='status err'; }
 }
 // On load: a saved admin token is re-checked with the server.
+// Only a real 401 (unauthorized) logs out — a network blip or a single
+// failing call must NOT wipe the token, or one bad refresh forces a
+// fresh code login.
 (async()=>{
   const t=token(); if(!t){ showLogin(); return; }
-  try{ const s=await api('/api/admin/stats'); showDash('Admin'); renderStats(s.stats); await loadAll(); }
-  catch(e){ localStorage.removeItem('clipblaster_admin_token'); showLogin(); }
+  showDash('Admin');
+  try{ const s=await api('/api/admin/stats'); renderStats(s.stats); }
+  catch(e){
+    if(e.message==='unauthorized'){ localStorage.removeItem('clipblaster_admin_token'); showLogin(); $('loginMsg').textContent='Session expired — log in again.'; $('loginMsg').className='status err'; return; }
+    $('dashMsg').textContent='Could not reach the server — press Refresh to try again.';
+    $('dashMsg').className='status err';
+  }
+  await loadAll();
 })();
 </script>
 </body>
