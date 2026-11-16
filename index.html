@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClipBlaster — Turn Long YouTube Videos Into Viral Shorts</title>
-<meta name="description" content="ClipBlaster turns your own long YouTube video into 1-5 viral vertical Shorts with professional auto-edit, hook text, zoom and colour grade, and SEO titles, descriptions and hashtags.">
+<title>ClipBlaster — Turn Long Videos Into Viral Shorts</title>
+<meta name="description" content="ClipBlaster turns your own long video into 1-5 viral vertical Shorts with professional auto-edit, hook text, zoom and colour grade, and SEO titles, descriptions and hashtags.">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b0b16;color:#f2f2f8;line-height:1.6}
@@ -37,8 +37,6 @@ input:focus,select:focus{outline:2px solid #ff5a3c}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .chip{border:1px solid #3a3a55;background:#0f0f1e;color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:700}
 .chip.on{background:#ff5a3c;border-color:#ff5a3c}
-#playerWrap{margin-top:14px;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
-#playerWrap iframe{width:100%;height:100%;border:0}
 .clip{border:1px solid #2a2a44;border-radius:14px;padding:16px;margin:14px 0;background:#101022}
 .clip h3{margin:0 0 6px}
 .dl{width:100%;padding:14px;font-size:16px;margin-top:10px}
@@ -88,7 +86,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 <div class="wrap">
   <section class="hero">
     <h1>Your Long Video.<br><span>5 Viral Shorts.</span> One Click.</h1>
-    <p>Paste your own long YouTube video link. ClipBlaster finds the viral moments, auto-edits them like a pro — hook text, zoom effects, colour grade — and writes SEO titles, descriptions and hashtags for every Short.</p>
+    <p>Select your own long video file. ClipBlaster finds the viral moments, auto-edits them like a pro — hook text, zoom effects, colour grade — and writes SEO titles, descriptions and hashtags for every Short.</p>
     <div>
       <span class="pill">🎬 1–5 Shorts per video</span>
       <span class="pill">⏱️ 30 / 45 / 60 sec</span>
@@ -101,18 +99,20 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
   </section>
 
   <section class="card" id="tool">
-    <h2>Step 1 — Paste your YouTube link</h2>
+    <h2>Step 1 — Your video + Shorts plan</h2>
     <p class="muted">Use your own video only. Other people's videos carry copyright / reused-content risk and will not monetize.</p>
-    <label>Your long YouTube video link</label>
-    <input id="ytLink" type="text" placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/...">
+    <label>Your own video file (MP4 / WebM)</label>
+    <input id="fileInput" type="file" accept="video/mp4,video/webm,video/*">
+    <video id="fileVideo" controls class="hidden"></video>
+    <p id="fileStatus" class="status muted">No file selected yet.</p>
     <div class="row">
       <div>
         <label>Video title (for hook + SEO)</label>
         <input id="videoTitle" type="text" placeholder="e.g. How I Built My Dream House in 30 Days">
       </div>
       <div>
-        <label>Video duration (if it does not auto-detect, e.g. 12:30)</label>
-        <input id="manualDuration" type="text" placeholder="MM:SS">
+        <label>Colour style (Pro auto-edit)</label>
+        <select id="styleSel"><option value="vibrant">Vibrant — bright, punchy</option><option value="cinematic" selected>Cinematic — warm, film look</option><option value="soft">Soft — clean, gentle</option></select>
       </div>
     </div>
     <div class="row">
@@ -125,56 +125,18 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
         <div class="chips" id="lenChips"></div>
       </div>
     </div>
-    <div class="row">
-      <div>
-        <label>Colour style (Pro auto-edit)</label>
-        <select id="styleSel"><option value="vibrant">Vibrant — bright, punchy</option><option value="cinematic" selected>Cinematic — warm, film look</option><option value="soft">Soft — clean, gentle</option></select>
-      </div>
-      <div>
-        <label>Pro edit</label>
-        <p class="muted" style="margin:0">Pro code holders get hook text, slow zoom with a mid-clip punch, fade, vignette, style colour and loudness normalisation on every download.</p>
-      </div>
-    </div>
+    <p class="muted">Pro code holders get hook text, slow zoom with a mid-clip punch, fade, vignette, style colour and loudness normalisation on every download.</p>
     <p style="margin-top:16px">
-      <button class="btn btn-red" onclick="loadVideo()">▶ Load Video</button>
       <button class="btn btn-green" id="autoBtn" onclick="autoCapture()" disabled>⚡ Auto Capture Shorts</button>
     </p>
-    <div id="playerWrap" class="hidden"><iframe id="ytFrame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
     <div id="progressBar" class="hidden"><div id="progressFill"></div></div>
-    <p id="toolStatus" class="status muted">Paste a link and press Load Video.</p>
+    <p id="toolStatus" class="status muted">Select your video file first.</p>
     <div id="clips"></div>
   </section>
 
-  <section class="card" id="serverTool">
-    <h2>☁️ Make Shorts on the server — YouTube link in, Shorts out (Pro)</h2>
-    <p class="muted">No file upload needed. Paste your YouTube link and ClipBlaster's GitHub server downloads it and cuts the Shorts for you — hook text, zoom, fade, vignette and loudness included. Pro only. It takes about 5–10 minutes; keep this tab open and the download buttons appear below when ready.</p>
-    <label>Your long YouTube video link</label>
-    <input id="srvLink" type="text" placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/...">
-    <div class="row">
-      <div>
-        <label>Hook text (optional — leave empty for an auto hook)</label>
-        <input id="srvHook" type="text" placeholder="e.g. WAIT FOR THE END">
-      </div>
-      <div>
-        <label>Colour style</label>
-        <select id="srvStyle"><option value="vibrant">Vibrant — bright, punchy</option><option value="cinematic" selected>Cinematic — warm, film look</option><option value="soft">Soft — clean, gentle</option></select>
-      </div>
-    </div>
-    <p class="muted">Uses the Shorts count (1–5) and length (30 / 45 / 60 sec) you picked in Step 1 above.</p>
-    <p style="margin-top:12px">
-      <button class="btn btn-red" onclick="startServerJob()">☁️ Make Shorts on Server (Pro)</button>
-    </p>
-    <p id="srvStatus" class="status muted">Pro only — activate with your Pro code first.</p>
-    <div id="srvResults"></div>
-  </section>
-
   <section class="card">
-    <h2>Step 2 — Download your Short video file</h2>
-    <p class="muted">A browser page cannot pull the video file straight from a YouTube link — that is a YouTube limit, not a ClipBlaster bug. To download a real MP4 file here, select your own video file once below, then press the big Download button on a clip card. ClipBlaster records that exact viral moment in 9:16 and downloads it.</p>
-    <label>Your own video file (MP4 / WebM)</label>
-    <input id="fileInput" type="file" accept="video/mp4,video/webm,video/*">
-    <video id="fileVideo" controls class="hidden"></video>
-    <p id="fileStatus" class="status muted">No file selected yet.</p>
+    <h2>Step 2 — Download your Shorts</h2>
+    <p class="muted">Your video file is already selected in Step 1. Press the big Download button on a clip card and ClipBlaster cuts that exact viral moment into a real 720×1280 MP4 Short — ready to upload to YouTube Shorts.</p>
     <h3>Or use ffmpeg (same clip, on your computer)</h3>
     <p class="muted">Each clip card shows its own ffmpeg command. Copy it, replace <code>input.mp4</code> with your file, and run it to cut a 720×1280 Short.</p>
   </section>
@@ -204,10 +166,10 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
       </div>
       <div class="price pro">
         <h3>👑 Pro — Most Popular</h3>
-        <div class="amount">৳499<span style="font-size:16px"> /month</span></div>
+        <div class="amount">৳349<span style="font-size:16px"> /month</span></div>
         <p class="muted">For serious creators</p>
         <ul><li>Up to 5 Shorts per video</li><li>30 / 45 / 60-sec clips</li><li>Professional auto-edit: hook, zoom, colour grade</li><li>Hook text burned in + slow zoom + mid punch + fade in/out + vignette</li><li>Loudness normalised</li><li>SEO title + description + hashtags</li><li>Download ready MP4 Shorts</li></ul>
-        <button class="btn btn-red" onclick="getPro()">Get Pro — ৳499/month</button>
+        <button class="btn btn-red" onclick="getPro()">Get Pro — ৳349/month</button>
         <p class="muted" style="margin-top:10px">No online card checkout yet — payment is manual via bKash / Nagad.</p>
       </div>
     </div>
@@ -215,12 +177,12 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 
   <section class="card">
     <h2>How to use ClipBlaster</h2>
-    <p>1. Activate with your code, or start Free — no log-in needed.<br>2. Paste your own long YouTube link and press Load Video.<br>3. Choose how many Shorts (1–5) and the length.<br>4. Press Auto Capture Shorts — ClipBlaster picks the hook, rising, climax and payoff moments.<br>5. Copy the SEO title, description and hashtags from each card.<br>6. Select your own MP4 file once, then press Download on a clip to save the 9:16 Short.<br>7. Or use the server mode (Pro): paste the link in the “Make Shorts on the server” box, press the button, and download the finished Shorts when they appear — no file upload needed.</p>
+    <p>1. Activate with your code, or start Free — no log-in needed.<br>2. Select your own video file.<br>3. Choose how many Shorts (1–5), the length and the colour style.<br>4. Press Auto Capture Shorts — ClipBlaster picks the hook, rising, climax and payoff moments.<br>5. Copy the SEO title, description and hashtags from each card.<br>6. Press Download on a clip to save the 9:16 Short.</p>
     <p class="muted">Tip: Pro cuts re-encode with the full edit (hook text, zoom, fade), so they take a little longer than a Free cut — keep the tab open.</p>
   </section>
 </div>
 
-<footer>ClipBlaster — Turn long videos into viral Shorts. Use your own videos only.<br><span class="muted">Free plan: 1 Short per video. Pro: ৳499/month, up to 5 Shorts per video. Payments are manual via bKash / Nagad — no card checkout yet.</span></footer>
+<footer>ClipBlaster — Turn long videos into viral Shorts. Use your own videos only.<br><span class="muted">Free plan: 1 Short per video. Pro: ৳349/month, up to 5 Shorts per video. Payments are manual via bKash / Nagad — no card checkout yet.</span></footer>
 
 <!-- Activation modal — code-based, no sign-up or log-in -->
 <div class="modal" id="authModal">
@@ -247,9 +209,9 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 <div class="modal" id="proModal">
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('proModal')">×</button>
-    <h2>👑 Get Pro — ৳499/month</h2>
+    <h2>👑 Get Pro — ৳349/month</h2>
     <p>3 easy steps:</p>
-    <p><b>1.</b> Pay ৳499 via bKash / Nagad.<br><b>2.</b> Send the payment screenshot to <b>nayeemahmed33000@gmail.com</b>.<br><b>3.</b> You get a Pro activation code — enter it on ClipBlaster and Pro activates instantly.</p>
+    <p><b>1.</b> Pay ৳349 via bKash / Nagad.<br><b>2.</b> Send the payment screenshot to <b>nayeemahmed33000@gmail.com</b>.<br><b>3.</b> You get a Pro activation code — enter it on ClipBlaster and Pro activates instantly.</p>
     <p class="muted">No online card checkout yet — payment is manual via bKash / Nagad. No bKash / Nagad number is shown here.</p>
     <p style="display:flex;gap:8px;margin-top:12px">
       <button class="btn btn-green" style="flex:1" onclick="markProRequested()">I Paid — Got It</button>
@@ -263,23 +225,22 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('getProPopup')">×</button>
     <h2>🚀 Upgrade to Pro</h2>
-    <p><b>৳499/month</b> — up to 5 Shorts per video, professional auto-edit with hook text, zoom and fade, and full SEO packs.</p>
+    <p><b>৳349/month</b> — up to 5 Shorts per video, professional auto-edit with hook text, zoom and fade, and full SEO packs.</p>
     <p style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn btn-red" style="flex:1" onclick="closeModal('getProPopup');openModal('proModal')">Get Pro — ৳499/month</button>
+      <button class="btn btn-red" style="flex:1" onclick="closeModal('getProPopup');openModal('proModal')">Get Pro — ৳349/month</button>
       <button class="btn btn-ghost" style="flex:1" onclick="closeModal('getProPopup')">Maybe Later</button>
     </p>
   </div>
 </div>
 
 <script>
-let count=3, lenSec=30, videoId=null, durationSec=0, clips=[];
+let count=3, lenSec=30, durationSec=0, clips=[];
 const $=id=>document.getElementById(id);
 // ---- Code activation (no sign-up, no log-in) ----
 // A visitor enters an activation code; the server checks it against the
 // codes table and returns a 30-day session. Free visitors start with one
 // click and no code — their session lives only in this browser.
 const API_BASE='https://clipblaster-api.nayeemahmed33000.workers.dev';
-const PAGES_BASE='https://nayeemahmed33000-maker.github.io/clipblaster';
 async function apiCall(path,body,token){
   const headers={'Content-Type':'application/json'};
   if(token) headers['Authorization']='Bearer '+token;
@@ -290,75 +251,6 @@ async function apiCall(path,body,token){
   if(!r.ok) throw new Error(d.error||('http_'+r.status));
   return d;
 }
-async function apiGet(path,token){
-  const headers={};
-  if(token) headers['Authorization']='Bearer '+token;
-  let r;
-  try{ r=await fetch(API_BASE+path,{headers:headers}); }
-  catch(e){ throw new Error('network'); }
-  const d=await r.json().catch(()=>({}));
-  if(!r.ok) throw new Error(d.error||('http_'+r.status));
-  return d;
-}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-// ---- Server Shorts (Pro): YouTube link in, finished Shorts out ----
-// The queue lives in the Worker (D1). A GitHub Actions workflow picks
-// the job up, cuts the Shorts and commits outputs/<job_id>/done.json.
-// The page polls done.json from Pages — that file is the finish signal.
-let srvJob=null, srvTimer=null, srvStartedAt=0;
-async function startServerJob(){
-  const u=currentUser();
-  if(!u||!u.token){openAuth();$('srvStatus').textContent='Activate with your Pro code first.';return;}
-  if(u.plan!=='pro'){openModal('proModal');$('srvStatus').textContent='Server Shorts are a Pro feature — activate Pro first.';return;}
-  const link=$('srvLink').value.trim();
-  if(!extractId(link)){$('srvStatus').textContent='❌ That link did not look like a YouTube link. Paste the full watch or youtu.be link.';return;}
-  $('srvStatus').textContent='⏳ Sending your job to the server…';
-  $('srvResults').innerHTML='';
-  try{
-    const d=await apiCall('/api/shorts/start',{youtube_url:link,clips:count,duration:lenSec,style:$('srvStyle').value,hook:$('srvHook').value.trim()},u.token);
-    srvJob=d.job_id; srvStartedAt=Date.now();
-    $('srvStatus').innerHTML='✅ Job queued — <b>'+d.job_id+'</b>. The GitHub server picks it up within 5 minutes, then cuts your Shorts. Keep this tab open.';
-    if(srvTimer) clearInterval(srvTimer);
-    srvTimer=setInterval(pollServerJob,10000);
-    pollServerJob();
-  }catch(e){
-    if(e.message==='pro_required') $('srvStatus').textContent='❌ Server Shorts need a Pro code — activate Pro first.';
-    else if(e.message==='invalid_youtube_url') $('srvStatus').textContent='❌ That YouTube link was not accepted.';
-    else if(e.message==='network') $('srvStatus').textContent='❌ Could not reach the server — check your connection and try again.';
-    else $('srvStatus').textContent='❌ Something went wrong — please try again.';
-  }
-}
-async function pollServerJob(){
-  if(!srvJob) return;
-  const mins=Math.floor((Date.now()-srvStartedAt)/60000);
-  try{
-    const r=await fetch(PAGES_BASE+'/outputs/'+srvJob+'/done.json?v='+Date.now());
-    if(r.ok){
-      const done=await r.json();
-      if(done.status==='done'){
-        clearInterval(srvTimer); srvTimer=null;
-        $('srvStatus').innerHTML='✅ Your Shorts are ready! Tap a button to open and save each Short.';
-        $('srvResults').innerHTML=done.files.map((f,i)=>'<p><b>Short '+(i+1)+'</b> ('+f.duration+'s) — <a class="btn btn-green" href="'+f.url+'" target="_blank" rel="noopener">⬇ Download Short '+(i+1)+' Video</a></p>').join('');
-        return;
-      }
-      if(done.status==='error'){
-        clearInterval(srvTimer); srvTimer=null;
-        $('srvStatus').innerHTML='❌ The server could not make these Shorts: '+escapeHtml(done.error||'unknown error');
-        return;
-      }
-    }
-  }catch(e){/* done.json not there yet */}
-  try{
-    const s=await apiGet('/api/shorts/status?job='+srvJob);
-    const phase=s.job.status==='queued'?'Queued — waiting for the GitHub server (it checks every 5 minutes)…':'Claimed — the GitHub server is cutting your Shorts now…';
-    $('srvStatus').textContent='⏳ '+phase+' ('+mins+' min elapsed)';
-  }catch(e){ $('srvStatus').textContent='⏳ Working on your Shorts… ('+mins+' min elapsed)'; }
-  if(mins>=15){
-    clearInterval(srvTimer); srvTimer=null;
-    $('srvStatus').innerHTML='⏳ Still working — taking longer than usual. Your job id is <b>'+srvJob+'</b>. <a href="#" onclick="resumeServerJob();return false">Check again</a> to keep waiting.';
-  }
-}
-function resumeServerJob(){ if(!srvJob) return; srvStartedAt=Date.now(); srvTimer=setInterval(pollServerJob,10000); pollServerJob(); }
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
 function openModal(id){$(id).classList.add('open')}
 function closeModal(id){$(id).classList.remove('open')}
@@ -427,29 +319,7 @@ async function refreshSession(){
     setSession({token:u.token,name:d.user.name,plan:d.user.plan,verified:true,code:u.code});
   }catch(e){ setSession(null); }
 }
-function extractId(text){
-  if(!text) return null;
-  let m=text.match(/(?:v=|youtu\.be\/|shorts\/|live\/|embed\/)([A-Za-z0-9_-]{11})/);
-  if(m) return m[1];
-  m=text.match(/([A-Za-z0-9_-]{11})/); return m?m[1]:null;
-}
-function parseDuration(s){
-  if(!s) return 0; s=s.trim(); const p=s.split(':').map(Number);
-  if(p.length===2) return p[0]*60+p[1]; if(p.length===3) return p[0]*3600+p[1]*60+p[2]; return 0;
-}
 function fmt(t){t=Math.max(0,Math.round(t));const m=Math.floor(t/60),s=t%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-function loadVideo(){
-  const u=currentUser();
-  if(!u){openAuth();$('toolStatus').textContent='Activate with your code, or start Free first.';return;}
-  const link=$('ytLink').value.trim(); videoId=extractId(link);
-  if(!videoId){$('toolStatus').textContent='❌ That link did not look like a YouTube link. Paste the full watch or youtu.be link.';return;}
-  $('playerWrap').classList.remove('hidden');
-  $('ytFrame').src='https://www.youtube-nocookie.com/embed/'+videoId+'?enablejsapi=1';
-  durationSec=parseDuration($('manualDuration').value);
-  $('autoBtn').disabled=false;
-  $('toolStatus').innerHTML='✅ Video loaded. Press <b>Auto Capture Shorts</b>. '+(durationSec?('Duration set to '+fmt(durationSec)+'.'):'If the duration does not auto-detect, type it above (e.g. 12:30) and press Load Video again.');
-  if(!durationSec){$('toolStatus').innerHTML+=' <br><span class="warn">Tip: type the video duration above for the most accurate viral-moment picks.</span>';}
-}
 function zonesFor(dur,n){
   const zones=[{name:'Hook',at:0.02,why:'Opening hook — stops the scroll'},{name:'Rising',at:0.28,why:'Rising tension — keeps watching'},{name:'Climax',at:0.58,why:'Climax — the most-replayed part'},{name:'Payoff',at:0.82,why:'Payoff — the satisfying ending'},{name:'Bonus',at:0.45,why:'Bonus moment — strong middle beat'}];
   return zones.slice(0,n);
@@ -460,9 +330,9 @@ function hookFor(title,i){
   return hooks[i%hooks.length]+' — '+t.slice(0,40);
 }
 function autoCapture(){
-  if(!videoId){$('toolStatus').textContent='Load a video first.';return;}
+  if(!selectedFile){$('toolStatus').textContent='Select your video file first.';return;}
   const u=currentUser(); const maxN=u&&u.plan==='pro'?5:1; const n=Math.min(count,maxN);
-  let dur=durationSec||parseDuration($('manualDuration').value)||600;
+  let dur=durationSec||600;
   const title=$('videoTitle').value.trim()||'Your Viral Short';
   const style=$('styleSel').value;
   const zones=zonesFor(dur,n); clips=[];
@@ -480,7 +350,7 @@ function autoCapture(){
       done++; $('progressFill').style.width=Math.round(done/n*100)+'%';
       renderClip(clip,title);
       if(done===n){
-        $('toolStatus').innerHTML='✅ Auto Capture done — '+n+' Short'+(n>1?'s':'')+' ready. Style: '+style+'. Select your MP4 file in Step 2, then press Download on a clip.';
+        $('toolStatus').innerHTML='✅ Auto Capture done — '+n+' Short'+(n>1?'s':'')+' ready. Style: '+style+'. Press Download on a clip to save the 9:16 Short.';
         if(u&&u.plan!=='pro') setTimeout(()=>openModal('getProPopup'),800);
       }
     }, 400*(i+1));
@@ -524,6 +394,7 @@ $('fileInput').addEventListener('change',e=>{
   selectedFile=f;
   fileURL=URL.createObjectURL(f);
   const v=$('fileVideo'); v.src=fileURL; v.classList.remove('hidden');
+  v.onloadedmetadata=()=>{ durationSec=Math.floor(v.duration)||0; $('autoBtn').disabled=false; $('toolStatus').innerHTML='✅ Video ready'+(durationSec?(' — duration '+fmt(durationSec)+'.'):'')+' Press <b>Auto Capture Shorts</b>.'; };
   $('fileStatus').innerHTML='✅ File ready: <b>'+f.name+'</b> — all Download buttons are now live.';
   clips.forEach(c=>{const s=$('dlStatus'+c.n); if(s) s.innerHTML='<span class="ok">File ready ✓ — press Download and this Short cuts in seconds.</span>';});
   if(pendingClip){const n=pendingClip; pendingClip=0; setTimeout(()=>downloadClip(n),600);}
