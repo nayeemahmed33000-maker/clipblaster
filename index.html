@@ -189,7 +189,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
       <div class="floatChip chipC">⚡ 1-click cut</div>
     </div>
     <div class="marquee"><div class="marqueeTrack">HOOK ✦ SLOW ZOOM ✦ VIRAL MOMENTS ✦ 9:16 VERTICAL ✦ SEO TITLES ✦ HASHTAGS ✦ HOOK ✦ SLOW ZOOM ✦ VIRAL MOMENTS ✦ 9:16 VERTICAL ✦ SEO TITLES ✦ HASHTAGS ✦ </div></div>
-    <p class="muted" style="margin-top:16px">Log in or create a free account — or enter a Pro activation code, or start Free with 1 Short per video.</p>
+    <p class="muted" style="margin-top:16px">Log in or create a free account — or start Free with 1 Short per video.</p>
   </section>
 
   <section class="card toolCard" id="tool">
@@ -219,7 +219,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
         <div class="chips" id="lenChips"></div>
       </div>
     </div>
-    <p class="muted">Pro code holders get hook text, slow zoom with a mid-clip punch, fade, vignette, style colour and loudness normalisation on every download.</p>
+    <p class="muted">Pro users get hook text, slow zoom with a mid-clip punch, fade, vignette, style colour and loudness normalisation on every download.</p>
     <p style="margin-top:16px">
       <button class="btn btn-green" id="autoBtn" onclick="autoCapture()" disabled>⚡ Auto Capture Shorts</button>
     </p>
@@ -249,7 +249,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 
   <section class="card" id="pricing">
     <h2>Subscription — simple and honest</h2>
-    <p class="muted">Create a free account, log in, or activate with a Pro code — or start Free. Upgrade to Pro when you want the full professional edit on every Short.</p>
+    <p class="muted">Create a free account, log in, or start Free. Upgrade to Pro when you want the full professional edit on every Short.</p>
     <div class="grid3" style="grid-template-columns:1fr 1fr">
       <div class="price">
         <h3>Free</h3>
@@ -271,7 +271,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 
   <section class="card">
     <h2>How to use ClipBlaster</h2>
-    <div class="stepRow"><div class="stepNum">1</div><div><b>Activate or start Free</b><p class="muted">Enter your Pro code, or start Free — no log-in needed.</p></div></div>
+    <div class="stepRow"><div class="stepNum">1</div><div><b>Sign up or start Free</b><p class="muted">Create a free account, or start Free — no log-in needed.</p></div></div>
     <div class="stepRow"><div class="stepNum">2</div><div><b>Select your own video file</b><p class="muted">MP4 or WebM, straight from your device.</p></div></div>
     <div class="stepRow"><div class="stepNum">3</div><div><b>Choose your Shorts plan</b><p class="muted">How many Shorts (1–5), the length and the colour style.</p></div></div>
     <div class="stepRow"><div class="stepNum">4</div><div><b>Press Auto Capture Shorts</b><p class="muted">ClipBlaster picks the hook, rising, climax and payoff moments.</p></div></div>
@@ -283,17 +283,16 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 
 <footer>ClipBlaster — Turn long videos into viral Shorts. Use your own videos only.<br><span class="muted">Free plan: 1 Short per video. Pro: ৳349/month, up to 5 Shorts per video. Payments are manual via bKash / Nagad — no card checkout yet.</span><br><a href="admin.html" style="color:#8a8aa2">Admin Dashboard</a></footer>
 
-<!-- Auth modal — Log In / Sign Up / Pro Code -->
+<!-- Auth modal — Log In / Sign Up -->
 <div class="modal" id="authModal">
   <div class="modalBox">
     <button class="closeX" onclick="closeModal('authModal')">×</button>
     <div style="font-size:26px;font-weight:900">CLIP<span style="color:#ff5a3c">BLASTER</span></div>
     <h2>Welcome to ClipBlaster</h2>
-    <p class="muted" id="authSub">Log in, create a free account, or enter a Pro code — no email verification needed.</p>
+    <p class="muted" id="authSub">Log in or create a free account — no email verification needed.</p>
     <div class="tabs">
       <button class="tab on" id="tab-login" onclick="showAuthTab('login')">Log In</button>
       <button class="tab" id="tab-signup" onclick="showAuthTab('signup')">Sign Up</button>
-      <button class="tab" id="tab-code" onclick="showAuthTab('code')">👑 Pro Code</button>
       <button class="tab hidden" id="tab-profile" onclick="showAuthTab('profile')">👤 Profile</button>
     </div>
     <div id="pane-login">
@@ -316,14 +315,6 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
         <button class="btn btn-red" id="signupSubmit" style="width:100%;padding:13px;font-size:16px" onclick="doSignup()">Create Account</button>
       </p>
     </div>
-    <div id="pane-code" class="hidden">
-      <label>Activation code</label>
-      <input id="authCode" type="text" placeholder="e.g. NILOY-PRO-2026" autocomplete="off" style="text-transform:uppercase">
-      <p style="margin-top:16px">
-        <button class="btn btn-red" id="authSubmit" style="width:100%;padding:13px;font-size:16px" onclick="activateCode()">✅ Activate &amp; Start</button>
-      </p>
-      <p class="muted" style="text-align:center;font-size:12px;margin-top:8px">One code works everywhere — phone, PC, any browser. Never share your Pro code with anyone.</p>
-    </div>
     <div id="pane-profile" class="hidden">
       <div style="text-align:center;margin:10px 0 6px">
         <div style="font-size:44px;line-height:1">👤</div>
@@ -336,6 +327,9 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
         <div class="profileRow"><span>Shorts per video</span><b id="profileLimit"></b></div>
         <div class="profileRow"><span>Member since</span><b id="profileSince"></b></div>
       </div>
+      <p id="profileGetProRow" style="margin-top:16px">
+        <button class="btn btn-red" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('authModal');getPro()">👑 Get Pro — ৳349/month</button>
+      </p>
       <p style="margin-top:16px">
         <button class="btn btn-ghost" style="width:100%;padding:13px;font-size:16px" onclick="closeModal('authModal');logout()">Sign Out</button>
       </p>
@@ -408,10 +402,10 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 <script>
 let count=3, lenSec=30, durationSec=0, clips=[];
 const $=id=>document.getElementById(id);
-// ---- Code activation (no sign-up, no log-in) ----
-// A visitor enters an activation code; the server checks it against the
-// codes table and returns a 30-day session. Free visitors start with one
-// click and no code — their session lives only in this browser.
+// ---- Auth (email + password) ----
+// Accounts sign in with email + password; the server returns a 30-day
+// session. Free visitors start with one click and no account — their
+// session lives only in this browser.
 const API_BASE='https://clipblaster-api.nayeemahmed33000.workers.dev';
 async function apiCall(path,body,token){
   const headers={'Content-Type':'application/json'};
@@ -452,25 +446,25 @@ function fillProfile(u){
   $('profileLimit').textContent=u.plan==='pro'?'Up to 5 Shorts per video':'1 Short per video';
   $('profileSince').textContent=u.created_at?new Date(u.created_at).toLocaleDateString():'—';
   $('profileProNote').classList.toggle('hidden',u.plan!=='pro');
+  $('profileGetProRow').classList.toggle('hidden',u.plan==='pro');
 }
 function openAuth(tab){
   const u=currentUser(), loggedIn=!!u;
   // Already logged in? Never show Log In / Sign Up again — show the
-  // Profile tab, plus the Pro Code tab for Free users (to upgrade).
+  // Profile tab instead (Free users upgrade from there via Get Pro).
   $('tab-login').classList.toggle('hidden',loggedIn);
   $('tab-signup').classList.toggle('hidden',loggedIn);
-  $('tab-code').classList.toggle('hidden',loggedIn&&u.plan==='pro');
   $('tab-profile').classList.toggle('hidden',!loggedIn);
   $('authFreeRow').classList.toggle('hidden',loggedIn);
-  $('authSub').textContent = !u ? 'Log in, create a free account, or enter a Pro code — no email verification needed.'
-    : (u.plan==='pro' ? 'Logged in as '+u.name+' — 👑 Pro.' : 'Logged in as '+u.name+' — Free. Enter a Pro code below to upgrade.');
+  $('authSub').textContent = !u ? 'Log in or create a free account — no email verification needed.'
+    : (u.plan==='pro' ? 'Logged in as '+u.name+' — 👑 Pro.' : 'Logged in as '+u.name+' — Free. Upgrade to Pro from your Profile below.');
   $('authMsg').textContent='';$('authMsg').className='status muted';
-  if(loggedIn){ fillProfile(u); showAuthTab(tab==='code'&&u.plan!=='pro'?'code':'profile'); openModal('authModal'); return; }
+  if(loggedIn){ fillProfile(u); showAuthTab('profile'); openModal('authModal'); return; }
   showAuthTab(tab||'login');
   openModal('authModal');
 }
 function showAuthTab(tab){
-  ['login','signup','code','profile'].forEach(t=>{
+  ['login','signup','profile'].forEach(t=>{
     $('tab-'+t).classList.toggle('on',t===tab);
     $('pane-'+t).classList.toggle('hidden',t!==tab);
   });
@@ -507,33 +501,13 @@ async function doSignup(){
     $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
     setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
-    showToast('✅ Account created — welcome, '+d.user.name+'! Free plan is ON. Upgrade to Pro anytime with a code.');
+    showToast('✅ Account created — welcome, '+d.user.name+'! Free plan is ON. Upgrade to Pro anytime from Pricing.');
     scrollToId('tool');
   }catch(e){
     $('signupSubmit').disabled=false; $('signupSubmit').textContent='Create Account';
     if(e.message==='exists') authError('❌ An account with this email already exists. Log in instead.');
     else if(e.message==='invalid_email') authError('❌ That email does not look right.');
     else if(e.message==='password_short') authError('Password must be at least 6 characters.');
-    else if(e.message==='network') authError('Could not reach the server — check your connection and try again.');
-    else authError('Something went wrong — please try again.');
-  }
-}
-async function activateCode(){
-  const code=$('authCode').value.trim().toUpperCase();
-  if(!code){authError('Enter your activation code first.');return;}
-  $('authSubmit').disabled=true; $('authSubmit').textContent='Activating…';
-  try{
-    const cu=currentUser();
-    const d=await apiCall('/api/auth/activate',{code:code}, cu&&cu.token);
-    $('authSubmit').disabled=false; $('authSubmit').textContent='✅ Activate & Start';
-    setSession({token:d.token,name:d.name,plan:d.plan,verified:true,code:code});
-    closeModal('authModal'); $('authMsg').textContent='';
-    showToast('✅ ClipBlaster activated — '+(d.plan==='pro'?'👑 Pro is ON. Up to 5 Shorts per video.':'Free plan is ON.'));
-  }catch(e){
-    $('authSubmit').disabled=false; $('authSubmit').textContent='✅ Activate & Start';
-    if(e.message==='invalid_code') authError('❌ This code is not valid. Check the code and try again.');
-    else if(e.message==='code_expired') authError('⏰ This code has expired. Ask for a new one.');
-    else if(e.message==='code_used_up') authError('❌ This code has already been used up. Ask for a new one.');
     else if(e.message==='network') authError('Could not reach the server — check your connection and try again.');
     else authError('Something went wrong — please try again.');
   }
@@ -667,7 +641,7 @@ function renderClip(c,title){
   <p><b>SEO Title:</b> ${seoTitle(title,c.n-1)}</p>
   <p><b>SEO Description:</b> ${title||'Your Viral Short'} — watch the best moment in ${lenSec} seconds. Like, share and subscribe for more Shorts! #shorts #viral</p>
   <p><b>Hashtags:</b> #shorts #viral #${(title||'video').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,18)||'video'} #clipblaster</p>
-  <p class="muted">${isPro?'Pro edit applied on download: hook text burned in (first 3s) + slow zoom, fade in/out, '+c.style+' colour grade, loudness normalised.':'Free download: true 9:16 cut + '+c.style+' colour grade. Activate Pro for hook text, zoom, fade and loudness normalisation.'}</p>
+  <p class="muted">${isPro?'Pro edit applied on download: hook text burned in (first 3s) + slow zoom, fade in/out, '+c.style+' colour grade, loudness normalised.':'Free download: true 9:16 cut + '+c.style+' colour grade. Get Pro for hook text, zoom, fade and loudness normalisation.'}</p>
   <p class="muted">ffmpeg: <code>${ffCmd}</code></p>
   <button class="btn btn-red dl" onclick="downloadClip(${c.n})">⬇ Download Short ${c.n} Video</button>
   <p class="status muted" id="dlStatus${c.n}">Tap Download — if no video file is selected yet, the file picker opens.${isPro?' Pro cuts re-encode with the full edit, so they take a little longer — keep the tab open.':' The Short is then cut and downloads as .mp4.'}</p>`;
