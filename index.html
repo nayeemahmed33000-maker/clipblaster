@@ -111,10 +111,10 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 .phoneWrap{position:relative;width:280px;margin:30px auto 10px}
 .phone{width:250px;margin:0 auto;background:#000;border:3px solid #3a3a55;border-radius:34px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 0 6px #151527,0 0 50px rgba(255,90,60,.25);animation:phoneFloat 5s ease-in-out infinite}
 @keyframes phoneFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
-.phoneScreen{position:relative;height:440px;background:linear-gradient(160deg,#7c2d12,#db2777 45%,#4c1d95 80%,#0b0b16);padding:14px;display:flex;flex-direction:column}
+.phoneScreen{position:relative;height:400px;background:linear-gradient(160deg,#7c2d12,#db2777 45%,#4c1d95 80%,#0b0b16);padding:14px;display:flex;flex-direction:column}
 .phoneTop{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#fff}
-.phoneHook{margin-top:64px;text-align:center;font-size:30px;font-weight:900;line-height:1.1;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6)}
-.phonePlay{margin:26px auto 0;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);color:#ff2d78;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:5px;box-shadow:0 0 0 8px rgba(255,255,255,.15)}
+.phoneHook{margin-top:48px;text-align:center;font-size:30px;font-weight:900;line-height:1.1;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6)}
+.phonePlay{margin:20px auto 0;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);color:#ff2d78;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:5px;box-shadow:0 0 0 8px rgba(255,255,255,.15)}
 .phoneBottom{margin-top:auto;text-align:left}
 .phoneUser{font-weight:800;font-size:14px}
 .phoneTitle{font-size:13px;color:#ffe9f3;margin:4px 0 10px}
@@ -123,8 +123,8 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 .phoneSide{text-align:center;font-size:12px;color:#c9c9dc;padding:10px;background:#101022}
 .floatChip{position:absolute;background:#1e1e38;border:1px solid #3a3a55;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:floatY 4s ease-in-out infinite;white-space:nowrap;z-index:2}
 .chipA{top:36px;left:-46px}
-.chipB{top:170px;right:-56px;animation-delay:-2s}
-.chipC{bottom:64px;left:-58px;animation-delay:-1s}
+.chipB{top:120px;right:-78px;animation-delay:-2s}
+.chipC{top:250px;right:-78px;animation-delay:-1s}
 .marquee{overflow:hidden;margin:26px -18px 0;border-top:1px solid #26263a;border-bottom:1px solid #26263a;padding:10px 0;background:rgba(255,90,60,.06)}
 .marqueeTrack{display:inline-block;white-space:nowrap;font-weight:900;letter-spacing:2px;font-size:15px;color:#ffb199;animation:marquee 22s linear infinite}
 @keyframes marquee{to{transform:translateX(-50%)}}
@@ -138,7 +138,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
 .toolCard{border:1px solid rgba(255,90,60,.4);box-shadow:0 0 0 1px rgba(255,90,60,.15),0 18px 50px rgba(0,0,0,.4)}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
-@media(max-width:700px){.hero h1{font-size:38px}.chipA{left:-8px}.chipB{right:-8px}.chipC{left:-4px}.phoneWrap{width:100%}}
+@media(max-width:700px){.hero h1{font-size:38px}.floatChip{display:none}.phoneWrap{width:100%}}
 </style>
 </head>
 <body>
@@ -178,7 +178,7 @@ body{background:radial-gradient(1000px 520px at 50% -10%,#2a1130 0%,#0b0b16 55%)
           <div class="phonePlay">▶</div>
           <div class="phoneBottom">
             <div class="phoneUser">@yourchannel</div>
-            <div class="phoneTitle">How I Built My Dream House in 30 Days 🔥</div>
+            <div class="phoneTitle">How I Built My Dream House 🔥</div>
             <div class="phoneBar"><i></i></div>
           </div>
         </div>
