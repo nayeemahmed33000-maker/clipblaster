@@ -1017,7 +1017,9 @@ function autoCapture(){
   const zones=zonesFor(dur,n,clipLen); clips=[];
   $('progressBar').classList.remove('hidden');
   let done=0;
-  const box=$('clips'); box.innerHTML='';
+  const box=$('clips');
+  Object.keys(dlState).forEach(stopDlTimer); // old cards are going away — never leave their timers running
+  box.innerHTML='';
   $('toolStatus').textContent='⚡ অটো ক্যাপচার চলছে — '+n+'টি ভাইরাল মুহূর্ত বাছাই করা হচ্ছে…';
   zones.forEach((z,i)=>{
     setTimeout(()=>{
@@ -1052,7 +1054,7 @@ function renderClip(c,title){
   <p><b>হ্যাশট্যাগ:</b> #shorts #viral #${(title||'video').toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,18)||'video'} #clipblaster</p>
   <p class="muted">${isPro?'ডাউনলোডে প্রো এডিট লাগানো হবে: হুক টেক্সট বসানো (প্রথম 3 সেকেন্ড) + স্লো জুম, ফেড ইন/আউট, '+(STYLE_BN[c.style]||c.style)+' কালার গ্রেড, সাউন্ড নরমালাইজড।':'ফ্রি ডাউনলোড: '+size+' কাট ('+d.w+'×'+d.h+') + '+(STYLE_BN[c.style]||c.style)+' কালার গ্রেড। হুক টেক্সট, জুম, ফেড ও সাউন্ড নরমালাইজেশনের জন্য প্রো নিন।'}</p>
   <p class="muted">ffmpeg: <code>${ffCmd}</code></p>
-  <button class="btn btn-red dl" onclick="downloadClip(${c.n})">⬇ শর্টস ${c.n} ভিডিও ডাউনলোড করুন</button>
+  <button class="btn btn-red dl" id="dlBtn${c.n}" onclick="downloadClip(${c.n})">⬇ শর্টস ${c.n} ভিডিও ডাউনলোড করুন</button>
   <p class="status muted" id="dlStatus${c.n}">ডাউনলোড চাপুন — এখনো কোনো ভিডিও ফাইল বাছাই না করে থাকলে ফাইল পিকার খুলবে।${isPro?' প্রো কাটে পুরো এডিটসহ আবার এনকোড হয়, তাই একটু বেশি সময় লাগে — ট্যাবটি খোলা রাখুন।':' এরপর শর্টসটি কেটে .mp4 হিসেবে ডাউনলোড হবে।'}</p>`;
   box.appendChild(div);
 }
@@ -1168,13 +1170,45 @@ async function proCut(ff,c){
   await ff.exec(args);
   window.__cbProHook=hookOn;
 }
+// Per-clip download timer: counts up on the button while a render or the
+// recording fallback runs, then reports the total time in the status line.
+// One timer per clip; every exit path clears it (never two timers, never stuck).
+const dlState={};
+function dlBtn(n){return document.getElementById('dlBtn'+n);}
+function dlTick(n){
+  const s=dlState[n]; if(!s||!s.int) return;
+  const b=dlBtn(n); if(!b){ stopDlTimer(n); return; }
+  b.textContent=s.prefix+fmt(Math.floor((Date.now()-s.started)/1000));
+}
+function startDlTimer(n,prefix){
+  if(!dlState[n]) dlState[n]={int:null,started:0,orig:null,prefix:prefix};
+  const s=dlState[n];
+  if(s.int) clearInterval(s.int);
+  const b=dlBtn(n);
+  if(b&&!s.orig) s.orig=b.innerHTML;
+  s.prefix=prefix; s.started=Date.now();
+  if(b){ b.disabled=true; b.textContent=prefix+'00:00'; }
+  s.int=setInterval(()=>dlTick(n),1000);
+}
+function dlElapsedSec(n){
+  const s=dlState[n]; if(!s||!s.started) return 0;
+  return Math.max(0,Math.floor((Date.now()-s.started)/1000));
+}
+function stopDlTimer(n){
+  const s=dlState[n]; if(!s) return;
+  if(s.int){ clearInterval(s.int); s.int=null; }
+  const b=dlBtn(n);
+  if(b){ b.disabled=false; if(s.orig) b.innerHTML=s.orig; }
+}
 async function downloadClip(n){
   if(!hasRealAccount()){openAuth('signup');return;}
   const c=clips.find(x=>x.n===n); if(!c) return;
+  if(dlState[n]&&dlState[n].int) return; // already rendering this clip — ignore a double-tap
   const v=$('fileVideo');
   if(!fileURL||!v.src||!selectedFile){pendingClip=n; $('dlStatus'+n).innerHTML='<span class="warn">⚠️ এখন আপনার ভিডিও ফাইলটি বেছে নিন — ফাইল পিকার খুলছে। বেছে নিলেই শর্টস '+n+' নিজে নিজে ডাউনলোড হবে।</span>'; document.getElementById('fileInput').click(); return;}
   const st=$('dlStatus'+n);
   const isPro=currentUser()&&currentUser().plan==='pro';
+  startDlTimer(n,'⏳ রেন্ডার হচ্ছে... ');
   st.textContent=isPro?'✂️ প্রো এডিট: হুক টেক্সট, জুম, ফেড ও কালারসহ শর্টস '+n+' কাটা হচ্ছে — আবার এনকোড হতে একটু বেশি সময় লাগবে, ট্যাবটি খোলা রাখুন।':'✂️ শর্টস '+n+' ('+fmt(c.start)+' → '+fmt(c.end)+') '+size+' ('+curDims().w+'×'+curDims().h+')-এ কাটা হচ্ছে…';
   try{
     const ff=await getFFmpeg();
@@ -1193,12 +1227,14 @@ async function downloadClip(n){
     const blob=new Blob([out],{type:'video/mp4'});
     const durl=URL.createObjectURL(blob);
     const a=document.createElement('a'); a.href=durl; a.download='clipblaster-short-'+n+'.mp4'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(durl),5000);
+    const secs=dlElapsedSec(n); stopDlTimer(n);
     const fbNote=cutPath==='free-fallback'?'<br><span class="warn">⚠️ এই ব্রাউজারে প্রো এফেক্ট লাগেনি ('+window.__cbLastCut.error+') — সাধারণ কাট ব্যবহার করা হয়েছে।</span>':'';
-    st.innerHTML='<span class="ok">✅ শর্টস '+n+' ডাউনলোড হয়েছে (.mp4)।</span>'+fbNote+' <a href="#" onclick="downloadClip('+n+');return false">আবার ডাউনলোড করুন</a>';
+    st.innerHTML='<span class="ok">✅ শর্টস '+n+' ডাউনলোড হয়েছে (.mp4) — সময় লেগেছে '+secs+' সেকেন্ড।</span>'+fbNote+' <a href="#" onclick="downloadClip('+n+');return false">আবার ডাউনলোড করুন</a>';
     try{await ff.deleteFile('input.mp4'); await ff.deleteFile('out.mp4'); await ff.deleteFile('hook.png');}catch(e){}
   }catch(err){
     st.innerHTML='<span class="warn">⚠️ দ্রুত কাট ব্যর্থ হয়েছে: '+err.message+' — এই শর্টসটি এখন লাইভ রেকর্ড করা হচ্ছে ('+c.len+' সেকেন্ড, ট্যাবটি খোলা রাখুন)…</span>';
     window.__cbLastError=String(err&&err.message||err);
+    if(dlState[n]){ dlState[n].prefix='⏺ রেকর্ড হচ্ছে... '; dlTick(n); } // timer keeps counting through the fallback
     recordClip(n);
   }
 }
@@ -1213,17 +1249,20 @@ function recordClip(n){
       const rec=new MediaRecorder(stream,{mimeType:MediaRecorder.isTypeSupported('video/webm')?'video/webm':'video/mp4'});
       const chunks=[]; rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
       rec.onstop=()=>{
+        const secs=dlElapsedSec(n); stopDlTimer(n);
         const blob=new Blob(chunks,{type:rec.mimeType});
         const durl=URL.createObjectURL(blob);
         const a=document.createElement('a'); a.href=durl; a.download='clipblaster-short-'+n+'.webm'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(durl),5000);
-        st.innerHTML='<span class="ok">✅ শর্টস '+n+' ডাউনলোড হয়েছে।</span> <a href="#" onclick="downloadClip('+n+');return false">আবার ডাউনলোড করুন</a>';
+        st.innerHTML='<span class="ok">✅ শর্টস '+n+' ডাউনলোড হয়েছে। সময় লেগেছে '+secs+' সেকেন্ড।</span> <a href="#" onclick="downloadClip('+n+');return false">আবার ডাউনলোড করুন</a>';
         v.pause();
       };
       rec.start();
       setTimeout(()=>{try{rec.stop()}catch(e){}}, c.len*1000);
     };
     v.currentTime=c.start;
-  }catch(err){ st.textContent='❌ এই ব্রাউজারে রেকর্ডিং ব্যর্থ হয়েছে: '+err.message+' — এর বদলে কার্ডের ffmpeg কমান্ডটি ব্যবহার করুন।'; }
+    // Safety net: if the seek/recording never completes, never leave the timer running.
+    setTimeout(()=>{ const s=dlState[n]; if(s&&s.int){ stopDlTimer(n); st.textContent='❌ শর্টস '+n+' রেকর্ড করা যায়নি — সময় শেষ হয়ে গেছে। এর বদলে কার্ডের ffmpeg কমান্ডটি ব্যবহার করুন।'; } }, (c.len+30)*1000);
+  }catch(err){ stopDlTimer(n); st.textContent='❌ এই ব্রাউজারে রেকর্ডিং ব্যর্থ হয়েছে: '+err.message+' — এর বদলে কার্ডের ffmpeg কমান্ডটি ব্যবহার করুন।'; }
 }
 syncInputs(); refreshAuthUI(); refreshSession();
 // Scroll reveal for cards.
