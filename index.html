@@ -145,6 +145,29 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
     <div id="clips"></div>
   </section>
 
+  <section class="card" id="serverTool">
+    <h2>☁️ Make Shorts on the server — YouTube link in, Shorts out (Pro)</h2>
+    <p class="muted">No file upload needed. Paste your YouTube link and ClipBlaster's GitHub server downloads it and cuts the Shorts for you — hook text, zoom, fade, vignette and loudness included. Pro only. It takes about 5–10 minutes; keep this tab open and the download buttons appear below when ready.</p>
+    <label>Your long YouTube video link</label>
+    <input id="srvLink" type="text" placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/...">
+    <div class="row">
+      <div>
+        <label>Hook text (optional — leave empty for an auto hook)</label>
+        <input id="srvHook" type="text" placeholder="e.g. WAIT FOR THE END">
+      </div>
+      <div>
+        <label>Colour style</label>
+        <select id="srvStyle"><option value="vibrant">Vibrant — bright, punchy</option><option value="cinematic" selected>Cinematic — warm, film look</option><option value="soft">Soft — clean, gentle</option></select>
+      </div>
+    </div>
+    <p class="muted">Uses the Shorts count (1–5) and length (30 / 45 / 60 sec) you picked in Step 1 above.</p>
+    <p style="margin-top:12px">
+      <button class="btn btn-red" onclick="startServerJob()">☁️ Make Shorts on Server (Pro)</button>
+    </p>
+    <p id="srvStatus" class="status muted">Pro only — activate with your Pro code first.</p>
+    <div id="srvResults"></div>
+  </section>
+
   <section class="card">
     <h2>Step 2 — Download your Short video file</h2>
     <p class="muted">A browser page cannot pull the video file straight from a YouTube link — that is a YouTube limit, not a ClipBlaster bug. To download a real MP4 file here, select your own video file once below, then press the big Download button on a clip card. ClipBlaster records that exact viral moment in 9:16 and downloads it.</p>
@@ -192,7 +215,7 @@ footer{padding:28px 0;color:#8a8aa2;font-size:13px;text-align:center;border-top:
 
   <section class="card">
     <h2>How to use ClipBlaster</h2>
-    <p>1. Activate with your code, or start Free — no log-in needed.<br>2. Paste your own long YouTube link and press Load Video.<br>3. Choose how many Shorts (1–5) and the length.<br>4. Press Auto Capture Shorts — ClipBlaster picks the hook, rising, climax and payoff moments.<br>5. Copy the SEO title, description and hashtags from each card.<br>6. Select your own MP4 file once, then press Download on a clip to save the 9:16 Short.</p>
+    <p>1. Activate with your code, or start Free — no log-in needed.<br>2. Paste your own long YouTube link and press Load Video.<br>3. Choose how many Shorts (1–5) and the length.<br>4. Press Auto Capture Shorts — ClipBlaster picks the hook, rising, climax and payoff moments.<br>5. Copy the SEO title, description and hashtags from each card.<br>6. Select your own MP4 file once, then press Download on a clip to save the 9:16 Short.<br>7. Or use the server mode (Pro): paste the link in the “Make Shorts on the server” box, press the button, and download the finished Shorts when they appear — no file upload needed.</p>
     <p class="muted">Tip: Pro cuts re-encode with the full edit (hook text, zoom, fade), so they take a little longer than a Free cut — keep the tab open.</p>
   </section>
 </div>
@@ -256,6 +279,7 @@ const $=id=>document.getElementById(id);
 // codes table and returns a 30-day session. Free visitors start with one
 // click and no code — their session lives only in this browser.
 const API_BASE='https://clipblaster-api.nayeemahmed33000.workers.dev';
+const PAGES_BASE='https://nayeemahmed33000-maker.github.io/clipblaster';
 async function apiCall(path,body,token){
   const headers={'Content-Type':'application/json'};
   if(token) headers['Authorization']='Bearer '+token;
@@ -266,6 +290,75 @@ async function apiCall(path,body,token){
   if(!r.ok) throw new Error(d.error||('http_'+r.status));
   return d;
 }
+async function apiGet(path,token){
+  const headers={};
+  if(token) headers['Authorization']='Bearer '+token;
+  let r;
+  try{ r=await fetch(API_BASE+path,{headers:headers}); }
+  catch(e){ throw new Error('network'); }
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(d.error||('http_'+r.status));
+  return d;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+// ---- Server Shorts (Pro): YouTube link in, finished Shorts out ----
+// The queue lives in the Worker (D1). A GitHub Actions workflow picks
+// the job up, cuts the Shorts and commits outputs/<job_id>/done.json.
+// The page polls done.json from Pages — that file is the finish signal.
+let srvJob=null, srvTimer=null, srvStartedAt=0;
+async function startServerJob(){
+  const u=currentUser();
+  if(!u||!u.token){openAuth();$('srvStatus').textContent='Activate with your Pro code first.';return;}
+  if(u.plan!=='pro'){openModal('proModal');$('srvStatus').textContent='Server Shorts are a Pro feature — activate Pro first.';return;}
+  const link=$('srvLink').value.trim();
+  if(!extractId(link)){$('srvStatus').textContent='❌ That link did not look like a YouTube link. Paste the full watch or youtu.be link.';return;}
+  $('srvStatus').textContent='⏳ Sending your job to the server…';
+  $('srvResults').innerHTML='';
+  try{
+    const d=await apiCall('/api/shorts/start',{youtube_url:link,clips:count,duration:lenSec,style:$('srvStyle').value,hook:$('srvHook').value.trim()},u.token);
+    srvJob=d.job_id; srvStartedAt=Date.now();
+    $('srvStatus').innerHTML='✅ Job queued — <b>'+d.job_id+'</b>. The GitHub server picks it up within 5 minutes, then cuts your Shorts. Keep this tab open.';
+    if(srvTimer) clearInterval(srvTimer);
+    srvTimer=setInterval(pollServerJob,10000);
+    pollServerJob();
+  }catch(e){
+    if(e.message==='pro_required') $('srvStatus').textContent='❌ Server Shorts need a Pro code — activate Pro first.';
+    else if(e.message==='invalid_youtube_url') $('srvStatus').textContent='❌ That YouTube link was not accepted.';
+    else if(e.message==='network') $('srvStatus').textContent='❌ Could not reach the server — check your connection and try again.';
+    else $('srvStatus').textContent='❌ Something went wrong — please try again.';
+  }
+}
+async function pollServerJob(){
+  if(!srvJob) return;
+  const mins=Math.floor((Date.now()-srvStartedAt)/60000);
+  try{
+    const r=await fetch(PAGES_BASE+'/outputs/'+srvJob+'/done.json?v='+Date.now());
+    if(r.ok){
+      const done=await r.json();
+      if(done.status==='done'){
+        clearInterval(srvTimer); srvTimer=null;
+        $('srvStatus').innerHTML='✅ Your Shorts are ready! Tap a button to open and save each Short.';
+        $('srvResults').innerHTML=done.files.map((f,i)=>'<p><b>Short '+(i+1)+'</b> ('+f.duration+'s) — <a class="btn btn-green" href="'+f.url+'" target="_blank" rel="noopener">⬇ Download Short '+(i+1)+' Video</a></p>').join('');
+        return;
+      }
+      if(done.status==='error'){
+        clearInterval(srvTimer); srvTimer=null;
+        $('srvStatus').innerHTML='❌ The server could not make these Shorts: '+escapeHtml(done.error||'unknown error');
+        return;
+      }
+    }
+  }catch(e){/* done.json not there yet */}
+  try{
+    const s=await apiGet('/api/shorts/status?job='+srvJob);
+    const phase=s.job.status==='queued'?'Queued — waiting for the GitHub server (it checks every 5 minutes)…':'Claimed — the GitHub server is cutting your Shorts now…';
+    $('srvStatus').textContent='⏳ '+phase+' ('+mins+' min elapsed)';
+  }catch(e){ $('srvStatus').textContent='⏳ Working on your Shorts… ('+mins+' min elapsed)'; }
+  if(mins>=15){
+    clearInterval(srvTimer); srvTimer=null;
+    $('srvStatus').innerHTML='⏳ Still working — taking longer than usual. Your job id is <b>'+srvJob+'</b>. <a href="#" onclick="resumeServerJob();return false">Check again</a> to keep waiting.';
+  }
+}
+function resumeServerJob(){ if(!srvJob) return; srvStartedAt=Date.now(); srvTimer=setInterval(pollServerJob,10000); pollServerJob(); }
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
 function openModal(id){$(id).classList.add('open')}
 function closeModal(id){$(id).classList.remove('open')}
