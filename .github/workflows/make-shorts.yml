@@ -1,0 +1,88 @@
+# ClipBlaster Pro — YouTube link to viral Shorts, on GitHub's own servers.
+#
+# How a job runs:
+#   1. A Pro user pastes a YouTube link on the live site. The site queues
+#      the job in the Cloudflare Worker (D1 table shorts_jobs).
+#   2. This workflow runs every 5 minutes, takes the oldest queued job
+#      from the Worker, downloads the video with yt-dlp and cuts 1-5
+#      Shorts with the Pro ffmpeg chain (scripts/make_shorts.py).
+#   3. Finished Shorts + done.json are committed to outputs/<job_id>/
+#      on main, so the site (GitHub Pages) can serve the downloads.
+#   4. It can also be run by hand from the Actions tab (workflow_dispatch).
+#
+# Public repo, so Actions minutes are free. Runs are serialized
+# (concurrency group) so two runs never claim the same job.
+
+name: Make Shorts (Pro)
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      youtube_url:
+        description: 'YouTube video URL'
+        required: true
+        type: string
+      clips:
+        description: 'Number of Shorts (1-5)'
+        required: false
+        default: '1'
+        type: string
+      duration:
+        description: 'Seconds per Short (30/45/60)'
+        required: false
+        default: '30'
+        type: string
+      style:
+        description: 'Style (vibrant/cinematic/soft)'
+        required: false
+        default: 'vibrant'
+        type: string
+      hook:
+        description: 'Hook text shown in the first 3 seconds (optional)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: make-shorts
+  cancel-in-progress: false
+
+jobs:
+  make-shorts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          command -v ffmpeg >/dev/null || sudo apt-get install -y -qq ffmpeg
+          test -f /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf || sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --break-system-packages -q -U yt-dlp pillow
+          ffmpeg -version | head -1
+          yt-dlp --version
+
+      - name: Make Shorts
+        env:
+          INPUT_YOUTUBE_URL: ${{ inputs.youtube_url }}
+          INPUT_CLIPS: ${{ inputs.clips }}
+          INPUT_DURATION: ${{ inputs.duration }}
+          INPUT_STYLE: ${{ inputs.style }}
+          INPUT_HOOK: ${{ inputs.hook }}
+        run: python3 scripts/make_shorts.py
+
+      - name: Commit outputs
+        run: |
+          git config user.name "clipblaster-bot"
+          git config user.email "clipblaster-bot@users.noreply.github.com"
+          git add outputs/
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -m "Shorts output $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi
