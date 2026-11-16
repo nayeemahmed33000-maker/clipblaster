@@ -6,6 +6,7 @@
 <title>ClipBlaster — লং ভিডিও থেকে ভাইরাল শর্টস বানান</title>
 <meta name="description" content="ClipBlaster আপনার নিজের লং ভিডিও থেকে 1-5টি ভাইরাল ভার্টিকাল শর্টস বানায় — প্রোফেশনাল অটো-এডিট, হুক টেক্সট, জুম ও কালার গ্রেড, আর SEO টাইটেল, ডেসক্রিপশন ও হ্যাশট্যাগ সহ।">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff5a3c'/%3E%3Ctext x='32' y='44' font-size='34' font-weight='900' text-anchor='middle' fill='white' font-family='Arial'%3ECB%3C/text%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b0b16;color:#f2f2f8;line-height:1.6}
@@ -304,7 +305,7 @@ body.is-pro #pricing{display:none}
     <button class="closeX" onclick="closeAuthModal()">×</button>
     <div style="font-size:26px;font-weight:900">CLIP<span style="color:#ff5a3c">BLASTER</span></div>
     <h2>ClipBlaster-এ স্বাগতম</h2>
-    <p class="muted" id="authSub">লগ ইন করুন বা ফ্রি অ্যাকাউন্ট খুলুন — ইমেইল ভেরিফিকেশন লাগবে না।</p>
+    <p class="muted" id="authSub">লগ ইন করুন বা ফ্রি অ্যাকাউন্ট খুলুন — সাইন আপের পর আপনার Gmail-এ 6 সংখ্যার ভেরিফিকেশন কোড যাবে।</p>
     <div class="tabs">
       <button class="tab on" id="tab-login" onclick="showAuthTab('login')">লগ ইন</button>
       <button class="tab" id="tab-signup" onclick="showAuthTab('signup')">সাইন আপ</button>
@@ -350,6 +351,24 @@ body.is-pro #pricing{display:none}
       </p>
     </div>
     <p id="authMsg" class="status muted"></p>
+  </div>
+</div>
+
+<!-- Email verification modal — 6-digit code goes to the user's Gmail -->
+<div class="modal" id="verifyModal">
+  <div class="modalBox">
+    <button class="closeX" onclick="closeModal('verifyModal')">×</button>
+    <h2>📧 ইমেইল ভেরিফাই করুন</h2>
+    <p class="muted">আপনার Gmail-এ একটি <b>6 সংখ্যার ভেরিফিকেশন কোড</b> পাঠানো হয়েছে:<br><b id="verifyEmailText" style="color:#fff"></b></p>
+    <p class="muted">Gmail ইনবক্স (আর স্প্যাম ফোল্ডার) দেখে কোডটি নিচে দিন। কোডের মেয়াদ 10 মিনিট।</p>
+    <label>ভেরিফিকেশন কোড</label>
+    <input id="verifyCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code">
+    <p style="margin-top:16px"><button class="btn btn-red" id="verifySubmit" style="width:100%;padding:13px;font-size:16px" onclick="submitVerifyCode()">ভেরিফাই করুন</button></p>
+    <p id="verifyMsg" class="status muted"></p>
+    <p style="text-align:center;margin-top:14px">
+      কোড পাননি? <button type="button" id="resendBtn" class="btn btn-ghost" onclick="resendVerifyCode()">আবার পাঠান</button><br>
+      <span style="color:#8a8aa2">ইমেইল ভুল হয়েছে? </span><button type="button" style="background:none;border:0;color:#ff5a3c;font-weight:800;cursor:pointer;font-size:14px" onclick="closeModal('verifyModal');openAuth('signup')">ইমেইল বদলান</button>
+    </p>
   </div>
 </div>
 
@@ -478,6 +497,101 @@ const STYLE_BN={vibrant:'ভাইব্র্যান্ট',cinematic:'সি
 // session. There is no guest use — every tool action needs a real
 // account (email + token); a session without both is treated as logged out.
 const API_BASE='https://clipblaster-api.nayeemahmed33000.workers.dev';
+// ---- Email verification (EmailJS) ----
+// The 6-digit code is generated here, emailed from the browser via
+// EmailJS (Gmail service), and only its SHA-256 hash is stored on the
+// server — the server never sees the code in plain text after signup,
+// and a stored hash alone can never reveal it. The Public Key below
+// is public by design (EmailJS browser key).
+const EMAILJS_PUBLIC_KEY='3J7PRTYdBKHKtE2uO';
+const EMAILJS_SERVICE_ID='service_pyu4mw4';
+const EMAILJS_TEMPLATE_ID='template_c9x5yym';
+function newVerifyCode(){ return String(Math.floor(100000+Math.random()*900000)); }
+async function sendVerificationEmail(email,name,code){
+  if(!window.emailjs) return 'failed';
+  try{
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{to_email:email,to_name:name||'ClipBlaster user',code:code,from_name:'ClipBlaster'});
+    return 'sent';
+  }catch(e){ return 'failed'; }
+}
+let pendingVerify=null; // {email, name} — the account waiting for its code
+let resendTimer=null;
+function openVerifyModal(email,name){
+  pendingVerify={email:email,name:name};
+  $('verifyEmailText').textContent=email;
+  $('verifyCode').value=''; verifyMsg('');
+  openModal('verifyModal');
+}
+function verifyMsg(msg,cls){ const m=$('verifyMsg'); m.textContent=msg||''; m.className='status '+(cls||'muted'); }
+// Email the code for an account whose code hash is already stored
+// (signup just stored it, or resend just stored a fresh one), then
+// show the verify screen.
+async function emailCodeAndOpen(email,name,code){
+  openVerifyModal(email,name);
+  const result=await sendVerificationEmail(email,name,code);
+  if(result==='sent') verifyMsg('✅ কোড আপনার Gmail-এ পাঠানো হয়েছে। ইনবক্স (আর স্প্যাম ফোল্ডার) দেখুন।','ok');
+  else verifyMsg('⚠️ ইমেইল পাঠানো যায়নি — "আবার পাঠান" চাপুন।','err');
+}
+// Login hit an unverified account: store a fresh code, email it,
+// and show the verify screen.
+async function startLoginVerification(email){
+  const code=newVerifyCode();
+  try{
+    await apiCall('/api/auth/resend',{email:email,code:code});
+    await emailCodeAndOpen(email,'ClipBlaster user',code);
+  }catch(e){
+    if(e.message==='cooldown'){ openVerifyModal(email,'ClipBlaster user'); verifyMsg('⏳ কোডটি ইতিমধ্যে পাঠানো হয়েছে — Gmail দেখুন। 60 সেকেন্ড পর আবার পাঠাতে পারবেন।','err'); }
+    else if(e.message==='network'){ openVerifyModal(email,'ClipBlaster user'); verifyMsg('সার্ভারে পৌঁছানো যাচ্ছে না — "আবার পাঠান" চাপুন।','err'); }
+    else { openVerifyModal(email,'ClipBlaster user'); verifyMsg('কিছু একটা ভুল হয়েছে — "আবার পাঠান" চাপুন।','err'); }
+  }
+}
+async function submitVerifyCode(){
+  if(!pendingVerify){ verifyMsg('কোনো ভেরিফিকেশন চলছে না — আবার সাইন আপ করুন।','err'); return; }
+  const typed=$('verifyCode').value.trim();
+  if(!/^\d{6}$/.test(typed)){ verifyMsg('❌ 6 সংখ্যার কোডটি দিন।','err'); return; }
+  $('verifySubmit').disabled=true; $('verifySubmit').textContent='যাচাই হচ্ছে…';
+  try{
+    const d=await apiCall('/api/auth/verify',{email:pendingVerify.email,code:typed});
+    $('verifySubmit').disabled=false; $('verifySubmit').textContent='ভেরিফাই করুন';
+    const retPro=window.__cbReturnToPro, retSup=window.__cbReturnToSupport;
+    window.__cbReturnToPro=false; window.__cbReturnToSupport=false;
+    pendingVerify=null;
+    setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
+    closeModal('verifyModal');
+    if(retPro){ showToast('✅ ইমেইল ভেরিফাই হয়েছে — স্বাগতম, '+d.user.name+'! এখন নিচে আপনার TrxID দিন।'); getPro(); return; }
+    if(retSup){ showToast('✅ ইমেইল ভেরিফাই হয়েছে — স্বাগতম, '+d.user.name+'! এখন আপনার টিকিট লিখুন।'); openSupport(); return; }
+    showToast('✅ ইমেইল ভেরিফাই হয়েছে — স্বাগতম, '+d.user.name+'! ফ্রি প্ল্যান চালু আছে।');
+    scrollToId('tool');
+  }catch(e){
+    $('verifySubmit').disabled=false; $('verifySubmit').textContent='ভেরিফাই করুন';
+    if(e.message==='wrong') verifyMsg('❌ ভুল কোড। Gmail-এ পাঠানো কোডটি দেখে আবার দিন।','err');
+    else if(e.message==='expired') verifyMsg('⏰ কোডের মেয়াদ শেষ (10 মিনিট)। "আবার পাঠান" চাপুন।','err');
+    else if(e.message==='too_many') verifyMsg('❌ অনেকবার ভুল কোড দেওয়া হয়েছে। "আবার পাঠান" চাপুন।','err');
+    else if(e.message==='no_code') verifyMsg('কোনো কোড পাওয়া যায়নি — আবার সাইন আপ করুন।','err');
+    else if(e.message==='no_account') verifyMsg('এই ইমেইলে কোনো অ্যাকাউন্ট নেই — আবার সাইন আপ করুন।','err');
+    else if(e.message==='network') verifyMsg('সার্ভারে পৌঁছানো যাচ্ছে না — ইন্টারনেট দেখে আবার চেষ্টা করুন।','err');
+    else verifyMsg('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।','err');
+  }
+}
+async function resendVerifyCode(){
+  if(!pendingVerify) return;
+  const btn=$('resendBtn'); if(btn.disabled) return;
+  btn.disabled=true; let left=60; btn.textContent='আবার পাঠাতে '+left+' সেকেন্ড';
+  if(resendTimer) clearInterval(resendTimer);
+  resendTimer=setInterval(()=>{left--; if(left<=0){clearInterval(resendTimer); btn.disabled=false; btn.textContent='আবার পাঠান';} else btn.textContent='আবার পাঠাতে '+left+' সেকেন্ড';},1000);
+  const code=newVerifyCode();
+  try{
+    await apiCall('/api/auth/resend',{email:pendingVerify.email,code:code});
+    const result=await sendVerificationEmail(pendingVerify.email,pendingVerify.name,code);
+    if(result==='sent') verifyMsg('✅ নতুন কোড আপনার Gmail-এ পাঠানো হয়েছে। ইনবক্স (আর স্প্যাম ফোল্ডার) দেখুন।','ok');
+    else verifyMsg('⚠️ ইমেইল পাঠানো যায়নি — ইন্টারনেট দেখে আবার চেষ্টা করুন।','err');
+  }catch(e){
+    if(e.message==='cooldown') verifyMsg('⏳ একটু অপেক্ষা করুন — 60 সেকেন্ড পর আবার পাঠাতে পারবেন।','err');
+    else if(e.message==='network') verifyMsg('সার্ভারে পৌঁছানো যাচ্ছে না — আবার চেষ্টা করুন।','err');
+    else verifyMsg('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।','err');
+  }
+}
 async function apiCall(path,body,token){
   const headers={'Content-Type':'application/json'};
   if(token) headers['Authorization']='Bearer '+token;
@@ -541,7 +655,7 @@ function openAuth(tab){
   $('tab-login').classList.toggle('hidden',loggedIn);
   $('tab-signup').classList.toggle('hidden',loggedIn);
   $('tab-profile').classList.toggle('hidden',!loggedIn);
-  $('authSub').textContent = !u ? 'লগ ইন করুন বা ফ্রি অ্যাকাউন্ট খুলুন — ইমেইল ভেরিফিকেশন লাগবে না।'
+  $('authSub').textContent = !u ? 'লগ ইন করুন বা ফ্রি অ্যাকাউন্ট খুলুন — সাইন আপের পর আপনার Gmail-এ 6 সংখ্যার ভেরিফিকেশন কোড যাবে।'
     : (u.plan==='pro' ? 'লগ ইন করেছেন: '+u.name+' — 👑 প্রো।' : 'লগ ইন করেছেন: '+u.name+' — ফ্রি। নিচে আপনার প্রোফাইল থেকে প্রো-তে আপগ্রেড করুন।');
   $('authMsg').textContent='';$('authMsg').className='status muted';
   if(loggedIn){ fillProfile(u); showAuthTab('profile'); openModal('authModal'); return; }
@@ -574,6 +688,7 @@ async function doLogin(){
     if(e.message==='no_account') authError('❌ এই ইমেইলে কোনো অ্যাকাউন্ট নেই। আগে সাইন আপ করুন।');
     else if(e.message==='wrong_password') authError('❌ ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।');
     else if(e.message==='deactivated') authError('❌ আপনার অ্যাকাউন্টটি নিষ্ক্রিয় করা হয়েছে — সাপোর্টে যোগাযোগ করুন।');
+    else if(e.message==='not_verified'){ closeModal('authModal'); $('authMsg').textContent=''; showToast('📧 আপনার অ্যাকাউন্ট এখনো ভেরিফাই হয়নি — Gmail-এ কোড পাঠানো হচ্ছে।'); startLoginVerification(email); }
     else if(e.message==='network') authError('সার্ভারে পৌঁছানো যাচ্ছে না — আপনার ইন্টারনেট দেখে আবার চেষ্টা করুন।');
     else authError('কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।');
   }
@@ -585,8 +700,17 @@ async function doSignup(){
   if(pass.length<6){authError('পাসওয়ার্ড কমপক্ষে 6 অক্ষরের হতে হবে।');return;}
   $('signupSubmit').disabled=true; $('signupSubmit').textContent='অ্যাকাউন্ট খোলা হচ্ছে…';
   try{
-    const d=await apiCall('/api/auth/signup',{name:name,email:email,password:pass});
+    // The code is generated here and emailed from the browser; only its
+    // hash is stored on the server. The account stays unverified until
+    // the code is entered on the verify screen.
+    const code=newVerifyCode();
+    const d=await apiCall('/api/auth/signup',{name:name,email:email,password:pass,code:code});
     $('signupSubmit').disabled=false; $('signupSubmit').textContent='অ্যাকাউন্ট খুলুন';
+    if(d.needsVerification){
+      closeModal('authModal'); $('authMsg').textContent='';
+      await emailCodeAndOpen(email,name,code);
+      return;
+    }
     setSession({token:d.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at});
     closeModal('authModal'); $('authMsg').textContent='';
     if(window.__cbReturnToPro){ window.__cbReturnToPro=false; showToast('✅ অ্যাকাউন্ট খোলা হয়েছে — স্বাগতম, '+d.user.name+'! এখন নিচে আপনার TrxID দিন।'); getPro(); return; }
@@ -777,6 +901,9 @@ async function refreshSession(){
   if(!u.token){ setSession(null); return; }
   try{
     const d=await apiCall('/api/auth/me',{},u.token);
+    // A session for an unverified account must not reach the tool —
+    // clear it; logging in again takes the user to the verify screen.
+    if(!d.user.verified){ setSession(null); return; }
     setSession({token:u.token,name:d.user.name,email:d.user.email,plan:d.user.plan,verified:true,created_at:d.user.created_at,code:u.code});
   }catch(e){ if(e.message==='unauthorized'||e.message==='http_401') setSession(null); }
 }
